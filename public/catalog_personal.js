@@ -223,58 +223,81 @@
               <div class="muted">US$ ${fmt2(it.precio_usd)} · Bs ${fmt2(it.precio_bs)} ${it.unidad?`/ ${esc(it.unidad)}`:''}</div>
             </div>
             <div><input class="qcart" data-i="${i}" value="${esc(it.cantidad)}" inputmode="decimal"></div>
-            <div style="text-align:right"><strong>US$ ${fmt2(subU)}</strong><br><span class="muted">Bs ${fmt2(subB)}</span></div>
+            <div style="text-align:right">
+            <strong class="subusd">US$ ${fmt2(subU)}</strong><br>
+            <span class="muted subbs">Bs ${fmt2(subB)}</span>
+            </div>
             <div><button class="rm" data-i="${i}">×</button></div>
           </div>`;
       }).join('');
 
       cartEl.querySelectorAll('.rm').forEach(b=> b.addEventListener('click',()=> removeAt(+b.getAttribute('data-i'))));
       cartEl.querySelectorAll('.qcart').forEach(inp=>{
+        inp.setAttribute('enterkeyhint','done');
         inp.addEventListener('input', ()=>{
           const i = +inp.getAttribute('data-i');
           const v = num(inp.value);
           CART[i].cantidad = v;
           const pack = CART[i].pack || packFromPres(CART[i].presentacion);
-          if (pack > 0 && v % pack !== 0){ inp.classList.add('invalid'); } else { inp.classList.remove('invalid'); }
+          if (pack > 0 && v % pack !== 0) inp.classList.add('invalid'); else inp.classList.remove('invalid');
+          const row = inp.closest('.item');
+          if (row){
+            const subU = CART[i].precio_usd * v;
+            const subB = CART[i].precio_bs  * v;
+            const su = row.querySelector('.subusd');
+            const sb = row.querySelector('.subbs');
+            if (su) su.textContent = `US$ ${fmt2(subU)}`;
+            if (sb) sb.textContent = `Bs ${fmt2(subB)}`;
+          }
           paintTotals();
         });
       });
-
       paintTotals();
     }
 
-    // modal (móvil): clona el mismo HTML (misma grilla; en CSS se permite nombre completo)
     cartM.innerHTML = cartEl.innerHTML || `<div class="empty">Tu carrito está vacío.</div>`;
     totalsM.innerHTML = totalsEl.innerHTML || '';
     cartM.querySelectorAll('.rm').forEach(b=> b.addEventListener('click',()=> removeAt(+b.getAttribute('data-i'))));
     cartM.querySelectorAll('.qcart').forEach(inp=>{
+      inp.setAttribute('enterkeyhint','done');
       inp.addEventListener('input', ()=>{
         const i = +inp.getAttribute('data-i');
         const v = num(inp.value);
         CART[i].cantidad = v;
         const pack = CART[i].pack || packFromPres(CART[i].presentacion);
-        if (pack > 0 && v % pack !== 0){ inp.classList.add('invalid'); } else { inp.classList.remove('invalid'); }
-        updateCart();
+        if (pack > 0 && v % pack !== 0) inp.classList.add('invalid'); else inp.classList.remove('invalid');
+        const row = inp.closest('.item');
+        if (row){
+          const subU = CART[i].precio_usd * v;
+          const subB = CART[i].precio_bs  * v;
+          const su = row.querySelector('.subusd');
+          const sb = row.querySelector('.subbs');
+          if (su) su.textContent = `US$ ${fmt2(subU)}`;
+          if (sb) sb.textContent = `Bs ${fmt2(subB)}`;
+        }
+        paintTotals();
       });
     });
 
-    // badge
     const count = CART.reduce((a,x)=> a + (num(x.cantidad) ? 1 : 0), 0);
     cartBadge.style.display = count>0 ? 'inline-block' : 'none';
     if (count>0) cartBadge.textContent = String(count);
-
-    // habilitar / deshabilitar CTA por mínimo
-    const t = totals();
-    const okMin = t.usd >= MIN_ORDER_USD;
-    sendEl.disabled = !okMin || CART.length===0;
-    sendM.disabled  = !okMin || CART.length===0;
+    paintTotals();
   }
 
-  function paintTotals(){
-    const t = totals();
-    totalsEl.innerHTML = `Total: US$ ${fmt2(t.usd)} · Bs ${fmt2(t.bs)}<br><span class="muted">TC ${fmt2(RATE)}</span>`;
-  }
-
+function paintTotals(){
+  const t = totals();
+  const html = `Total: US$ ${fmt2(t.usd)} · Bs ${fmt2(t.bs)}<br><span class="muted">TC ${fmt2(RATE)}</span>`;
+  totalsEl.innerHTML = html;
+  totalsM.innerHTML  = html;
+  const anyInvalid =
+    [...document.querySelectorAll('.qcart.invalid')].length > 0 ||
+    CART.some(x => !num(x.cantidad));
+  const okMin = t.usd >= MIN_ORDER_USD;
+  const canSend = okMin && CART.length > 0 && !anyInvalid;
+  sendEl.disabled = !canSend;
+  sendM.disabled  = !canSend;
+}
 
 function buildWaText() {
   const lines = CART.map(it => {
@@ -298,13 +321,19 @@ function buildWaText() {
 
   function trySend(){
     const t = totals();
+    const anyInvalid =
+    [...document.querySelectorAll('.qcart.invalid')].length > 0 ||
+    CART.some(x => !num(x.cantidad));
     if (t.usd < MIN_ORDER_USD){
       toast('La compra mínima es de 3000$');
       return;
     }
+    if (anyInvalid){
+    toast('Revisa las cantidades (múltiplos y valores válidos).');
+    return;
+    }
     const txt = buildWaText();
 
-    // limpiar el carrito ANTES de redirigir (para no ocupar memoria)
     const url = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(txt)}`;
     CART = [];
     updateCart();

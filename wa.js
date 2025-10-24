@@ -57,6 +57,8 @@ function mediaKindFromMime(mime = '') {
   return 'document';
 }
 
+
+
 function guessMimeByExt(filePath='') {
   const ext = (filePath.split('.').pop() || '').toLowerCase();
   const map = {
@@ -85,58 +87,61 @@ function guessMimeByExt(filePath='') {
   };
   return map[ext] || 'application/octet-stream';
 }
-/* =============================================== */
-// ===== Flujo efímero del ASESOR (no persiste en disco) =====
-const ADVISOR_FLOWS = new Map(); // fromId -> { step:'ask_all', s }
+
+const ADVISOR_FLOWS = new Map(); 
 const advFlow  = (id)=> ADVISOR_FLOWS.get(id) || null;
 const advSet   = (id, f)=> ADVISOR_FLOWS.set(id, f);
 const advReset = (id)=> ADVISOR_FLOWS.delete(id);
 
-function parseAdvisorForm(text=''){
-  // 1) Intento con etiquetas (como ya tenías)
-  const get = (label)=>{
+function parseAdvisorForm(text = '', { lax = false } = {}) {
+  const get = (label) => {
     const re = new RegExp(`^\\s*${label}\\s*:\\s*(.+)$`, 'im');
     const m = text.match(re);
     return m ? m[1].trim() : null;
   };
   let nombre = get('NOMBRE');
   let depRaw = get('DEPARTAMENTO');
-  let zonaRaw= get('ZONA');
+  let zonaRaw = get('ZONA');
 
-  // 2) Si falta algo, intento modo libre por líneas
   if (!nombre || !depRaw || (!zonaRaw)) {
     const lines = String(text)
       .split(/\r?\n+/)
-      .map(l => l.replace(/^(nombre|departamento|zona)\s*:\s*/i,'').trim())
+      .map(l => l.replace(/^(nombre|departamento|zona)\s*:\s*/i, '').trim())
       .filter(Boolean);
 
-    for (const ln of lines) {
-      // departamento conocido
-      const dep = detectDepartamento(ln);
-      if (!depRaw && dep) { depRaw = dep; continue; }
-
-      // nombre “parece nombre completo”
-      if (!nombre && looksLikeFullName(ln)) { nombre = canonName(ln); continue; }
-
-      // zona (si SCZ, valida subzona; si no, toma la línea como zona libre)
-      if (!zonaRaw) {
-        const maybeSub = detectSubzona(ln);
-        if (maybeSub) zonaRaw = maybeSub;
-        else if (!/^\d+(\.\d+)?$/.test(ln)) zonaRaw = title(ln); // zona libre
+    if (lax) {
+      if (!nombre && lines[0]) nombre = lines[0].trim();
+      if (!depRaw && lines[1]) depRaw = lines[1].trim();
+      if (!zonaRaw && lines[2]) zonaRaw = lines[2].trim();
+    } else {
+      for (const ln of lines) {
+        const dep = detectDepartamento(ln);
+        if (!depRaw && dep) { depRaw = dep; continue; }
+        if (!nombre && looksLikeFullName(ln)) { nombre = canonName(ln); continue; }
+        if (!zonaRaw) {
+          const maybeSub = detectSubzona(ln);
+          if (maybeSub) zonaRaw = maybeSub;
+          else if (!/^\d+(\.\d+)?$/.test(ln)) zonaRaw = title(ln);
+        }
       }
     }
   }
 
-  // Normalizaciones
-  if (depRaw){
-    const t = norm(depRaw);
-    const canon = DEPARTAMENTOS.find(d => norm(d) === t);
-    depRaw = canon || title(depRaw);
+  if (lax) {
+    if (nombre) nombre = canonName(nombre);
+    if (depRaw) depRaw = title(depRaw);
+    if (zonaRaw) zonaRaw = title(zonaRaw);
+  } else {
+    if (depRaw) {
+      const t = norm(depRaw);
+      const canon = DEPARTAMENTOS.find(d => norm(d) === t);
+      depRaw = canon || title(depRaw);
+    }
+    if (zonaRaw) zonaRaw = title(zonaRaw);
   }
-  if (zonaRaw) zonaRaw = title(zonaRaw);
-
   return { nombre, departamento: depRaw, zona: zonaRaw };
 }
+
 
 async function advStart(fromId, parsedCart){
   const s = {
@@ -398,6 +403,7 @@ const SESSION_TTL_DAYS = parseInt(process.env.SESSION_TTL_DAYS || '7', 10);
 const SESSION_TTL_MS   = SESSION_TTL_DAYS * 24 * 60 * 60 * 1000;
 const SESSION_DIR = path.resolve('./data/sessions');
 fs.mkdirSync(SESSION_DIR, { recursive: true });
+const HANDOFF_ALERT_COOLDOWN_MS = 10 * 60 * 1000;
 
 const SIX_MONTHS_MS = 183 * 24 * 60 * 60 * 1000;
 function needsCampanaRefresh(s){
@@ -1075,6 +1081,34 @@ function compileAdvisorAlert(s, customerWa){
   ].join('\n');
 }
 
+function compileAdvisorHandoffAlert(s, customerWa){
+  const stamp   = formatStamp();
+  const nombre  = s.profileName || 'Cliente';
+  const dep     = s.vars.departamento || 'ND';
+  const zona    = s.vars.subzona || 'ND';
+  const cultivo = s.vars.cultivos?.[0] || 'ND';
+  const camp    = s.vars.campana || 'ND';
+  const prod    = (s.vars.cart?.[0]?.nombre || '—');
+  const cant    = (s.vars.cart?.[0]?.cantidad || '—');
+
+  const baseChat     = `https://wa.me/${customerWa}`;
+  const presetText   = buildAdvisorPresetText(s);
+  const replyWithMsg = `${baseChat}?text=${encodeURIComponent(presetText)}`;
+
+  return [
+    `🕒 ${stamp}`,
+    `🆘 *Cliente solicita asesor*`,
+    `*Nombre:* ${nombre}`,
+    `*Ubicación:* ${dep} - ${zona}`,
+    `*Cultivo:* ${cultivo}`,
+    `*Campaña:* ${camp}`,
+    `*Producto:* ${prod}`,
+    `*Cantidad:* ${cant}`,
+    ``,
+    `Abrir chat: ${baseChat}`,
+    `Responder con mensaje: ${replyWithMsg}`
+  ].join('\n');
+}
 
 const processed = new Map();
 const PROCESSED_TTL = 5 * 60 * 1000;
@@ -1212,11 +1246,10 @@ router.post('/wa/webhook', async (req,res)=>{
       if (flow && msg.type === 'text') {
         const text = (msg.text?.body || '').trim();
         if (flow.step === 'ask_all') {
-          const { nombre, departamento, zona } = parseAdvisorForm(text);
-          const missing = [];
-          if (!nombre)       missing.push('NOMBRE');
-          if (!departamento) missing.push('DEPARTAMENTO');
-          if (departamento === 'Santa Cruz' && !zona) missing.push('ZONA');
+        const { nombre, departamento, zona } = parseAdvisorForm(text, { lax: true });
+        const missing = [];
+        if (!nombre)       missing.push('NOMBRE');
+        if (!departamento) missing.push('DEPARTAMENTO');
 
           if (missing.length){
             await toText(fromId,
@@ -1595,7 +1628,32 @@ router.post('/wa/webhook', async (req,res)=>{
       if (wantsAgentPlus(text)) {
         const quien = s.profileName ? `, ${s.profileName}` : '';
         await toText(fromId, `¡Perfecto${quien}! Ya notifiqué a nuestro equipo. Un **asesor comercial** se pondrá en contacto contigo por este chat en unos minutos para ayudarte con tu consulta y la cotización. Desde ahora **pauso el asistente automático** para que te atienda una persona. 🙌`);
-        humanOn(fromId, 4); persistS(fromId); res.sendStatus(200); return;
+        humanOn(fromId, 4);
+
+        try {
+          if (ADVISOR_WA_NUMBERS.length) {
+            const last = Number(s?.meta?.handoffAlertedTs || 0);
+            if (!last || (Date.now() - last) > HANDOFF_ALERT_COOLDOWN_MS) {
+              const txt = compileAdvisorHandoffAlert(S(fromId), fromId);
+              for (const advisor of ADVISOR_WA_NUMBERS) {
+                const okTxt = await waSendQ(advisor, {
+                  messaging_product: 'whatsapp',
+                  to: advisor,
+                  type: 'text',
+                  text: { body: txt.slice(0, 4096) }
+                });
+                if (!okTxt) console.warn('[ADVISOR] no se pudo enviar alerta handoff a', advisor);
+              }
+              s.meta.handoffAlertedTs = Date.now();
+              persistS(fromId);
+            }
+          }
+        } catch (e) {
+          console.error('[ADVISOR] error al enviar alerta de handoff:', e);
+        }
+        persistS(fromId);
+        res.sendStatus(200);
+        return;
       }
 
       if(/horario|atienden|abren|cierran/i.test(tnorm)){ await toText(fromId, `Atendemos ${FAQS?.horarios || 'Lun–Vie 8:00–17:00'} 🙂`); res.sendStatus(200); return; }
