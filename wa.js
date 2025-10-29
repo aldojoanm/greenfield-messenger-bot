@@ -931,52 +931,60 @@ async function nextStep(to){
   if (busy.has(to)) return;
   busy.add(to);
   try{
-    const s=S(to);
-    const stale = (key)=> s.lastPrompt===key && (Date.now()-s.lastPromptTs>25000);
-    if (s.pending && !stale(s.pending)) return;
+    const s = S(to);
+
+    // ── Desbloqueo seguro del "pending" ──────────────────────────────
+    const lastTs = Number(s.lastPromptTs || 0);
+    const fresh  = (Date.now() - lastTs) < 25000;
+    const block  = s.pending && s.lastPrompt === s.pending && fresh;
+
+    if (block) {
+      // Aún fresco: no re-preguntar para evitar spam
+      return;
+    }
+
+    if (s.pending && (!s.lastPrompt || s.lastPrompt !== s.pending || !fresh)) {
+      // Inconsistente o viejo → limpiar y continuar
+      s.pending   = null;
+      s.lastPrompt= null;
+      persistS(to);
+    }
+    // ─────────────────────────────────────────────────────────────────
 
     // nombre
-    if ((!s.asked.nombre) && (s.meta.origin!=='messenger' || !s.profileName)) {
-      if(stale('nombre') || s.lastPrompt!=='nombre') return askNombre(to);
-      return;
+    if ((!s.asked?.nombre) && (s.meta.origin!=='messenger' || !s.profileName)) {
+      return await askNombre(to);
     }
     // departamento
-    if(!s.vars.departamento){
-      if(stale('departamento') || s.lastPrompt!=='departamento') return askDepartamento(to);
-      return;
+    if (!s.vars?.departamento) {
+      return await askDepartamento(to);
     }
     // subzona
-    if(!s.vars.subzona){
-      if(s.vars.departamento==='Santa Cruz'){
-        if(stale('subzona') || s.lastPrompt!=='subzona') return askSubzonaSCZ(to);
-      }else{
-        if(stale('subzona_libre') || s.lastPrompt!=='subzona_libre') return askSubzonaLibre(to);
-      }
-      return;
+    if (!s.vars?.subzona){
+      if (s.vars.departamento === 'Santa Cruz') return await askSubzonaSCZ(to);
+      return await askSubzonaLibre(to);
     }
     // cultivo
-    if(!s.vars.cultivos || s.vars.cultivos.length===0){
-      if(stale('cultivo') || s.lastPrompt!=='cultivo') return askCultivo(to);
-      return;
+    if (!s.vars?.cultivos || !s.vars.cultivos.length){
+      return await askCultivo(to);
     }
     // hectáreas
-    if(!s.vars.hectareas){
-      if(stale('hectareas') || s.lastPrompt!=='hectareas') return askHectareas(to);
-      return;
+    if (!s.vars?.hectareas){
+      return await askHectareas(to);
     }
-
+    // campaña (si vencida)
     if (needsCampanaRefresh(s)) {
-      if (stale('campana') || s.lastPrompt !== 'campana') return askCampana(to);
-      return;
+      return await askCampana(to);
     }
 
+    // Paso a catálogo
     await askCategory(to);
-    return;
   } finally {
     persistS(to);
     busy.delete(to);
   }
 }
+
 
 function findProduct(text){
   const nt = norm(text);
@@ -1245,6 +1253,7 @@ router.post('/wa/webhook', async (req,res)=>{
       const flow = advFlow(fromId);
       if (flow && msg.type === 'text') {
         const text = (msg.text?.body || '').trim();
+        remember(fromId,'user',text);
         if (flow.step === 'ask_all') {
         const { nombre, departamento, zona } = parseAdvisorForm(text, { lax: true });
         const missing = [];
