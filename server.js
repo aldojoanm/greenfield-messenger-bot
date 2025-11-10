@@ -426,6 +426,63 @@ app.get('/api/catalog-personal', async (req, res) => {
     res.status(500).json({ error: 'No se pudo cargar el catálogo personal' });
   }
 });
+/* ================== FB METRICS: exportar Excel server-side ================== */
+/* Requiere la dependencia: npm i xlsx */
+import * as XLSX from 'xlsx/xlsx.mjs';
+
+// Utilidades para armar las hojas
+function rowsToAoA(rows){
+  const header = ['Fecha','Interacciones','Visualizaciones','Espectadores','Visitas','Clics','Seguidores'];
+  const body = (rows||[]).map(r=>[
+    String(r.Fecha||''),
+    +r.Interacciones||0,
+    +r.Visualizaciones||0,
+    +r.Espectadores||0,
+    +r.Visitas||0,
+    +r.Clics||0,
+    +r.Seguidores||0,
+  ]);
+  return [header, ...body];
+}
+function aggTotals(rows){
+  const sum = k => (rows||[]).reduce((a,b)=>a+(+b[k]||0),0);
+  return [
+    ['KPI','Valor'],
+    ['Interacciones', sum('Interacciones')],
+    ['Visualizaciones', sum('Visualizaciones')],
+    ['Espectadores',   sum('Espectadores')],
+    ['Visitas',        sum('Visitas')],
+    ['Clics',          sum('Clics')],
+    ['Seguidores',     sum('Seguidores')],
+  ];
+}
+
+// Genera y devuelve el archivo Excel
+app.post('/api/fbmetrics/export', async (req, res) => {
+  try {
+    const { rows = [], month = 'Mes', week = 'all' } = req.body || {};
+    if (!Array.isArray(rows)) return res.status(400).send('rows debe ser un array');
+
+    const wb = XLSX.utils.book_new();
+    const ws1 = XLSX.utils.aoa_to_sheet(rowsToAoA(rows));
+    const ws2 = XLSX.utils.aoa_to_sheet(aggTotals(rows));
+    XLSX.utils.book_append_sheet(wb, ws1, 'Datos');
+    XLSX.utils.book_append_sheet(wb, ws2, 'Resumen');
+
+    const buf = XLSX.write(wb, { type:'buffer', bookType:'xlsx' });
+    const filename = week === 'all'
+      ? `FB_Metricas_${month}.xlsx`
+      : `FB_Metricas_${month}_Semana${week}.xlsx`;
+
+    res.setHeader('Content-Type','application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+    return res.send(buf);
+  } catch (e) {
+    console.error('[fbmetrics/export] error:', e);
+    return res.status(500).send('error_generando_excel');
+  }
+});
+
 
 // ========= Arranque =========
 const PORT = process.env.PORT || 3000;
