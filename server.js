@@ -30,15 +30,6 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname  = path.dirname(__filename);
 const TZ = process.env.TIMEZONE || 'America/La_Paz';
 
-// ========= Estáticos =========
-app.use('/image', express.static(path.join(__dirname, 'image')));
-app.use(express.static(path.join(__dirname, 'public')));
-
-// UI del inbox
-app.get('/inbox', (_req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'agent.html'));
-});
-
 // Básicos
 app.get('/', (_req, res) => res.send('OK'));
 app.get('/healthz', (_req, res) => res.json({ ok: true }));
@@ -480,6 +471,30 @@ app.post('/api/fbmetrics/export', async (req, res) => {
   }
 });
 
+// ==== Estáticos primero ====
+app.use('/image', express.static(path.join(__dirname, 'image')));
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Aliases que también sirven estáticos (para que funcionen rutas relativas en cada HTML)
+app.use('/inbox-newchem',     express.static(path.join(__dirname, 'public')));
+app.use('/catalogo-newchem',  express.static(path.join(__dirname, 'public')));
+app.use('/catalogo_personal', express.static(path.join(__dirname, 'public')));
+// OJO: este apunta a la subcarpeta correcta:
+app.use('/facebook-metricas', express.static(path.join(__dirname, 'public', 'metricas')));
+
+// ==== Rutas "bonitas" que devuelven los HTML reales ====
+app.get('/inbox-newchem', (_req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'agent.html'));
+});
+app.get('/catalogo-newchem', (_req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'catalog.html'));
+});
+app.get('/facebook-metricas', (_req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'metricas', 'metricas.html'));
+});
+app.get('/catalogo_personal', (_req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'catalogo_personal.html'));
+});
 // ========= Arranque =========
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
