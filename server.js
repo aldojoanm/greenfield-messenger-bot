@@ -5,6 +5,7 @@ import path from 'path';
 import multer from 'multer';
 import { fileURLToPath } from 'url';
 import { google } from 'googleapis';
+import { access } from 'fs/promises'; // <-- para fallback /slug -> slug.html
 
 // Routers existentes (déjalos como ya los tienes)
 import waRouter from './wa.js';
@@ -31,9 +32,30 @@ const TZ = process.env.TIMEZONE || 'America/La_Paz';
 
 // ========= Estáticos =========
 app.use('/image', express.static(path.join(__dirname, 'image')));
-app.use(express.static(path.join(__dirname, 'public')));
+// Habilita URLs sin .html (ej: /agent -> agent.html)
+app.use(express.static(path.join(__dirname, 'public'), { extensions: ['html'] }));
 
-// UI del inbox
+// ===== Aliases “bonitos” =====
+app.get('/catalogo-newchem', (_req, res) =>
+  res.sendFile(path.join(__dirname, 'public', 'catalog.html'))
+);
+app.get('/inbox-newchem', (_req, res) =>
+  res.sendFile(path.join(__dirname, 'public', 'agent.html'))
+);
+app.get('/facebook-metricas', (_req, res) =>
+  res.sendFile(path.join(__dirname, 'public', 'metricas', 'metricas.html'))
+);
+app.get('/catalogo_personal', (_req, res) =>
+  res.sendFile(path.join(__dirname, 'public', 'catalogo_personal.html'))
+);
+
+// (Opcional) Redirecciones 301 desde rutas antiguas con .html
+app.get('/catalog.html', (_req, res) => res.redirect(301, '/catalogo-newchem'));
+app.get('/agent.html', (_req, res) => res.redirect(301, '/inbox-newchem'));
+app.get('/metricas/metricas.html', (_req, res) => res.redirect(301, '/facebook-metricas'));
+app.get('/catalogo_personal.html', (_req, res) => res.redirect(301, '/catalogo_personal'));
+
+// UI del inbox (se mantiene tal cual)
 app.get('/inbox', (_req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'agent.html'));
 });
@@ -479,13 +501,37 @@ app.post('/api/fbmetrics/export', async (req, res) => {
   }
 });
 
+// ======= Fallback final: /slug -> /public/slug.html si existe =======
+// No interfiere con /api, /wa, /image, /inbox ni rutas con extensión.
+app.get('*', async (req, res, next) => {
+  if (req.method !== 'GET') return next();
+  const p = req.path || '/';
+  if (
+    p === '/' ||
+    p.startsWith('/api') ||
+    p.startsWith('/wa') ||
+    p.startsWith('/image') ||
+    p.startsWith('/inbox') ||
+    p.includes('.')
+  ) return next();
+
+  const candidate = path.join(__dirname, 'public', p.replace(/^\//, '') + '.html');
+  try {
+    await access(candidate);
+    return res.sendFile(candidate);
+  } catch {
+    return next();
+  }
+});
+
 // ========= Arranque =========
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`🚀 Server escuchando en :${PORT}`);
   console.log('   • Messenger:  GET/POST /webhook');
   console.log('   • WhatsApp:   GET/POST /wa/webhook');
-  console.log('   • Inbox UI:   GET       /inbox');
-  console.log('   • FB Metrics: GET       /api/fbmetrics/sheets | /api/fbmetrics/data?sheet=Octubre');
+  console.log('   • Inbox UI:   GET       /inbox | /inbox-newchem');
+  console.log('   • FB Metrics: GET       /facebook-metricas | /api/fbmetrics/*');
+  console.log('   • Catálogo:   GET       /catalogo-newchem | /catalogo_personal | /api/catalog*');
   console.log('   • Health:     GET       /healthz');
 });
