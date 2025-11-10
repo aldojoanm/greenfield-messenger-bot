@@ -6,7 +6,7 @@
 *{box-sizing:border-box}
 html,body{height:100%}
 body{
-  margin:0; background:radial-gradient(1200px 600px at 80% -10%, #1a2140 0%, transparent 50%) , var(--bg);
+  margin:0; background:radial-gradient(1200px 600px at 80% -10%, #1a2140 0%, transparent 50%), var(--bg);
   color:var(--text); font-family:ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial;
 }
 
@@ -18,7 +18,7 @@ body{
 .brand h1{ margin:0; font-size:20px; }
 .brand small{ color:var(--muted) }
 
-.ctl{ display:flex; gap:12px; align-items:center; }
+.ctl{ display:flex; gap:12px; align-items:center; flex-wrap:wrap;}
 select{
   background:var(--panel); color:var(--text); border:1px solid rgba(255,255,255,.08);
   border-radius:10px; padding:8px 10px; outline:none;
@@ -29,30 +29,48 @@ select{
 }
 .btn:hover{ transform:translateY(-1px); box-shadow:0 12px 26px var(--ring); }
 
-.wrap{ max-width:1200px; margin:24px auto; padding:0 16px; }
+.wrap{ max-width:1200px; margin:24px auto; padding:0 16px; overflow-x:hidden; }
 
 .kpis{
   display:grid; grid-template-columns:repeat(6, 1fr); gap:12px; margin-bottom:16px;
 }
 .kpi{
   background:var(--panel); padding:14px; border-radius:14px; border:1px solid rgba(255,255,255,.06);
+  text-align:left; cursor:pointer; transition:transform .08s ease, box-shadow .15s ease;
 }
+.kpi:focus{ outline:none; }
+.kpi:hover{ transform:translateY(-1px); box-shadow:0 10px 28px rgba(0,0,0,.25); }
+.kpi.active{ border-color:rgba(27,108,255,.55); box-shadow:0 0 0 3px rgba(27,108,255,.15) inset; }
 .kpi-v{ font-size:22px; font-weight:800 }
 .kpi-l{ color:var(--muted); margin-top:4px }
 
 .grid{ display:grid; gap:16px; grid-template-columns:1fr 1fr; }
 .card{
   background:var(--card); border:1px solid rgba(255,255,255,.06); border-radius:14px; padding:16px;
-  box-shadow:0 10px 30px rgba(0,0,0,.25);
+  box-shadow:0 10px 30px rgba(0,0,0,.25); overflow:hidden;
 }
 .card.wide{ grid-column:1 / -1; }
 .card h2{ margin:0 0 10px; font-size:16px; color:#dfe6ff }
 
-.pies{ display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+.pies{ display:grid; grid-template-columns:repeat(3,1fr); gap:16px; align-items:center; }
+.hidden{ display:none; }
+
 .table-wrap{ overflow:auto; max-height:420px; border-radius:10px; }
 .tbl{ width:100%; border-collapse:collapse; }
 .tbl th, .tbl td{ padding:10px 12px; border-bottom:1px solid rgba(255,255,255,.06); white-space:nowrap; }
 .tbl th{ position:sticky; top:0; background:#0f1527; }
+
+/* ---- tamaños fijos de los charts ---- */
+#chLine, #chBar{
+  width:100% !important;
+  height:280px !important;
+  display:block;
+}
+#chPie1, #chPie2, #chPie3, #chPieSel{
+  width:100% !important;
+  height:220px !important;
+  display:block;
+}
 
 @media (max-width:980px){
   .kpis{ grid-template-columns:repeat(3,1fr) }
