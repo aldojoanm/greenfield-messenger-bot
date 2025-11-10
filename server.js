@@ -4,13 +4,13 @@ import express from 'express';
 import path from 'path';
 import multer from 'multer';
 import { fileURLToPath } from 'url';
+import { google } from 'googleapis'; // ← NUEVO (fbmetrics)
 
 // Routers existentes (déjalos como ya los tienes)
 import waRouter from './wa.js';
 import messengerRouter from './index.js';
 import pricesRouter from './prices.js';
 import { readPricesPersonal } from './sheets.js';
-
 
 // ========= Sheets (SIN carpeta /src) =========
 import {
@@ -29,6 +29,7 @@ app.use(express.json({ limit: '2mb' }));
 const __filename = fileURLToPath(import.meta.url);
 const __dirname  = path.dirname(__filename);
 const TZ = process.env.TIMEZONE || 'America/La_Paz';
+
 // ========= Estáticos =========
 app.use('/image', express.static(path.join(__dirname, 'image')));
 app.use(express.static(path.join(__dirname, 'public')));
@@ -50,7 +51,111 @@ app.use(messengerRouter);
 app.use(waRouter);
 app.use(pricesRouter);
 
+// ================== FB METRICS (Integrado aquí) ==================
+const FB_SHEET_ID = process.env.FB_METRICS_SHEET_ID;
+let _fbSheets; // cache
 
+async function getFbSheets() {
+  if (!FB_SHEET_ID) throw new Error('Falta FB_METRICS_SHEET_ID en .env');
+
+  if (_fbSheets) return _fbSheets;
+  let auth;
+  const raw = process.env.GOOGLE_CREDENTIALS_JSON;
+
+  if (raw && raw.trim()) {
+    const creds = JSON.parse(raw);
+    auth = new google.auth.GoogleAuth({
+      credentials: creds,
+      scopes: ['https://www.googleapis.com/auth/spreadsheets.readonly'],
+    });
+  } else if (process.env.GOOGLE_APPLICATION_CREDENTIALS) {
+    auth = new google.auth.GoogleAuth({
+      keyFile: process.env.GOOGLE_APPLICATION_CREDENTIALS,
+      scopes: ['https://www.googleapis.com/auth/spreadsheets.readonly'],
+    });
+  } else {
+    throw new Error('Faltan credenciales Google (GOOGLE_CREDENTIALS_JSON o GOOGLE_APPLICATION_CREDENTIALS)');
+  }
+
+  const client = await auth.getClient();
+  _fbSheets = google.sheets({ version: 'v4', auth: client });
+  return _fbSheets;
+}
+
+// Parseo flexible de columnas
+function mapRowsByHeader(values) {
+  const rows = values || [];
+  if (!rows.length) return { data: [] };
+
+  const header = rows[0].map(h => String(h).trim());
+  const idx = Object.fromEntries(header.map((h, i) => [h.toLowerCase(), i]));
+  const get = (row, key) => {
+    const i = idx[String(key).toLowerCase()];
+    return (i != null && i >= 0) ? row[i] : '';
+  };
+  const toNum = v => {
+    const n = Number(String(v ?? '').replace(',', '.'));
+    return Number.isFinite(n) ? n : 0;
+  };
+
+  const data = rows
+    .slice(1)
+    .filter(r => r && r.length)
+    .filter(r => {
+      const f = String(get(r, 'Fecha') || get(r, 'fecha') || '').trim();
+      return f && !/^TOTALES/i.test(f);
+    })
+    .map(r => ({
+      Fecha: String(get(r, 'Fecha') || get(r, 'fecha') || '').slice(0, 10),
+      Interacciones: toNum(get(r, 'Interacciones con el contenido')),
+      Visualizaciones: toNum(get(r, 'Visualizaciones')),
+      Espectadores: toNum(get(r, 'Espectadores')),
+      Visitas: toNum(get(r, 'Visitas de Facebook')),
+      Clics: toNum(get(r, 'Click en el enlace') || get(r, 'Clics en el enlace')),
+      Seguidores: toNum(get(r, 'Seguidores Nuevos') || get(r, 'Seguidores de Facebook')),
+    }));
+
+  return { data };
+}
+
+// Lista de hojas (meses)
+app.get('/api/fbmetrics/sheets', async (_req, res) => {
+  try {
+    const sheets = await getFbSheets();
+    const meta = await sheets.spreadsheets.get({
+      spreadsheetId: FB_SHEET_ID,
+      fields: 'sheets(properties(title,index))',
+    });
+    const list = (meta.data.sheets || [])
+      .map(s => s.properties?.title)
+      .filter(Boolean);
+    res.json({ sheets: list });
+  } catch (e) {
+    console.error('[fbmetrics/sheets]', e?.message || e);
+    res.status(500).json({ error: 'No se pudo listar hojas' });
+  }
+});
+
+// Datos de un mes
+app.get('/api/fbmetrics/data', async (req, res) => {
+  const sheet = String(req.query.sheet || '').trim();
+  if (!sheet) return res.status(400).json({ error: 'Falta ?sheet=' });
+  try {
+    const sheets = await getFbSheets();
+    const r = await sheets.spreadsheets.values.get({
+      spreadsheetId: FB_SHEET_ID,
+      range: `${sheet}!A1:Z10000`,
+    });
+    const { data } = mapRowsByHeader(r.data.values || []);
+    res.json({ sheet, rows: data });
+  } catch (e) {
+    console.error('[fbmetrics/data]', e?.message || e);
+    res.status(500).json({ error: 'No se pudo leer datos del mes' });
+  }
+});
+// ================== FIN FB METRICS ==================
+
+// ======= Catálogo (existente) =======
 app.get('/api/catalog', async (_req, res) => {
   try {
     const { prices = [], rate = 6.96 } = await readPrices();
@@ -274,10 +379,11 @@ app.post('/wa/agent/send-media', auth, upload.array('files'), async (req, res) =
     res.status(500).json({ error: 'no se pudo guardar en Hoja 4' });
   }
 });
+
 // ==== Campaña automática por mes (configurable por ENV) ====
-const CAMP_VERANO_MONTHS = (process.env.CAMPANA_VERANO_MONTHS || '10,11,12,1,2,3') // Oct–Mar
+const CAMP_VERANO_MONTHS = (process.env.CAMPANA_VERANO_MONTHS || '10,11,12,1,2,3')
   .split(',').map(n => +n.trim()).filter(Boolean);
-const CAMP_INVIERNO_MONTHS = (process.env.CAMPANA_INVIERNO_MONTHS || '4,5,6,7,8,9') // Abr–Sep
+const CAMP_INVIERNO_MONTHS = (process.env.CAMPANA_INVIERNO_MONTHS || '4,5,6,7,8,9')
   .split(',').map(n => +n.trim()).filter(Boolean);
 
 function monthInTZ(tz = TZ){
@@ -289,7 +395,7 @@ function monthInTZ(tz = TZ){
     return (new Date()).getMonth() + 1; // 1..12
   }
 }
-function currentCampana(){               // ← "Verano" o "Invierno" según mes actual
+function currentCampana(){
   const m = monthInTZ(TZ);
   return CAMP_VERANO_MONTHS.includes(m) ? 'Verano' : 'Invierno';
 }
@@ -331,5 +437,6 @@ app.listen(PORT, () => {
   console.log('   • Inbox API:        /wa/agent/* (convos, history, send, read, handoff, send-media, import-whatsapp, stream)');
   console.log('   • Prices JSON:      GET       /api/prices');
   console.log('   • Catalog JSON:     GET       /api/catalog   (desde Hoja PRECIOS)');
+  console.log('   • FB Metrics:       GET       /api/fbmetrics/sheets | /api/fbmetrics/data?sheet=Octubre');
   console.log('   • Health:           GET       /healthz');
 });
