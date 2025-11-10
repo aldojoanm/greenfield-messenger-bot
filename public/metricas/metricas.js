@@ -2,45 +2,62 @@
 const $ = sel => document.querySelector(sel);
 const fmt = n => Intl.NumberFormat('es-BO').format(n || 0);
 
-// controla que el canvas no sea gigante en pantallas HiDPI
-if (window.Chart) {
-  Chart.defaults.devicePixelRatio = Math.min(window.devicePixelRatio || 1, 1.5);
-}
+// evitar donuts/lineas exageradas en HiDPI
+if (window.Chart) Chart.defaults.devicePixelRatio = Math.min(window.devicePixelRatio || 1, 1.5);
 
 // estado
 let allRows = [];          // mes completo
 let currentRows = [];      // filtrado por semana
-let weekBuckets = [];      // [{key, ini, fin, rows}]
+let weekBuckets = [];      // [{ini, fin, rows}]
 let activeMetric = null;   // 'Visualizaciones' | ... | null
 
 let chLine, chBar, chPie1, chPie2, chPie3, chPieSel;
 
 // carga inicial
 window.addEventListener('DOMContentLoaded', async () => {
-  await cargarListadoMeses();       // llena el select con lo que exista en el Sheet
+  await cargarListadoMeses();
   const selMes = $('#mesSelect');
   const selSem = $('#semanaSelect');
 
   selMes.addEventListener('change', () => cargarMes(selMes.value));
   selSem.addEventListener('change', () => aplicarSemana(selSem.value));
-  $('#btnXlsx').addEventListener('click', exportarExcelMesActual);
+
+  // Excel: forzamos descarga y avisamos si XLSX no está
+  $('#btnXlsx').addEventListener('click', () => {
+    if (!window.XLSX) { alert('No se cargó la librería de Excel. Reintenta.'); return; }
+    exportarExcelMesActual();
+  });
+
+  // Limpiar filtro desde botón / tecla Esc
+  $('#btnClear').addEventListener('click', clearMetricFilter);
+  window.addEventListener('keydown', (e) => { if (e.key === 'Escape') clearMetricFilter(); });
 
   // KPI click -> filtro por métrica
   document.querySelectorAll('.kpi').forEach(k => {
     k.addEventListener('click', () => {
       const m = k.dataset.metric;
       activeMetric = (activeMetric === m) ? null : m;
-      document.querySelectorAll('.kpi').forEach(x => x.classList.toggle('active', x.dataset.metric === activeMetric));
-      render(currentRows); // re-render con el filtro de métrica
+      syncKpiButtons();
+      render(currentRows);
     });
   });
 
-  // abre el último mes por defecto (última hoja)
+  // último mes por defecto
   if (selMes.options.length) {
     selMes.selectedIndex = selMes.options.length - 1;
     await cargarMes(selMes.value);
   }
 });
+
+function syncKpiButtons(){
+  document.querySelectorAll('.kpi').forEach(x => x.classList.toggle('active', x.dataset.metric === activeMetric));
+  $('#btnClear').style.visibility = activeMetric ? 'visible' : 'hidden';
+}
+function clearMetricFilter(){
+  activeMetric = null;
+  syncKpiButtons();
+  render(currentRows);
+}
 
 async function cargarListadoMeses(){
   const r = await fetch('/api/fbmetrics/sheets');
@@ -55,15 +72,12 @@ async function cargarListadoMeses(){
 }
 
 async function cargarMes(sheetName){
-  // lee datos
   const r = await fetch(`/api/fbmetrics/data?sheet=${encodeURIComponent(sheetName)}`);
   const j = await r.json();
   allRows = (j.rows || []).slice();
 
-  // arma buckets de semana (L-D) *dentro del mes*
   weekBuckets = buildWeekBuckets(allRows);
 
-  // llena el selector de semana
   const sel = $('#semanaSelect');
   sel.innerHTML = '<option value="all">Todo el mes</option>';
   weekBuckets.forEach((w, i) => {
@@ -74,6 +88,7 @@ async function cargarMes(sheetName){
   });
   sel.value = 'all';
 
+  clearMetricFilter();
   aplicarSemana('all');
 }
 
@@ -82,14 +97,13 @@ function aplicarSemana(val){
   render(currentRows);
 }
 
-// ----- helpers de fechas / semanas -----
+// ----- helpers fechas / semanas -----
 const toDate = s => new Date(s + 'T00:00:00');
 const mondayOf = d => { const day = (d.getDay()+6)%7; const m = new Date(d); m.setDate(d.getDate()-day); m.setHours(0,0,0,0); return m; };
 const endSun   = d => { const e = new Date(d); e.setDate(e.getDate()+6); e.setHours(23,59,59,999); return e; };
 const fmtDate  = d => d.toISOString().slice(0,10);
 
 function buildWeekBuckets(rows){
-  // agrupa por L-D pero SOLO semanas que caen dentro del mes de las filas
   const map = new Map();   // mondayISO -> {ini, fin, rows:[]}
   for (const r of rows) {
     const d = toDate(r.Fecha);
@@ -102,7 +116,7 @@ function buildWeekBuckets(rows){
   return [...map.values()].sort((a,b)=>a.ini-b.ini);
 }
 
-// ----- agregados / totales -----
+// ----- agregados -----
 function aggTotals(rows){
   const sum = (k) => rows.reduce((a,b)=>a+(+b[k]||0),0);
   return {
@@ -117,7 +131,6 @@ function aggTotals(rows){
 
 // ==================== RENDER ====================
 function render(rows){
-  // KPIs
   const tot = aggTotals(rows);
   $('#kpi-visual').textContent   = fmt(tot.Visualizaciones);
   $('#kpi-espec').textContent    = fmt(tot.Espectadores);
@@ -145,7 +158,6 @@ function render(rows){
     </tr>`).join('');
   tbl.innerHTML = head + body;
 
-  // gráficos
   drawLine(rows);
   drawBars(rows);
   drawPies(rows, tot);
@@ -153,13 +165,12 @@ function render(rows){
 
 function destroyChart(c){ if (c && typeof c.destroy==='function') c.destroy(); }
 
-// ===== Linea diaria =====
+// ===== Línea diaria =====
 function drawLine(rows){
   destroyChart(chLine);
   const ctx = $('#chLine');
   const labels = rows.map(r=>r.Fecha);
 
-  // datasets según filtro de KPI
   const datasets = [];
   const add = (label, key) => datasets.push({ label, data: rows.map(r=>r[key]) });
   const want = (m) => !activeMetric || activeMetric === m;
@@ -175,10 +186,7 @@ function drawLine(rows){
     type:'line',
     data:{ labels, datasets },
     options:{
-      responsive:true,
-      maintainAspectRatio:false,
-      animation:false,
-      layout:{ padding:8 },
+      responsive:true, maintainAspectRatio:false, animation:false, layout:{ padding:8 },
       interaction:{ mode:'index', intersect:false },
       scales:{
         x:{ ticks:{ color:'#a3adc2', maxRotation:0, autoSkip:true, autoSkipPadding:8 } },
@@ -187,7 +195,8 @@ function drawLine(rows){
       plugins:{
         legend:{ position:'bottom', labels:{ color:'#eaf0ff', boxWidth:12 } },
         tooltip:{ mode:'index', intersect:false }
-      }
+      },
+      elements:{ line:{ tension:0.25 } }
     }
   });
 }
@@ -196,16 +205,13 @@ function drawLine(rows){
 function drawBars(rows){
   destroyChart(chBar);
   const ctx = $('#chBar');
-
-  // si ya venimos filtrados por una semana, agrego un solo bucket de esa semana
   const buckets = buildWeekBuckets(rows);
-
-  // tomar métricas visibles
-  const want = (m) => !activeMetric || activeMetric === m;
   const labels = buckets.map(w=>`Sem ${fmtDate(w.ini)} a ${fmtDate(w.fin)}`);
   const sum = (list, key) => list.reduce((a,b)=>a + (+b[key]||0), 0);
 
   const datasets = [];
+  const want = (m) => !activeMetric || activeMetric === m;
+
   if (want('Visualizaciones')) datasets.push({ label:'Visualizaciones', data:buckets.map(b=>sum(b.rows,'Visualizaciones')) });
   if (want('Clics'))           datasets.push({ label:'Clics',           data:buckets.map(b=>sum(b.rows,'Clics')) });
   if (want('Visitas'))         datasets.push({ label:'Visitas',         data:buckets.map(b=>sum(b.rows,'Visitas')) });
@@ -217,10 +223,7 @@ function drawBars(rows){
     type:'bar',
     data:{ labels, datasets },
     options:{
-      responsive:true,
-      maintainAspectRatio:false,
-      animation:false,
-      layout:{ padding:8 },
+      responsive:true, maintainAspectRatio:false, animation:false, layout:{ padding:8 },
       scales:{
         x:{ ticks:{ color:'#a3adc2', maxRotation:0, autoSkip:true, autoSkipPadding:8 } },
         y:{ ticks:{ color:'#a3adc2' }, grid:{ color:'rgba(255,255,255,.06)' } }
@@ -230,46 +233,47 @@ function drawBars(rows){
   });
 }
 
-// ===== Tortas =====
-function drawPies(rows, tot){
+// ===== Donuts =====
+function drawPies(_rows, tot){
   destroyChart(chPie1); destroyChart(chPie2); destroyChart(chPie3); destroyChart(chPieSel);
-
   const pies3 = $('#pies3');
   const selWrap = $('#pieSelWrap');
 
-  // si hay filtro de KPI, muestro UNA sola dona: métrica vs resto
+  // Opciones comunes: grosor y textos mejorados
+  const common = {
+    type:'doughnut',
+    options:{
+      responsive:true, maintainAspectRatio:false, cutout:'45%', /* más grueso */
+      animation:false,
+      plugins:{
+        legend:{ position:'bottom', labels:{ color:'#eaf0ff', boxWidth:12, font:{ size:12 } } },
+        tooltip:{ callbacks:{ label: ctx => {
+          const v = ctx.parsed; const total = ctx.dataset.data.reduce((a,b)=>a+b,0);
+          const pct = total ? ((v/total)*100).toFixed(1) : 0;
+          return `${ctx.label}: ${fmt(v)} (${pct}%)`;
+        }}}
+      },
+      elements:{ arc:{ borderWidth:1, borderColor:'rgba(255,255,255,.06)' } }
+    }
+  };
+
   if (activeMetric){
     pies3.classList.add('hidden');
     selWrap.classList.remove('hidden');
-
     const totalSel = tot[activeMetric] || 0;
     const totalAll = Object.values(tot).reduce((a,b)=>a+b,0);
     const otros = Math.max(0,totalAll - totalSel);
 
     chPieSel = new Chart($('#chPieSel'), {
-      type:'doughnut',
-      data:{ labels:[activeMetric,'Otros KPIs'], datasets:[{ data:[totalSel, otros] }] },
-      options:{
-        responsive:true, maintainAspectRatio:false, cutout:'65%', animation:false,
-        plugins:{ legend:{ position:'bottom', labels:{ color:'#eaf0ff', boxWidth:12 } } },
-        elements:{ arc:{ borderWidth:0 } }
-      }
+      ...common,
+      data:{ labels:[activeMetric,'Otros KPIs'], datasets:[{ data:[totalSel, otros] }] }
     });
     return;
   }
 
-  // si no hay filtro, muestro 3 donas
   pies3.classList.remove('hidden');
   selWrap.classList.add('hidden');
 
-  const common = {
-    type:'doughnut',
-    options:{
-      responsive:true, maintainAspectRatio:false, cutout:'65%', animation:false,
-      plugins:{ legend:{ position:'bottom', labels:{ color:'#eaf0ff', boxWidth:12 } } },
-      elements:{ arc:{ borderWidth:0 } }
-    }
-  };
   chPie1 = new Chart($('#chPie1'), {
     ...common,
     data:{ labels:['Visualizaciones','Espectadores'],
@@ -319,5 +323,12 @@ function exportarExcelMesActual(){
   const ws2 = XLSX.utils.aoa_to_sheet(kpiRows(currentRows));
   XLSX.utils.book_append_sheet(wb, ws1, 'Datos');
   XLSX.utils.book_append_sheet(wb, ws2, 'Resumen');
-  XLSX.writeFile(wb, nom);
+
+  // descarga garantizada
+  try {
+    XLSX.writeFile(wb, nom);
+  } catch(e){
+    console.error('xlsx write error', e);
+    alert('No se pudo descargar el Excel.');
+  }
 }
