@@ -1,11 +1,13 @@
 // ---- util
-const $ = sel => document.querySelector(sel);
+const $  = sel => document.querySelector(sel);
 const fmt = n => Intl.NumberFormat('es-BO').format(n || 0);
 
-// evitar donuts/lineas exageradas en HiDPI
-if (window.Chart) Chart.defaults.devicePixelRatio = Math.min(window.devicePixelRatio || 1, 1.5);
+// Evita renders ultra densos en HiDPI
+if (window.Chart) {
+  Chart.defaults.devicePixelRatio = Math.min(window.devicePixelRatio || 1, 1.5);
+}
 
-// estado
+// Estado
 let allRows = [];          // mes completo
 let currentRows = [];      // filtrado por semana
 let weekBuckets = [];      // [{ini, fin, rows}]
@@ -13,7 +15,7 @@ let activeMetric = null;   // 'Visualizaciones' | ... | null
 
 let chLine, chBar, chPie1, chPie2, chPie3, chPieSel;
 
-// carga inicial
+// Carga inicial
 window.addEventListener('DOMContentLoaded', async () => {
   await cargarListadoMeses();
   const selMes = $('#mesSelect');
@@ -21,44 +23,27 @@ window.addEventListener('DOMContentLoaded', async () => {
 
   selMes.addEventListener('change', () => cargarMes(selMes.value));
   selSem.addEventListener('change', () => aplicarSemana(selSem.value));
+  $('#btnXlsx').addEventListener('click', handleDescargarExcel);
 
-  // Excel: forzamos descarga y avisamos si XLSX no está
-  $('#btnXlsx').addEventListener('click', () => {
-    if (!window.XLSX) { alert('No se cargó la librería de Excel. Reintenta.'); return; }
-    exportarExcelMesActual();
-  });
-
-  // Limpiar filtro desde botón / tecla Esc
-  $('#btnClear').addEventListener('click', clearMetricFilter);
-  window.addEventListener('keydown', (e) => { if (e.key === 'Escape') clearMetricFilter(); });
-
-  // KPI click -> filtro por métrica
+  // KPI click -> filtro por métrica (toggle)
   document.querySelectorAll('.kpi').forEach(k => {
     k.addEventListener('click', () => {
       const m = k.dataset.metric;
       activeMetric = (activeMetric === m) ? null : m;
-      syncKpiButtons();
+      document.querySelectorAll('.kpi')
+        .forEach(x => x.classList.toggle('active', x.dataset.metric === activeMetric));
       render(currentRows);
     });
   });
 
-  // último mes por defecto
+  // Abre el último mes por defecto
   if (selMes.options.length) {
     selMes.selectedIndex = selMes.options.length - 1;
     await cargarMes(selMes.value);
   }
 });
 
-function syncKpiButtons(){
-  document.querySelectorAll('.kpi').forEach(x => x.classList.toggle('active', x.dataset.metric === activeMetric));
-  $('#btnClear').style.visibility = activeMetric ? 'visible' : 'hidden';
-}
-function clearMetricFilter(){
-  activeMetric = null;
-  syncKpiButtons();
-  render(currentRows);
-}
-
+// --------- Fetch helpers ---------
 async function cargarListadoMeses(){
   const r = await fetch('/api/fbmetrics/sheets');
   const j = await r.json();
@@ -87,8 +72,6 @@ async function cargarMes(sheetName){
     sel.appendChild(opt);
   });
   sel.value = 'all';
-
-  clearMetricFilter();
   aplicarSemana('all');
 }
 
@@ -97,26 +80,26 @@ function aplicarSemana(val){
   render(currentRows);
 }
 
-// ----- helpers fechas / semanas -----
-const toDate = s => new Date(s + 'T00:00:00');
-const mondayOf = d => { const day = (d.getDay()+6)%7; const m = new Date(d); m.setDate(d.getDate()-day); m.setHours(0,0,0,0); return m; };
-const endSun   = d => { const e = new Date(d); e.setDate(e.getDate()+6); e.setHours(23,59,59,999); return e; };
-const fmtDate  = d => d.toISOString().slice(0,10);
+// --------- Semanas (L-D) ----------
+const toDate  = s => new Date(s + 'T00:00:00');
+const mondayOf= d => { const day=(d.getDay()+6)%7; const m=new Date(d); m.setDate(d.getDate()-day); m.setHours(0,0,0,0); return m; };
+const endSun  = d => { const e=new Date(d); e.setDate(e.getDate()+6); e.setHours(23,59,59,999); return e; };
+const fmtDate = d => d.toISOString().slice(0,10);
 
 function buildWeekBuckets(rows){
-  const map = new Map();   // mondayISO -> {ini, fin, rows:[]}
+  const map = new Map(); // mondayISO -> {ini, fin, rows:[]}
   for (const r of rows) {
     const d = toDate(r.Fecha);
     const monday = mondayOf(d);
     const key = monday.toISOString().slice(0,10);
-    const cur = map.get(key) || { ini: monday, fin: endSun(monday), rows:[] };
+    const cur = map.get(key) || { ini:monday, fin:endSun(monday), rows:[] };
     cur.rows.push(r);
     map.set(key, cur);
   }
   return [...map.values()].sort((a,b)=>a.ini-b.ini);
 }
 
-// ----- agregados -----
+// --------- Totales ----------
 function aggTotals(rows){
   const sum = (k) => rows.reduce((a,b)=>a+(+b[k]||0),0);
   return {
@@ -132,6 +115,8 @@ function aggTotals(rows){
 // ==================== RENDER ====================
 function render(rows){
   const tot = aggTotals(rows);
+
+  // KPIs
   $('#kpi-visual').textContent   = fmt(tot.Visualizaciones);
   $('#kpi-espec').textContent    = fmt(tot.Espectadores);
   $('#kpi-inter').textContent    = fmt(tot.Interacciones);
@@ -139,7 +124,7 @@ function render(rows){
   $('#kpi-clics').textContent    = fmt(tot.Clics);
   $('#kpi-seg').textContent      = fmt(tot.Seguidores);
 
-  // tabla
+  // Tabla
   const tbl = $('#tbl');
   const head = `
     <tr>
@@ -158,6 +143,7 @@ function render(rows){
     </tr>`).join('');
   tbl.innerHTML = head + body;
 
+  // Charts
   drawLine(rows);
   drawBars(rows);
   drawPies(rows, tot);
@@ -165,7 +151,7 @@ function render(rows){
 
 function destroyChart(c){ if (c && typeof c.destroy==='function') c.destroy(); }
 
-// ===== Línea diaria =====
+// --------- Línea diaria ----------
 function drawLine(rows){
   destroyChart(chLine);
   const ctx = $('#chLine');
@@ -186,7 +172,8 @@ function drawLine(rows){
     type:'line',
     data:{ labels, datasets },
     options:{
-      responsive:true, maintainAspectRatio:false, animation:false, layout:{ padding:8 },
+      responsive:true, maintainAspectRatio:false, animation:false,
+      layout:{ padding:8 },
       interaction:{ mode:'index', intersect:false },
       scales:{
         x:{ ticks:{ color:'#a3adc2', maxRotation:0, autoSkip:true, autoSkipPadding:8 } },
@@ -195,23 +182,22 @@ function drawLine(rows){
       plugins:{
         legend:{ position:'bottom', labels:{ color:'#eaf0ff', boxWidth:12 } },
         tooltip:{ mode:'index', intersect:false }
-      },
-      elements:{ line:{ tension:0.25 } }
+      }
     }
   });
 }
 
-// ===== Barras por semana =====
+// --------- Barras por semana ----------
 function drawBars(rows){
   destroyChart(chBar);
   const ctx = $('#chBar');
   const buckets = buildWeekBuckets(rows);
+
+  const want = (m) => !activeMetric || activeMetric === m;
   const labels = buckets.map(w=>`Sem ${fmtDate(w.ini)} a ${fmtDate(w.fin)}`);
   const sum = (list, key) => list.reduce((a,b)=>a + (+b[key]||0), 0);
 
   const datasets = [];
-  const want = (m) => !activeMetric || activeMetric === m;
-
   if (want('Visualizaciones')) datasets.push({ label:'Visualizaciones', data:buckets.map(b=>sum(b.rows,'Visualizaciones')) });
   if (want('Clics'))           datasets.push({ label:'Clics',           data:buckets.map(b=>sum(b.rows,'Clics')) });
   if (want('Visitas'))         datasets.push({ label:'Visitas',         data:buckets.map(b=>sum(b.rows,'Visitas')) });
@@ -223,7 +209,8 @@ function drawBars(rows){
     type:'bar',
     data:{ labels, datasets },
     options:{
-      responsive:true, maintainAspectRatio:false, animation:false, layout:{ padding:8 },
+      responsive:true, maintainAspectRatio:false, animation:false,
+      layout:{ padding:8 },
       scales:{
         x:{ ticks:{ color:'#a3adc2', maxRotation:0, autoSkip:true, autoSkipPadding:8 } },
         y:{ ticks:{ color:'#a3adc2' }, grid:{ color:'rgba(255,255,255,.06)' } }
@@ -233,65 +220,80 @@ function drawBars(rows){
   });
 }
 
-// ===== Donuts =====
-function drawPies(_rows, tot){
+// --------- Donas ----------
+function drawPies(rows, tot){
   destroyChart(chPie1); destroyChart(chPie2); destroyChart(chPie3); destroyChart(chPieSel);
-  const pies3 = $('#pies3');
+
   const selWrap = $('#pieSelWrap');
+  const showSel = !!activeMetric;
+  selWrap.classList.toggle('hidden', !showSel);
 
-  // Opciones comunes: grosor y textos mejorados
-  const common = {
-    type:'doughnut',
-    options:{
-      responsive:true, maintainAspectRatio:false, cutout:'45%', /* más grueso */
-      animation:false,
-      plugins:{
-        legend:{ position:'bottom', labels:{ color:'#eaf0ff', boxWidth:12, font:{ size:12 } } },
-        tooltip:{ callbacks:{ label: ctx => {
-          const v = ctx.parsed; const total = ctx.dataset.data.reduce((a,b)=>a+b,0);
-          const pct = total ? ((v/total)*100).toFixed(1) : 0;
-          return `${ctx.label}: ${fmt(v)} (${pct}%)`;
-        }}}
-      },
-      elements:{ arc:{ borderWidth:1, borderColor:'rgba(255,255,255,.06)' } }
-    }
-  };
-
-  if (activeMetric){
-    pies3.classList.add('hidden');
-    selWrap.classList.remove('hidden');
+  // Pie individual cuando hay filtro de KPI
+  if (showSel){
     const totalSel = tot[activeMetric] || 0;
     const totalAll = Object.values(tot).reduce((a,b)=>a+b,0);
     const otros = Math.max(0,totalAll - totalSel);
 
     chPieSel = new Chart($('#chPieSel'), {
-      ...common,
-      data:{ labels:[activeMetric,'Otros KPIs'], datasets:[{ data:[totalSel, otros] }] }
+      type:'doughnut',
+      data:{ labels:[activeMetric,'Otros KPIs'], datasets:[{ data:[totalSel, otros] }] },
+      options:pieOpts()
     });
-    return;
   }
 
-  pies3.classList.remove('hidden');
-  selWrap.classList.add('hidden');
-
+  // Siempre pinto las 3 donas base (en sus tarjetas)
   chPie1 = new Chart($('#chPie1'), {
-    ...common,
-    data:{ labels:['Visualizaciones','Espectadores'],
-      datasets:[{ data:[tot.Visualizaciones, tot.Espectadores] }] }
+    type:'doughnut',
+    data:{ labels:['Visualizaciones','Espectadores'], datasets:[{ data:[tot.Visualizaciones, tot.Espectadores] }] },
+    options:pieOpts()
   });
   chPie2 = new Chart($('#chPie2'), {
-    ...common,
-    data:{ labels:['Visitas','Clics'],
-      datasets:[{ data:[tot.Visitas, tot.Clics] }] }
+    type:'doughnut',
+    data:{ labels:['Visitas','Clics'], datasets:[{ data:[tot.Visitas, tot.Clics] }] },
+    options:pieOpts()
   });
   chPie3 = new Chart($('#chPie3'), {
-    ...common,
-    data:{ labels:['Interacciones','Seguidores'],
-      datasets:[{ data:[tot.Interacciones, tot.Seguidores] }] }
+    type:'doughnut',
+    data:{ labels:['Interacciones','Seguidores'], datasets:[{ data:[tot.Interacciones, tot.Seguidores] }] },
+    options:pieOpts()
   });
 }
 
-// ---------- Exportar Excel (Datos + Resumen) ----------
+function pieOpts(){
+  return {
+    responsive:true, maintainAspectRatio:false, animation:false,
+    cutout:'65%',
+    layout:{ padding:8 },
+    plugins:{
+      legend:{ position:'bottom', labels:{ color:'#eaf0ff', boxWidth:12 } },
+      tooltip:{ enabled:true }
+    },
+    elements:{ arc:{ borderWidth:0 } }
+  };
+}
+
+// ---------- Excel ----------
+async function handleDescargarExcel(){
+  // Si XLSX no está, lo cargo y reintento
+  if (!window.XLSX) {
+    try {
+      await loadScript('https://cdn.jsdelivr.net/npm/xlsx@0.20.2/dist/xlsx.full.min.js');
+    } catch {
+      alert('No se cargó la librería de Excel. Reintenta.');
+      return;
+    }
+  }
+  exportarExcelMesActual();
+}
+
+function loadScript(src){
+  return new Promise((resolve, reject) => {
+    const s = document.createElement('script');
+    s.src = src; s.async = true; s.onload = resolve; s.onerror = reject;
+    document.head.appendChild(s);
+  });
+}
+
 function rowsToSheet(rows){
   const header = ['Fecha','Interacciones','Visualizaciones','Espectadores','Visitas','Clics','Seguidores'];
   const body = rows.map(r=>[r.Fecha,r.Interacciones,r.Visualizaciones,r.Espectadores,r.Visitas,r.Clics,r.Seguidores]);
@@ -323,12 +325,5 @@ function exportarExcelMesActual(){
   const ws2 = XLSX.utils.aoa_to_sheet(kpiRows(currentRows));
   XLSX.utils.book_append_sheet(wb, ws1, 'Datos');
   XLSX.utils.book_append_sheet(wb, ws2, 'Resumen');
-
-  // descarga garantizada
-  try {
-    XLSX.writeFile(wb, nom);
-  } catch(e){
-    console.error('xlsx write error', e);
-    alert('No se pudo descargar el Excel.');
-  }
+  XLSX.writeFile(wb, nom);
 }

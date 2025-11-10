@@ -18,7 +18,9 @@ body{
 .brand h1{ margin:0; font-size:20px; }
 .brand small{ color:var(--muted) }
 
+/* Controles */
 .ctl{ display:flex; gap:12px; align-items:center; flex-wrap:wrap;}
+.ctl label{ color:var(--text); font-size:14px; }
 select{
   background:var(--panel); color:var(--text); border:1px solid rgba(255,255,255,.08);
   border-radius:10px; padding:8px 10px; outline:none;
@@ -28,25 +30,25 @@ select{
   box-shadow:0 8px 24px var(--ring); transition:.15s transform ease, .2s box-shadow ease;
 }
 .btn:hover{ transform:translateY(-1px); box-shadow:0 12px 26px var(--ring); }
-.btn-ghost{
-  background:transparent; color:var(--text); border:1px solid rgba(255,255,255,.15);
-}
 
 .wrap{ max-width:1200px; margin:24px auto; padding:0 16px; overflow-x:hidden; }
 
+/* KPIs */
 .kpis{
   display:grid; grid-template-columns:repeat(6, 1fr); gap:12px; margin-bottom:16px;
 }
 .kpi{
-  background:var(--panel); padding:14px; border-radius:14px; border:1px solid rgba(255,255,255,.06);
+  background:var(--panel); color:var(--text);
+  padding:14px; border-radius:14px; border:1px solid rgba(255,255,255,.06);
   text-align:left; cursor:pointer; transition:transform .08s ease, box-shadow .15s ease;
 }
 .kpi:focus{ outline:none; }
 .kpi:hover{ transform:translateY(-1px); box-shadow:0 10px 28px rgba(0,0,0,.25); }
 .kpi.active{ border-color:rgba(27,108,255,.55); box-shadow:0 0 0 3px rgba(27,108,255,.15) inset; }
-.kpi-v{ font-size:22px; font-weight:800; color:var(--text); } /* -> blanco */
+.kpi-v{ font-size:22px; font-weight:800; color:var(--text); } /* fuerza blanco */
 .kpi-l{ color:var(--muted); margin-top:4px }
 
+/* Grilla principal */
 .grid{ display:grid; gap:16px; grid-template-columns:1fr 1fr; }
 .card{
   background:var(--card); border:1px solid rgba(255,255,255,.06); border-radius:14px; padding:16px;
@@ -55,32 +57,34 @@ select{
 .card.wide{ grid-column:1 / -1; }
 .card h2{ margin:0 0 10px; font-size:16px; color:#dfe6ff }
 
-.pies{ display:grid; grid-template-columns:repeat(3,1fr); gap:16px; align-items:center; }
-.hidden{ display:none; }
-
+/* Tabla */
 .table-wrap{ overflow:auto; max-height:420px; border-radius:10px; }
 .tbl{ width:100%; border-collapse:collapse; }
 .tbl th, .tbl td{ padding:10px 12px; border-bottom:1px solid rgba(255,255,255,.06); white-space:nowrap; }
 .tbl th{ position:sticky; top:0; background:#0f1527; }
 
-/* ---- tamaños fijos de charts line/bar ---- */
+/* Tamaños dedicados */
 #chLine, #chBar{
   width:100% !important;
-  height:280px !important;
+  height:300px !important;
   display:block;
 }
 
-/* ---- donuts: siempre círculos, con grosor legible ---- */
-.pies canvas, #chPieSel{
+/* Cada pie en su propia tarjeta, altura generosa */
+.pie-card canvas,
+#chPieSel{
   width:100% !important;
-  height:auto !important;
-  aspect-ratio:1 / 1;      /* círculo perfecto */
-  max-height:320px;
+  height:260px !important;
   display:block;
 }
+.hidden{ display:none; }
 
+/* Móvil */
 @media (max-width:980px){
   .kpis{ grid-template-columns:repeat(3,1fr) }
   .grid{ grid-template-columns:1fr; }
-  .pies{ grid-template-columns:1fr; }
+}
+@media (max-width:640px){
+  .ctl{ width:100%; justify-content:flex-end; }
+  .ctl label{ display:flex; align-items:center; gap:6px; }
 }

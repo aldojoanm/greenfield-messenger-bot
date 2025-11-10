@@ -5,9 +5,11 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Dashboard Facebook</title>
   <link rel="stylesheet" href="metricas.css" />
-  <!-- libs -->
+
+  <!-- libs primero (defer mantiene el orden pero por si falla XLSX, lo cargo on-demand en JS) -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.20.2/dist/xlsx.full.min.js" defer></script>
+
   <!-- app -->
   <script src="metricas.js" defer></script>
 </head>
@@ -26,8 +28,7 @@
           <option value="all">Todo el mes</option>
         </select>
       </label>
-      <button id="btnClear" class="btn btn-ghost" type="button" title="Quitar filtro (Esc)">Mostrar todo</button>
-      <button id="btnXlsx" class="btn" type="button">Descargar Excel</button>
+      <button id="btnXlsx" class="btn">Descargar Excel</button>
     </div>
   </header>
 
@@ -64,16 +65,24 @@
         <canvas id="chBar"></canvas>
       </div>
 
-      <div class="card wide">
-        <h2>Distribución mensual</h2>
-        <div class="pies" id="pies3">
-          <canvas id="chPie1" class="pie-cv"></canvas>
-          <canvas id="chPie2" class="pie-cv"></canvas>
-          <canvas id="chPie3" class="pie-cv"></canvas>
-        </div>
-        <div id="pieSelWrap" class="hidden">
-          <canvas id="chPieSel" class="pie-cv"></canvas>
-        </div>
+      <!-- DONAS EN TARJETAS SEPARADAS -->
+      <div class="card pie-card">
+        <h2>Distribución mensual — Visualizaciones vs Espectadores</h2>
+        <canvas id="chPie1"></canvas>
+      </div>
+      <div class="card pie-card">
+        <h2>Distribución mensual — Visitas vs Clics</h2>
+        <canvas id="chPie2"></canvas>
+      </div>
+      <div class="card pie-card">
+        <h2>Distribución mensual — Interacciones vs Seguidores</h2>
+        <canvas id="chPie3"></canvas>
+      </div>
+
+      <!-- Pie único cuando hay filtro de KPI -->
+      <div class="card wide hidden" id="pieSelWrap">
+        <h2>Participación de la métrica seleccionada</h2>
+        <canvas id="chPieSel"></canvas>
       </div>
 
       <div class="card wide">
