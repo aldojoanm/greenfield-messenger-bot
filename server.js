@@ -4,7 +4,7 @@ import express from 'express';
 import path from 'path';
 import multer from 'multer';
 import { fileURLToPath } from 'url';
-import { google } from 'googleapis'; // ← NUEVO (fbmetrics)
+import { google } from 'googleapis';
 
 // Routers existentes (déjalos como ya los tienes)
 import waRouter from './wa.js';
@@ -17,7 +17,6 @@ import {
   summariesLastNDays,
   historyForIdLastNDays,
   appendMessage,
-  // (si tus routers los usan, estos también existen)
   readPrices, writePrices, readRate, writeRate,
 } from './sheets.js';
 
@@ -51,14 +50,14 @@ app.use(messengerRouter);
 app.use(waRouter);
 app.use(pricesRouter);
 
-// ================== FB METRICS (Integrado aquí) ==================
+// ================== FB METRICS (Google Sheets) ==================
 const FB_SHEET_ID = process.env.FB_METRICS_SHEET_ID;
 let _fbSheets; // cache
 
 async function getFbSheets() {
   if (!FB_SHEET_ID) throw new Error('Falta FB_METRICS_SHEET_ID en .env');
-
   if (_fbSheets) return _fbSheets;
+
   let auth;
   const raw = process.env.GOOGLE_CREDENTIALS_JSON;
 
@@ -160,7 +159,6 @@ app.get('/api/catalog', async (_req, res) => {
   try {
     const { prices = [], rate = 6.96 } = await readPrices();
 
-    // Agrupar por PRODUCTO (a partir de sku = "PRODUCTO-PRESENTACION")
     const byProduct = new Map();
     for (const p of prices) {
       const sku = String(p.sku || '').trim();
@@ -172,7 +170,6 @@ app.get('/api/catalog', async (_req, res) => {
       }
       if (!producto) continue;
 
-      // normaliza precios
       const usd = Number(p.precio_usd || 0);
       const bs  = Number(p.precio_bs  || 0) || (usd ? +(usd * rate).toFixed(2) : 0);
       const unidad = String(p.unidad || '').trim();
@@ -201,7 +198,7 @@ app.get('/api/catalog', async (_req, res) => {
 
     res.json({ ok:true, rate, items, count: items.length, source:'sheet:PRECIOS' });
   } catch (e) {
-    console.error('[catalog] from prices error:', e);
+    console.error('[catalog] from prices error]:', e);
     res.status(500).json({ ok:false, error:'catalog_unavailable' });
   }
 });
@@ -209,7 +206,7 @@ app.get('/api/catalog', async (_req, res) => {
 // ========= AUTH simple para Inbox =========
 const AGENT_TOKEN = process.env.AGENT_TOKEN || '';
 function validateToken(token) {
-  if (!AGENT_TOKEN) return true;       // si no configuras token, acepta cualquiera
+  if (!AGENT_TOKEN) return true;
   return token && token === AGENT_TOKEN;
 }
 function auth(req, res, next) {
@@ -245,7 +242,7 @@ app.get('/wa/agent/stream', (req, res) => {
 // ========= Estado efímero para UI =========
 const STATE = new Map(); // id -> { human:boolean, unread:number, last?:string, name?:string }
 
-// ========= API del Inbox (Sheets Hoja 4) =========
+// ========= API del Inbox =========
 app.post('/wa/agent/import-whatsapp', auth, async (req, res) => {
   try {
     const days = Number(req.body?.days || 3650);
@@ -392,7 +389,7 @@ function monthInTZ(tz = TZ){
       .formatToParts(new Date());
     return +parts.find(p => p.type === 'month').value;
   }catch{
-    return (new Date()).getMonth() + 1; // 1..12
+    return (new Date()).getMonth() + 1;
   }
 }
 function currentCampana(){
@@ -400,11 +397,10 @@ function currentCampana(){
   return CAMP_VERANO_MONTHS.includes(m) ? 'Verano' : 'Invierno';
 }
 
-app.get('/api/catalog-personal', async (req, res) => {
+app.get('/api/catalog-personal', async (_req, res) => {
   try {
     const { prices = [], rate = 6.96 } = await readPricesPersonal();
 
-    // Agrupa por nombre para generar "variantes" (presentaciones)
     const byName = new Map();
     for (const p of prices) {
       const key = p.nombre.trim();
@@ -426,11 +422,9 @@ app.get('/api/catalog-personal', async (req, res) => {
     res.status(500).json({ error: 'No se pudo cargar el catálogo personal' });
   }
 });
-/* ================== FB METRICS: exportar Excel server-side ================== */
-/* Requiere la dependencia: npm i xlsx */
-import * as XLSX from 'xlsx/xlsx.mjs';
 
-// Utilidades para armar las hojas
+/* ================== FB METRICS: exportar Excel server-side ================== */
+/* Import dinámico: no rompe el arranque si el paquete faltara */
 function rowsToAoA(rows){
   const header = ['Fecha','Interacciones','Visualizaciones','Espectadores','Visitas','Clics','Seguidores'];
   const body = (rows||[]).map(r=>[
@@ -444,7 +438,7 @@ function rowsToAoA(rows){
   ]);
   return [header, ...body];
 }
-function aggTotals(rows){
+function aggTotalsExcel(rows){
   const sum = k => (rows||[]).reduce((a,b)=>a+(+b[k]||0),0);
   return [
     ['KPI','Valor'],
@@ -457,15 +451,17 @@ function aggTotals(rows){
   ];
 }
 
-// Genera y devuelve el archivo Excel
 app.post('/api/fbmetrics/export', async (req, res) => {
   try {
+    const mod = await import('xlsx');            // ← aquí el import
+    const XLSX = mod.default || mod;
+
     const { rows = [], month = 'Mes', week = 'all' } = req.body || {};
     if (!Array.isArray(rows)) return res.status(400).send('rows debe ser un array');
 
-    const wb = XLSX.utils.book_new();
+    const wb  = XLSX.utils.book_new();
     const ws1 = XLSX.utils.aoa_to_sheet(rowsToAoA(rows));
-    const ws2 = XLSX.utils.aoa_to_sheet(aggTotals(rows));
+    const ws2 = XLSX.utils.aoa_to_sheet(aggTotalsExcel(rows));
     XLSX.utils.book_append_sheet(wb, ws1, 'Datos');
     XLSX.utils.book_append_sheet(wb, ws2, 'Resumen');
 
@@ -483,17 +479,13 @@ app.post('/api/fbmetrics/export', async (req, res) => {
   }
 });
 
-
 // ========= Arranque =========
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`🚀 Server escuchando en :${PORT}`);
-  console.log('   • Messenger:        GET/POST /webhook');
-  console.log('   • WhatsApp:         GET/POST /wa/webhook');
-  console.log('   • Inbox UI:         GET       /inbox');
-  console.log('   • Inbox API:        /wa/agent/* (convos, history, send, read, handoff, send-media, import-whatsapp, stream)');
-  console.log('   • Prices JSON:      GET       /api/prices');
-  console.log('   • Catalog JSON:     GET       /api/catalog   (desde Hoja PRECIOS)');
-  console.log('   • FB Metrics:       GET       /api/fbmetrics/sheets | /api/fbmetrics/data?sheet=Octubre');
-  console.log('   • Health:           GET       /healthz');
+  console.log('   • Messenger:  GET/POST /webhook');
+  console.log('   • WhatsApp:   GET/POST /wa/webhook');
+  console.log('   • Inbox UI:   GET       /inbox');
+  console.log('   • FB Metrics: GET       /api/fbmetrics/sheets | /api/fbmetrics/data?sheet=Octubre');
+  console.log('   • Health:     GET       /healthz');
 });
