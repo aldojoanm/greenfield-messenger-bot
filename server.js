@@ -14,6 +14,7 @@ import { readPricesPersonal } from './sheets.js';
 
 // ========= Sheets (SIN carpeta /src) =========
 import {
+
   summariesLastNDays,
   historyForIdLastNDays,
   appendMessage,
@@ -33,27 +34,7 @@ const TZ = process.env.TIMEZONE || 'America/La_Paz';
 app.use('/image', express.static(path.join(__dirname, 'image')));
 app.use(express.static(path.join(__dirname, 'public')));
 
-// -------------------- ALIAS “BONITOS” (sin regex) --------------------
-// Mantienen tus archivos originales y solo exponen rutas limpias.
-// Si un día no quieres estas rutas, borra estas 4 líneas y listo.
-app.get('/catalogo-newchem', (_req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'catalog.html'));
-});
-
-app.get('/inbox-newchem', (_req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'agent.html'));
-});
-
-app.get('/facebook-metricas', (_req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'metricas', 'metricas.html'));
-});
-
-app.get('/catalogo_personal', (_req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'catalogo_personal.html'));
-});
-// --------------------------------------------------------------------
-
-// UI del inbox (ruta histórica que ya tenías)
+// UI del inbox
 app.get('/inbox', (_req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'agent.html'));
 });
@@ -499,28 +480,13 @@ app.post('/api/fbmetrics/export', async (req, res) => {
   }
 });
 
-// -------------------- MANEJADORES DE ERRORES SEGURITOS --------------------
-app.use((err, _req, res, _next) => {
-  console.error('[express-error]', err?.stack || err);
-  res.status(500).json({ error: 'internal_error' });
-});
-
-process.on('unhandledRejection', (reason) => {
-  console.error('[unhandledRejection]', reason);
-});
-process.on('uncaughtException', (err) => {
-  console.error('[uncaughtException]', err);
-  // No hacemos process.exit() para que no se caiga el contenedor.
-});
-// -------------------------------------------------------------------------
-
 // ========= Arranque =========
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`🚀 Server escuchando en :${PORT}`);
   console.log('   • Messenger:  GET/POST /webhook');
   console.log('   • WhatsApp:   GET/POST /wa/webhook');
-  console.log('   • Inbox UI:   GET       /inbox  | /inbox-newchem');
+  console.log('   • Inbox UI:   GET       /inbox');
   console.log('   • FB Metrics: GET       /api/fbmetrics/sheets | /api/fbmetrics/data?sheet=Octubre');
   console.log('   • Health:     GET       /healthz');
 });
