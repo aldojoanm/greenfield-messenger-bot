@@ -13,7 +13,7 @@ let currentRows = [];      // filtrado por semana
 let weekBuckets = [];      // [{ini, fin, rows}]
 let activeMetric = null;   // 'Visualizaciones' | ... | null
 
-let chLine, chBar, chPie1, chPie2, chPie3, chPieSel;
+let chLine, chBar, chPieAll, chPie1, chPie2, chPie3, chPieSel;
 
 // Carga inicial
 window.addEventListener('DOMContentLoaded', async () => {
@@ -222,26 +222,19 @@ function drawBars(rows){
 
 // --------- Donas ----------
 function drawPies(rows, tot){
-  destroyChart(chPie1); destroyChart(chPie2); destroyChart(chPie3); destroyChart(chPieSel);
+  destroyChart(chPieAll); destroyChart(chPie1); destroyChart(chPie2); destroyChart(chPie3); destroyChart(chPieSel);
 
-  const selWrap = $('#pieSelWrap');
-  const showSel = !!activeMetric;
-  selWrap.classList.toggle('hidden', !showSel);
+  // Dona “Todos los KPIs”
+  chPieAll = new Chart($('#chPieAll'), {
+    type:'doughnut',
+    data:{
+      labels:['Visualizaciones','Espectadores','Interacciones','Visitas','Clics','Seguidores'],
+      datasets:[{ data:[tot.Visualizaciones, tot.Espectadores, tot.Interacciones, tot.Visitas, tot.Clics, tot.Seguidores] }]
+    },
+    options:pieOpts()
+  });
 
-  // Pie individual cuando hay filtro de KPI
-  if (showSel){
-    const totalSel = tot[activeMetric] || 0;
-    const totalAll = Object.values(tot).reduce((a,b)=>a+b,0);
-    const otros = Math.max(0,totalAll - totalSel);
-
-    chPieSel = new Chart($('#chPieSel'), {
-      type:'doughnut',
-      data:{ labels:[activeMetric,'Otros KPIs'], datasets:[{ data:[totalSel, otros] }] },
-      options:pieOpts()
-    });
-  }
-
-  // Siempre pinto las 3 donas base (en sus tarjetas)
+  // Parejas
   chPie1 = new Chart($('#chPie1'), {
     type:'doughnut',
     data:{ labels:['Visualizaciones','Espectadores'], datasets:[{ data:[tot.Visualizaciones, tot.Espectadores] }] },
@@ -257,6 +250,22 @@ function drawPies(rows, tot){
     data:{ labels:['Interacciones','Seguidores'], datasets:[{ data:[tot.Interacciones, tot.Seguidores] }] },
     options:pieOpts()
   });
+
+  // Extra: participación de la métrica seleccionada
+  const selWrap = $('#pieSelWrap');
+  if (activeMetric){
+    selWrap.classList.remove('hidden');
+    const totalSel = tot[activeMetric] || 0;
+    const totalAll = Object.values(tot).reduce((a,b)=>a+b,0);
+    const otros = Math.max(0,totalAll - totalSel);
+    chPieSel = new Chart($('#chPieSel'), {
+      type:'doughnut',
+      data:{ labels:[activeMetric,'Otros KPIs'], datasets:[{ data:[totalSel, otros] }] },
+      options:pieOpts()
+    });
+  } else {
+    selWrap.classList.add('hidden');
+  }
 }
 
 function pieOpts(){
@@ -272,58 +281,29 @@ function pieOpts(){
   };
 }
 
-// ---------- Excel ----------
+// ---------- Excel (server-side) ----------
 async function handleDescargarExcel(){
-  // Si XLSX no está, lo cargo y reintento
-  if (!window.XLSX) {
-    try {
-      await loadScript('https://cdn.jsdelivr.net/npm/xlsx@0.20.2/dist/xlsx.full.min.js');
-    } catch {
-      alert('No se cargó la librería de Excel. Reintenta.');
-      return;
-    }
-  }
-  exportarExcelMesActual();
-}
-
-function loadScript(src){
-  return new Promise((resolve, reject) => {
-    const s = document.createElement('script');
-    s.src = src; s.async = true; s.onload = resolve; s.onerror = reject;
-    document.head.appendChild(s);
-  });
-}
-
-function rowsToSheet(rows){
-  const header = ['Fecha','Interacciones','Visualizaciones','Espectadores','Visitas','Clics','Seguidores'];
-  const body = rows.map(r=>[r.Fecha,r.Interacciones,r.Visualizaciones,r.Espectadores,r.Visitas,r.Clics,r.Seguidores]);
-  return [header, ...body];
-}
-function kpiRows(rows){
-  const t = aggTotals(rows);
-  return [
-    ['KPI','Valor'],
-    ['Interacciones', t.Interacciones],
-    ['Visualizaciones', t.Visualizaciones],
-    ['Espectadores', t.Espectadores],
-    ['Visitas', t.Visitas],
-    ['Clics', t.Clics],
-    ['Seguidores', t.Seguidores],
-  ];
-}
-function exportarExcelMesActual(){
   if (!currentRows.length){
     alert('No hay datos para exportar');
     return;
   }
   const mes = $('#mesSelect').value || 'Mes';
-  const periodo = $('#semanaSelect').value;
-  const nom = periodo === 'all' ? `FB_Metricas_${mes}.xlsx` : `FB_Metricas_${mes}_Semana${periodo}.xlsx`;
+  const semana = $('#semanaSelect').value;
 
-  const wb = XLSX.utils.book_new();
-  const ws1 = XLSX.utils.aoa_to_sheet(rowsToSheet(currentRows));
-  const ws2 = XLSX.utils.aoa_to_sheet(kpiRows(currentRows));
-  XLSX.utils.book_append_sheet(wb, ws1, 'Datos');
-  XLSX.utils.book_append_sheet(wb, ws2, 'Resumen');
-  XLSX.writeFile(wb, nom);
+  const resp = await fetch('/api/fbmetrics/export', {
+    method:'POST',
+    headers:{ 'Content-Type':'application/json' },
+    body: JSON.stringify({ rows: currentRows, month: mes, week: semana })
+  });
+  if (!resp.ok){
+    const t = await resp.text().catch(()=> '');
+    alert('No se pudo generar el Excel en el servidor.\n' + t);
+    return;
+  }
+  const blob = await resp.blob();
+  const nom = semana === 'all' ? `FB_Metricas_${mes}.xlsx` : `FB_Metricas_${mes}_Semana${semana}.xlsx`;
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = nom; document.body.appendChild(a); a.click();
+  setTimeout(()=>{ URL.revokeObjectURL(url); a.remove(); }, 2000);
 }

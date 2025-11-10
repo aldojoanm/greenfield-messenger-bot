@@ -5,12 +5,9 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Dashboard Facebook</title>
   <link rel="stylesheet" href="metricas.css" />
-
-  <!-- libs primero (defer mantiene el orden pero por si falla XLSX, lo cargo on-demand en JS) -->
+  <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" defer></script>
-  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.20.2/dist/xlsx.full.min.js" defer></script>
-
-  <!-- app -->
+  <!-- App -->
   <script src="metricas.js" defer></script>
 </head>
 <body>
@@ -65,7 +62,11 @@
         <canvas id="chBar"></canvas>
       </div>
 
-      <!-- DONAS EN TARJETAS SEPARADAS -->
+      <!-- 4 DONAS EN TARJETAS SEPARADAS -->
+      <div class="card pie-card">
+        <h2>Distribución mensual</h2>
+        <canvas id="chPieAll"></canvas>
+      </div>
       <div class="card pie-card">
         <h2>Distribución mensual — Visualizaciones vs Espectadores</h2>
         <canvas id="chPie1"></canvas>
@@ -79,7 +80,7 @@
         <canvas id="chPie3"></canvas>
       </div>
 
-      <!-- Pie único cuando hay filtro de KPI -->
+      <!-- Dona extra cuando hay filtro de KPI -->
       <div class="card wide hidden" id="pieSelWrap">
         <h2>Participación de la métrica seleccionada</h2>
         <canvas id="chPieSel"></canvas>
