@@ -64,60 +64,23 @@
 
       <main id="msgs" class="msgs"></main>
 
-      <!-- COMPOSER -->
       <footer class="composer" id="dropZone">
         <div class="left-actions">
-          <!-- “+” grande sin caja (solo móvil) -->
-          <button id="moreBtn" class="icon-btn only-mobile plain big" aria-label="Más">＋</button>
-
-          <!-- Input file reutilizable -->
-          <input id="fileInput" type="file" multiple style="display:none"
-                 accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,image/*,video/*,audio/*">
-
-          <!-- Botón de subir archivo solo desktop -->
-          <button id="attachBtn" class="icon-btn only-desktop" aria-label="Adjuntar">Adjuntar Archivo</button>
+          <button id="moreBtn" class="icon-btn only-mobile" aria-label="Más">＋</button>
+          <input id="fileInput" type="file" multiple style="display:none" accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,image/*,video/*,audio/*">
+          <button id="attachBtn" class="icon-btn" aria-label="Adjuntar">Adjuntar Archivo</button>
         </div>
-
         <textarea id="box" placeholder="Escribe un mensaje…"></textarea>
+        <button id="send" class="icon-btn send" aria-label="Enviar">➤</button>
 
-        <!-- Enviar con icono de avión (sin caja) -->
-        <button id="send" class="icon-btn send" aria-label="Enviar">
-          <img src="public/iconos/icono-avion.png" alt="Enviar" class="send-icon">
-        </button>
-
-        <!-- Panel de acciones móvil (tipo WhatsApp) -->
-        <div id="mobileActions" class="mobile-actions only-mobile" aria-hidden="true">
-          <button class="ma-item" id="sendLocation_m">
-            <span class="ma-circle"><img src="public/iconos/icono-ubi.png" alt=""></span>
-            <span class="ma-label">Ubicación</span>
-          </button>
-
-          <button class="ma-item" id="sendQR_m2">
-            <span class="ma-circle"><img src="public/iconos/icono-qr.png" alt=""></span>
-            <span class="ma-label">QR</span>
-          </button>
-
-          <button class="ma-item" id="toggleBot_m">
-            <span class="ma-circle">
-              <img id="toggleBotIcon" src="public/iconos/icono-play.png" alt="">
-            </span>
-            <span id="toggleBotLabel" class="ma-label">Encender</span>
-          </button>
-
-          <button class="ma-item" id="requestInfo_m2">
-            <span class="ma-circle"><img src="public/iconos/icono-datos.png" alt=""></span>
-            <span class="ma-label">Solicitar datos</span>
-          </button>
-
-          <button class="ma-item" id="sendAccounts_m2">
-            <span class="ma-circle"><img src="public/iconos/icono-cuentas.png" alt=""></span>
-            <span class="ma-label">Cuentas</span>
-          </button>
-
-          <button class="ma-item" id="upload_m">
-            <span class="ma-circle"><img src="public/iconos/icono-carpeta.png" alt=""></span>
-            <span class="ma-label">Archivos</span>
-          </button>
+        <div id="sheet" class="sheet">
+          <button class="sheet-item" id="takeHuman_m">⏸️ Pausar bot</button>
+          <button class="sheet-item" id="resumeBot_m">▶️ Bot ON</button>
+          <button class="sheet-item" id="markRead_m">✓ Marcar leído</button>
+          <button class="sheet-item" id="requestInfo_m">📋 Solicitar datos</button>
+          <button class="sheet-item" id="sendQR_m">🧾 Enviar QR</button>
+          <button class="sheet-item" id="sendAccounts_m">🏦 Cuentas</button>
+          <button class="sheet-item alt" id="closeSheet">Cerrar</button>
         </div>
       </footer>
     </section>
