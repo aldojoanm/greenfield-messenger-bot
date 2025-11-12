@@ -25,8 +25,6 @@ const chatName   = document.getElementById('chatName');
 const chatMeta   = document.getElementById('chatMeta');
 const msgsEl     = document.getElementById('msgs');
 const moreBtn    = document.getElementById('moreBtn');
-const sheetModal = document.getElementById('sheet');     // MOBILE modal
-const sheetRow   = document.getElementById('sheetRow');  // DESKTOP row
 const fileInput  = document.getElementById('fileInput');
 const dropZone   = document.getElementById('dropZone');
 const box        = document.getElementById('box');
@@ -37,6 +35,17 @@ const logoutBtn  = document.getElementById('logout');
 const searchEl   = document.getElementById('search');
 const segBtns    = Array.from(document.querySelectorAll('.segmented .seg'));
 const attachBtn  = document.getElementById('attachBtn');
+
+// NUEVO: acciones móvil
+const mobileActions   = document.getElementById('mobileActions');
+const sendLocationBtn = document.getElementById('sendLocation_m');
+const sendQRBtn2      = document.getElementById('sendQR_m2');
+const toggleBotBtn    = document.getElementById('toggleBot_m');
+const toggleBotIcon   = document.getElementById('toggleBotIcon');
+const toggleBotLabel  = document.getElementById('toggleBotLabel');
+const requestInfoBtn2 = document.getElementById('requestInfo_m2');
+const sendAccountsBtn2= document.getElementById('sendAccounts_m2');
+const uploadBtnM      = document.getElementById('upload_m');
 
 // ====== Estado ======
 let current = null;
@@ -137,7 +146,6 @@ function startSSE(){
   });
   sse.onerror = ()=>{
     setConn('off','reintentando');
-    // iOS puede cerrar SSE al suspender; usa fallback
     startPolling();
     try{ sse.close(); }catch{}
     setTimeout(startSSE, 4000);
@@ -171,7 +179,7 @@ document.addEventListener('visibilitychange', ()=>{
 });
 window.addEventListener('pageshow', (e)=>{ if (e.persisted){ startSSE(); refresh(false); }});
 
-// ====== LISTA estilo Messenger ======
+// ====== LISTA ======
 const lastFromMemory = (m=[]) => m.length ? m[m.length-1] : null;
 const statusDot = (c)=> c.unread ? 'unread' : (c.done||c.finalizado) ? 'done' : c.human ? 'agent' : 'done';
 const initial = (name='?') => name.trim()[0]?.toUpperCase?.() || '?';
@@ -217,6 +225,7 @@ function renderThreads(){
     threadList.appendChild(row);
   }
 }
+
 // ====== CHAT ======
 function renderMsgs(mem){
   msgsEl.innerHTML = '';
@@ -245,6 +254,12 @@ async function openChat(id){
     renderMsgs(current.memory||[]);
     await api.read(current.id).catch(()=>{});
 
+    // móvil: sincroniza panel/toggle
+    refreshToggleUI();
+    mobileActions.classList.remove('show');
+    moreBtn.textContent = '＋';
+    moreBtn.setAttribute('aria-label','Más');
+
     if (!isDesktop()){
       viewList.classList.remove('active');
       viewChat.classList.add('active');
@@ -253,7 +268,7 @@ async function openChat(id){
 }
 backBtn.onclick = ()=>{ current=null; viewChat.classList.remove('active'); viewList.classList.add('active'); };
 
-// ====== Acciones (comparten lógica Desktop/Mobile) ======
+// ====== Acciones comunes ======
 async function doRequestInfo(){
   if (!current) return;
   const nombre = current.name?.trim() || 'cliente';
@@ -270,7 +285,6 @@ async function doRequestInfo(){
   ].join('\n');
   await api.send(current.id, part1);
   await api.send(current.id, part2);
-  closeSheet();
 }
 async function doSendQR(){
   if (!current) return;
@@ -281,12 +295,11 @@ async function doSendQR(){
   if (!blob){ alert('No encontré el archivo QR.'); return; }
   const file = new File([blob], 'qr-pagos.png', { type: mime });
   await api.sendMedia(current.id, [file], '');
-  closeSheet();
 }
-async function doSendAccounts(){ if (!current) return; await api.send(current.id, ACCOUNTS_TEXT); closeSheet(); }
-async function doMarkRead(){ if(!current) return; await api.read(current.id); closeSheet(); refresh(false); }
-async function doTakeHuman(){ if(!current) return; await api.handoff(current.id,'human'); statusPill.style.display='inline-block'; closeSheet(); }
-async function doResumeBot(){ if(!current) return; await api.handoff(current.id,'bot'); statusPill.style.display='none'; closeSheet(); }
+async function doSendAccounts(){ if (!current) return; await api.send(current.id, ACCOUNTS_TEXT); }
+async function doMarkRead(){ if(!current) return; await api.read(current.id); refresh(false); }
+async function doTakeHuman(){ if(!current) return; await api.handoff(current.id,'human'); statusPill.style.display='inline-block'; }
+async function doResumeBot(){ if(!current) return; await api.handoff(current.id,'bot'); statusPill.style.display='none'; }
 
 // Desktop row
 document.getElementById('requestInfo').onclick = doRequestInfo;
@@ -296,17 +309,61 @@ document.getElementById('markRead').onclick  = doMarkRead;
 document.getElementById('takeHuman').onclick = doTakeHuman;
 document.getElementById('resumeBot').onclick = doResumeBot;
 
-// Mobile sheet
-document.getElementById('requestInfo_m').onclick = doRequestInfo;
-document.getElementById('sendQR_m').onclick = doSendQR;
-document.getElementById('sendAccounts_m').onclick = doSendAccounts;
-document.getElementById('markRead_m').onclick  = doMarkRead;
-document.getElementById('takeHuman_m').onclick = doTakeHuman;
-document.getElementById('resumeBot_m').onclick = doResumeBot;
+// ====== MÓVIL: panel tipo WhatsApp ======
+function botIsOn(){ return current && !current.human; }
+function refreshToggleUI(){
+  if (!current) return;
+  if (botIsOn()){
+    toggleBotIcon.src = 'public/iconos/icono-pausa.png';
+    toggleBotLabel.textContent = 'Apagar';
+  } else {
+    toggleBotIcon.src = 'public/iconos/icono-play.png';
+    toggleBotLabel.textContent = 'Encender';
+  }
+}
 
-const closeSheet = ()=> sheetModal.classList.remove('show');
-moreBtn.onclick = ()=> sheetModal.classList.toggle('show');
-document.getElementById('closeSheet').onclick = closeSheet;
+moreBtn.onclick = ()=>{
+  const showing = mobileActions.classList.toggle('show');
+  if (showing){
+    moreBtn.textContent = '⌨️';
+    moreBtn.setAttribute('aria-label','Teclado');
+    box.blur();
+  } else {
+    moreBtn.textContent = '＋';
+    moreBtn.setAttribute('aria-label','Más');
+    box.focus();
+  }
+};
+
+sendLocationBtn.onclick = async ()=>{
+  if (!current) return;
+  const loc = `📍 Ubicación: 17°45'29.0"S 63°09'11.6"W`;
+  await api.send(current.id, loc);
+  mobileActions.classList.remove('show'); moreBtn.textContent = '＋';
+};
+
+sendQRBtn2.onclick = async ()=>{
+  await doSendQR();
+  mobileActions.classList.remove('show'); moreBtn.textContent = '＋';
+};
+
+toggleBotBtn.onclick = async ()=>{
+  if (!current) return;
+  if (botIsOn()){
+    await api.handoff(current.id,'human');
+    current.human = true;
+    statusPill.style.display = 'inline-block';
+  } else {
+    await api.handoff(current.id,'bot');
+    current.human = false;
+    statusPill.style.display = 'none';
+  }
+  refreshToggleUI();
+};
+
+requestInfoBtn2.onclick = async ()=>{ await doRequestInfo(); mobileActions.classList.remove('show'); moreBtn.textContent='＋'; };
+sendAccountsBtn2.onclick = async ()=>{ await doSendAccounts(); mobileActions.classList.remove('show'); moreBtn.textContent='＋'; };
+uploadBtnM.onclick = ()=> fileInput.click();
 
 // ====== Envío / inputs ======
 sendBtn.onclick = async ()=>{
@@ -314,6 +371,7 @@ sendBtn.onclick = async ()=>{
   if(!txt || !current) return;
   box.value='';
   await api.send(current.id, txt);
+  mobileActions.classList.remove('show'); moreBtn.textContent='＋';
 };
 box.addEventListener('keydown', (e)=>{ if(e.key==='Enter' && !e.shiftKey){ e.preventDefault(); sendBtn.click(); } });
 
@@ -325,7 +383,7 @@ fileInput.onchange = async (e)=>{
   e.target.value='';
 };
 
-// Drag&drop
+// Drag&drop (sigue igual, solo desktop visualmente)
 ['dragenter','dragover'].forEach(ev=> dropZone.addEventListener(ev, e=>{ e.preventDefault(); e.stopPropagation(); dropZone.classList.add('drag'); }));
 ['dragleave','drop'].forEach(ev=> dropZone.addEventListener(ev, e=>{ e.preventDefault(); e.stopPropagation(); dropZone.classList.remove('drag'); }));
 dropZone.addEventListener('drop', async (e)=>{ const files = Array.from(e.dataTransfer?.files||[]); if (!files.length || !current) return; try{ await api.sendMedia(current.id, files, ''); } catch{ alert('Error subiendo archivo(s).'); } });
@@ -359,7 +417,7 @@ function adjustDesktopControls(){
 }
 window.addEventListener('resize', adjustDesktopControls);
 
-/* === Salir: limpiar credenciales y forzar login nuevamente === */
+/* === Salir === */
 logoutBtn.onclick = ()=>{ api.clear(); localStorage.removeItem(LS_DEVID); location.reload(); };
 
 // Bootstrap
