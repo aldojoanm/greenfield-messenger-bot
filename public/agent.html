@@ -36,6 +36,15 @@
           </div>
         </div>
 
+        <div class="filters-row">
+          <div class="segmented" id="timeFilters">
+            <button class="seg active" data-time="all">Cualquier fecha</button>
+            <button class="seg" data-time="today">Hoy</button>
+            <button class="seg" data-time="week">Esta semana</button>
+            <button class="seg" data-time="month">Este mes</button>
+          </div>
+        </div>
+
         <div class="searchbar">
           <input id="search" placeholder="Buscar…">
           <button class="btn" id="importWA" title="Importar WhatsApp (Sheets)">📥</button>
@@ -58,23 +67,14 @@
         <span id="status" class="pill" style="display:none">HUMANO</span>
       </header>
 
-      <!-- Acciones desktop (fila) -->
-      <div id="sheetRow" class="sheet-row only-desktop" role="toolbar" aria-label="Acciones del chat">
-        <button class="sheet-item" id="takeHuman">⏸️ Pausar bot</button>
-        <button class="sheet-item" id="resumeBot">▶️ Bot ON</button>
-        <button class="sheet-item" id="markRead">✓ Marcar leído</button>
-        <button class="sheet-item" id="requestInfo">📋 Solicitar datos</button>
-        <button class="sheet-item" id="sendQR">🧾 Enviar QR</button>
-        <button class="sheet-item" id="sendAccounts">🏦 Cuentas</button>
-      </div>
+      <!-- (Eliminada la fila de acciones duplicada en desktop) -->
 
       <main id="msgs" class="msgs"></main>
 
-      <!-- Composer fijo SOLO en el lado del chat -->
+      <!-- Composer -->
       <footer class="composer" id="dropZone">
         <div class="composer-inner">
-          <button id="moreBtn" class="more-btn" aria-label="Más" title="Más" data-state="plus" aria-expanded="false">
-            <!-- Ícono PLUS (SVG) -->
+          <button id="moreBtn" class="more-btn" aria-label="Más" title="Más" aria-expanded="false">
             <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
               <path d="M12 4v16M4 12h16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
             </svg>
@@ -82,14 +82,13 @@
 
           <textarea id="box" placeholder="Escribe un mensaje…"></textarea>
 
-          <!-- Enviar (paper plane negro) -->
           <button id="send" class="send-btn" aria-label="Enviar" title="Enviar">
             <img src="/iconos/icono-avion-negro.png" alt="Enviar">
           </button>
         </div>
       </footer>
 
-      <!-- Panel de acciones (móvil y desktop), como teclado -->
+      <!-- Panel de acciones -->
       <div id="actionPanel" class="action-panel" role="menu" aria-hidden="true">
         <div class="ap-grid">
           <button class="ap-item" id="ap-location">
@@ -125,7 +124,6 @@
           </button>
         </div>
 
-        <!-- Ícono de teclado (SVG ajustado) para el botón cuando está abierto -->
         <template id="tpl-keyboard-icon">
           <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
             <rect x="2.5" y="6" width="19" height="12" rx="2.5" fill="none" stroke="currentColor" stroke-width="2"/>
@@ -133,10 +131,8 @@
                      M5.5 13h3M9.5 13h9" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
           </svg>
         </template>
-
       </div>
 
-      <!-- input file oculto (lo disparamos desde 'Archivos') -->
       <input id="fileInput" type="file" multiple style="display:none"
              accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,image/*,video/*,audio/*">
     </section>
