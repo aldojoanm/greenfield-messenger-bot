@@ -1,0 +1,75 @@
+{
+  "greeted": true,
+  "stage": "product",
+  "pending": "nombre",
+  "asked": {
+    "nombre": true,
+    "departamento": false,
+    "subzona": false,
+    "cultivo": false,
+    "hectareas": false,
+    "campana": false
+  },
+  "vars": {
+    "departamento": null,
+    "subzona": null,
+    "cultivos": [],
+    "hectareas": null,
+    "campana": null,
+    "phone": null,
+    "cart": []
+  },
+  "profileName": null,
+  "memory": [
+    {
+      "role": "bot",
+      "content": "┬íHola! Soy el asistente virtual de New Chem Agroqu├¡micos.",
+      "ts": 1763296478127
+    },
+    {
+      "role": "bot",
+      "content": "Con mucho gusto te env├¡o la *ficha t├®cnica* de *FENPRONIL* ­ƒæç",
+      "ts": 1763296479003
+    },
+    {
+      "role": "bot",
+      "content": "Te ayudo a realizar tu cotizaci├│n.",
+      "ts": 1763296481445
+    },
+    {
+      "role": "bot",
+      "content": "Para personalizar tu atenci├│n, ┬┐cu├íl es tu *nombre completo*?",
+      "ts": 1763296482137
+    }
+  ],
+  "lastPrompt": "nombre",
+  "lastPromptTs": 1763296482137,
+  "meta": {
+    "origin": "facebook",
+    "referral": {
+      "source_url": "https://fb.me/4LY03gqEW",
+      "source_id": "120236721151250524",
+      "source_type": "ad",
+      "body": "­Øù£­Øù╗­Øù│­Øù«­Øù╣­ØùÂ­Øù»­Øù╣­Øù▓ ­Øù░­Øù╝­Øù╗­Øÿü­Øù┐­Øù« ­Øù╣­Øù«­ØÿÇ ­Øù¢­Øù╣­Øù«­Øù┤­Øù«­ØÿÇ\nCuando se trata de proteger tu cultivo, necesitas una soluci├│n que no deje margen de error. Fenpronil act├║a por contacto e ingesti├│n, eliminando de manera contundente un amplio espectro de plagas. Su alta efectividad garantiza un control preciso y duradero, asegurando que tu inversi├│n rinda al m├íximo.\n\n­ƒöÑ ­Øùö­Øù░­Øù░­ØùÂ­Øù╝╠ü­Øù╗ ­Øù╣­Øù▓­Øÿü­Øù«­Øù╣ ­Øÿå ­Øù¢­Øù┐­Øù╝­Øù╣­Øù╝­Øù╗­Øù┤­Øù«­Øù▒­Øù«\n­ƒî▒ ­Øùû­Øÿé­Øù╣­Øÿü­ØùÂ­Øÿâ­Øù╝­ØÿÇ ­Øù¢­Øù┐­Øù╝­Øÿü­Øù▓­Øù┤­ØùÂ­Øù▒­Øù╝­ØÿÇ, ­Øù░­Øù╝­ØÿÇ­Øù▓­Øù░­ØùÁ­Øù«­ØÿÇ ­ØÿÇ­Øù▓­Øù┤­Øÿé­Øù┐­Øù«­ØÿÇ\n­ƒÆ¬ ­Øùÿ­Øù│­Øù▓­Øù░­Øÿü­ØùÂ­Øÿâ­ØùÂ­Øù▒­Øù«­Øù▒ ­ØÿÇ­ØùÂ­Øù╗ ­Øù░­Øù╝­Øù╗­Øù░­Øù▓­ØÿÇ­ØùÂ­Øù╝­Øù╗­Øù▓­ØÿÇ\n\n#­Øùí­Øù▓­Øÿä­Øùû­ØùÁ­Øù▓­Øù║ #­Øùú­Øù┐­Øù╝­Øÿü­Øù▓­Øù░­Øù░­ØùÂ­Øù╝╠ü­Øù╗­Øùÿ­Øù│­ØùÂ­Øù░­Øù«­Øÿç #­Øùû­Øÿé­Øù╣­Øÿü­ØùÂ­Øÿâ­Øù╝­ØÿÇ­Øùª­Øù▓­Øù┤­Øÿé­Øù┐­Øù╝­ØÿÇ #­Øùû­Øù╝­Øù╗­Øÿü­Øù┐­Øù╝­Øù╣­Øùù­Øù▓­Øùú­Øù╣­Øù«­Øù┤­Øù«­ØÿÇ #­ØùÖ­Øù▓­Øù╗­Øù¢",
+      "headline": "New Chem Agroqu├¡micos",
+      "media_type": "image",
+      "image_url": "https://scontent.xx.fbcdn.net/v/t39.30808-6/484829412_122122542830647561_2416719996733335913_n.jpg?stp=dst-jpg_s394x394_tt6&_nc_cat=103&ccb=1-7&_nc_sid=c8f752&_nc_ohc=0url0o9yAVkQ7kNvwHiSmw3&_nc_oc=AdkOuI29pm5zibqqNlUpCdCcp95GhBLZe3D6HjY-gqCyZIyYuLThJp45EQ_AxJjwHyl7pPJSgAct8ilY-yzJ5-Sy&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=scontent.xx&_nc_gid=yRDeumwkPaI2L_NmQy6lhA&oh=00_Afhx4IqAQg_DlaIuxY7Rxjxck2okNHiUbj0pn9emlE-efQ&oe=691F8286",
+      "ctwa_clid": "Aff7vOm2CxwUxlAGUib2dh1vZvJIqZnOINRKHnzJHikmdkUHbNw_yROc38FuvR7uMORrWq6zgUsgk0KP9WEC7w7bhqo-SgR31mFiE3bDJUqK1SVH7NXy4Fch6ClDB1yRMvvpWQ9g5Q",
+      "welcome_message": {
+        "text": "┬íHola! ┬┐C├│mo podemos ayudarte?"
+      }
+    },
+    "referralHandled": true,
+    "last_wamid": "wamid.HBgLNTkxNjg2NDMyMzQVAgASGCBBQ0E0NUI4M0NBMTQ5OTBGQkRCMzhEMkFBN0M4OEM3QQA=",
+    "preloadedFromSheet": true,
+    "lastMsg": {
+      "role": "bot",
+      "content": "Para personalizar tu atenci├│n, ┬┐cu├íl es tu *nombre completo*?",
+      "ts": 1763296482137
+    },
+    "lastAt": 1763296482137
+  },
+  "_savedToSheet": false,
+  "_closedAt": null,
+  "_expiresAt": 1763901282137
+}

@@ -1,0 +1,136 @@
+{
+  "greeted": true,
+  "stage": "product",
+  "pending": "cultivo",
+  "asked": {
+    "nombre": true,
+    "departamento": true,
+    "subzona": true,
+    "cultivo": true,
+    "hectareas": false,
+    "campana": false
+  },
+  "vars": {
+    "departamento": "Cochabamba",
+    "subzona": "Zona Sud De Sacaba Comunidad Piusilla",
+    "cultivos": [],
+    "hectareas": null,
+    "campana": null,
+    "phone": null,
+    "cart": []
+  },
+  "profileName": "Mi Nombre Es Justo Almaraz Ledezma",
+  "memory": [
+    {
+      "role": "bot",
+      "content": "┬íHola! Soy el asistente virtual de New Chem Agroqu├¡micos.",
+      "ts": 1763205153261
+    },
+    {
+      "role": "bot",
+      "content": "Con mucho gusto te env├¡o la *ficha t├®cnica* de *DRIER* ­ƒæç",
+      "ts": 1763205154423
+    },
+    {
+      "role": "bot",
+      "content": "Te ayudo a realizar tu cotizaci├│n.",
+      "ts": 1763205157215
+    },
+    {
+      "role": "bot",
+      "content": "Para personalizar tu atenci├│n, ┬┐cu├íl es tu *nombre completo*?",
+      "ts": 1763205157954
+    },
+    {
+      "role": "user",
+      "content": "Mi nombre es Justo Almaraz ledezma",
+      "ts": 1763205188132
+    },
+    {
+      "role": "bot",
+      "content": "­ƒôì Cu├®ntanos, ┬┐desde qu├® *departamento* de Bolivia nos escribes? [lista: Elegir departamento]",
+      "ts": 1763205188134
+    },
+    {
+      "role": "user",
+      "content": "Del departamento de Cochabamba, espec├¡ficamente de zona Sud de Sacaba",
+      "ts": 1763205259436
+    },
+    {
+      "role": "bot",
+      "content": "Perfecto. ┬┐En qu├® *zona* de *Cochabamba* trabajas?",
+      "ts": 1763205259438
+    },
+    {
+      "role": "user",
+      "content": "Zona Sud de Sacaba comunidad Piusilla",
+      "ts": 1763205332159
+    },
+    {
+      "role": "bot",
+      "content": "­ƒôï ┬┐Para qu├® *cultivo* necesitas el producto? [lista: Elegir cultivo]",
+      "ts": 1763205332161
+    },
+    {
+      "role": "user",
+      "content": "Fui espesifico al principio, cultivo de papa",
+      "ts": 1763205378267
+    },
+    {
+      "role": "bot",
+      "content": "Por favor, *elige una opci├│n del listado* para continuar.",
+      "ts": 1763205378268
+    },
+    {
+      "role": "user",
+      "content": "Ped├¡ informaci├│n de lo mejor que tienen por favor",
+      "ts": 1763205450749
+    },
+    {
+      "role": "bot",
+      "content": "Por favor, *elige una opci├│n del listado* para continuar.",
+      "ts": 1763205450750
+    },
+    {
+      "role": "user",
+      "content": "\"APLAZADOS\"",
+      "ts": 1763205524256
+    },
+    {
+      "role": "bot",
+      "content": "Por favor, *elige una opci├│n del listado* para continuar.",
+      "ts": 1763205524256
+    }
+  ],
+  "lastPrompt": "cultivo",
+  "lastPromptTs": 1763205332161,
+  "meta": {
+    "origin": "facebook",
+    "referral": {
+      "source_url": "https://fb.me/8J47Fzaoh",
+      "source_id": "120236721074370524",
+      "source_type": "ad",
+      "body": "­ƒÆ¬ ┬┐­Øùñ­Øÿé­Øù▓­Øù┐├®­ØÿÇ ­Øù¥­Øÿé­Øù▓ ­Øù╣­Øù«­ØÿÇ ­Øù║­Øù«­Øù╣­Øù▓­Øÿç­Øù«­ØÿÇ ­Øù▒­Øù▓­ØÿÇ­Øù«­Øù¢­Øù«­Øù┐­Øù▓­Øÿç­Øù░­Øù«­Øù╗ ­Øù▓­Øù╗ ­Øÿé­Øù╗ ­ØùÂ­Øù╗­ØÿÇ­Øÿü­Øù«­Øù╗­Øÿü­Øù▓?\nDRIER (Paraquat dichloride 276 g/l SL), es nuestro herbicida de contacto y desecante con acci├│n ultrarr├ípida. El adecuado para limpiar tu terreno.\n\n­ƒî▒ Resultados visibles en poco tiempo.\n­ƒö╣ Controla malezas.\n­ƒö╣ Optimiza tu preparaci├│n de suelo.\n\n­ƒô® Escr├¡benos para m├ís informaci├│n.\n#­Øùù­Øù┐­ØùÂ­Øù▓­Øù┐ #­Øùò­Øù«­Øù┐­Øù»­Øù▓­Øù░­ØùÁ­Øù╝­Øùñ­Øÿé­ØùÂ╠ü­Øù║­ØùÂ­Øù░­Øù╝ #­Øùû­Øù╝­Øù╗­Øÿü­Øù┐­Øù╝­Øù╣­Øùù­Øù▓­Øùá­Øù«­Øù╣­Øù▓­Øÿç­Øù«­ØÿÇ #­Øùö­Øù┤­Øù┐­ØùÂ­Øù░­Øÿé­Øù╣­Øÿü­Øÿé­Øù┐­Øù«­Øùÿ­Øù│­ØùÂ­Øù░­ØùÂ­Øù▓­Øù╗­Øÿü­Øù▓",
+      "headline": "New Chem Agroqu├¡micos",
+      "media_type": "image",
+      "image_url": "https://scontent.xx.fbcdn.net/v/t39.30808-6/549239595_122145627332647561_8897723547298644487_n.jpg?stp=dst-jpg_s394x394_tt6&_nc_cat=103&ccb=1-7&_nc_sid=c8f752&_nc_ohc=TEVIAudlbYMQ7kNvwG1nsr6&_nc_oc=AdnzcV39n9nxPuhARDnoOd8acnjxoFuF-ZSqYi7EQXmhuj9TuL7q2GgepxBOsR1FP36lBbfiaxGygtGck65ihG1z&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=scontent.xx&_nc_gid=mqVzmAxLAgIy6koSk-Vakw&oh=00_AfhIRYtk193IUSknZ4F17bTDrNRxa30xcjSQMK4-vr08QQ&oe=691E1752",
+      "ctwa_clid": "Afei2VQNKzL_ahcFKcdpKgGAVHm1wS_B70MT773-SFEQPAIORxdAUrfqZnYrRfEV7IYP3J8M8EPKjjiAfwJK8-Sv7MFk3riaXT42WQxnwdAByR30QL_cQWo31vurZVnMsms9xAlkiQ",
+      "welcome_message": {
+        "text": "┬íHola! ┬┐C├│mo podemos ayudarte?"
+      }
+    },
+    "referralHandled": true,
+    "last_wamid": "wamid.HBgLNTkxNzA3Nzk3MjQVAgASGCBBQzIwOTY2N0QzODlCNTU1OTcxNUI3QThEODUyOEEwOAA=",
+    "preloadedFromSheet": true,
+    "lastMsg": {
+      "role": "bot",
+      "content": "Por favor, *elige una opci├│n del listado* para continuar.",
+      "ts": 1763205524256
+    },
+    "lastAt": 1763205524256,
+    "unread": 6
+  },
+  "_savedToSheet": false,
+  "_closedAt": null,
+  "_expiresAt": 1763810324256
+}

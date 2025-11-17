@@ -1,0 +1,71 @@
+{
+  "greeted": true,
+  "stage": "product",
+  "pending": "nombre",
+  "asked": {
+    "nombre": true,
+    "departamento": false,
+    "subzona": false,
+    "cultivo": false,
+    "hectareas": false,
+    "campana": false
+  },
+  "vars": {
+    "departamento": null,
+    "subzona": null,
+    "cultivos": [],
+    "hectareas": null,
+    "campana": null,
+    "phone": null,
+    "cart": []
+  },
+  "profileName": null,
+  "memory": [
+    {
+      "role": "user",
+      "content": "­Øæâ­Øæƒ­ØæÆ­ØæÉ­Øæû­Øæ£",
+      "ts": 1763168125678
+    },
+    {
+      "role": "bot",
+      "content": "┬íHola! Soy el asistente virtual de New Chem Agroqu├¡micos.",
+      "ts": 1763168125679
+    },
+    {
+      "role": "bot",
+      "content": "Para personalizar tu atenci├│n, ┬┐cu├íl es tu *nombre completo*?",
+      "ts": 1763168126502
+    },
+    {
+      "role": "user",
+      "content": "­ØÉÀ­ØæÆ­ØæÖ­ØæÉ­Øæª",
+      "ts": 1763168769031
+    },
+    {
+      "role": "bot",
+      "content": "Para continuar, por favor escribe tu *nombre y apellido*.",
+      "ts": 1763168769032
+    }
+  ],
+  "lastPrompt": "nombre",
+  "lastPromptTs": 1763168126501,
+  "meta": {
+    "origin": "facebook",
+    "referral": {
+      "source_url": "https://fb.me/2YSrC0QNK"
+    },
+    "referralHandled": true,
+    "last_wamid": "wamid.HBgLNTkxNzcxOTI4MDYVAgASGCBBQzIyMTcxQjgzODlGNTE3NzMxOTlGQkFGMDc1MEU5NgA=",
+    "preloadedFromSheet": true,
+    "lastMsg": {
+      "role": "bot",
+      "content": "Para continuar, por favor escribe tu *nombre y apellido*.",
+      "ts": 1763168769032
+    },
+    "lastAt": 1763168769032,
+    "unread": 2
+  },
+  "_savedToSheet": false,
+  "_closedAt": null,
+  "_expiresAt": 1763773569032
+}

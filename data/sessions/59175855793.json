@@ -1,0 +1,75 @@
+{
+  "greeted": true,
+  "stage": "product",
+  "pending": "nombre",
+  "asked": {
+    "nombre": true,
+    "departamento": false,
+    "subzona": false,
+    "cultivo": false,
+    "hectareas": false,
+    "campana": false
+  },
+  "vars": {
+    "departamento": null,
+    "subzona": null,
+    "cultivos": [],
+    "hectareas": null,
+    "campana": null,
+    "phone": null,
+    "cart": []
+  },
+  "profileName": null,
+  "memory": [
+    {
+      "role": "bot",
+      "content": "┬íHola! Soy el asistente virtual de New Chem Agroqu├¡micos.",
+      "ts": 1763119529174
+    },
+    {
+      "role": "bot",
+      "content": "Con mucho gusto te env├¡o la *ficha t├®cnica* de *SEAL* ­ƒæç",
+      "ts": 1763119530062
+    },
+    {
+      "role": "bot",
+      "content": "Te ayudo a realizar tu cotizaci├│n.",
+      "ts": 1763119532546
+    },
+    {
+      "role": "bot",
+      "content": "Para personalizar tu atenci├│n, ┬┐cu├íl es tu *nombre completo*?",
+      "ts": 1763119533289
+    }
+  ],
+  "lastPrompt": "nombre",
+  "lastPromptTs": 1763119533289,
+  "meta": {
+    "origin": "facebook",
+    "referral": {
+      "source_url": "https://fb.me/hsFsxbv5e",
+      "source_id": "120236721027280524",
+      "source_type": "ad",
+      "body": "­ƒÄ» ­Øùª­Øùÿ­Øùö­Øùƒ: ­Øùú­Øù┐­Øù▓­Øù░­ØùÂ­ØÿÇ­ØùÂ­Øù╝­Øù╗ ­Øù▓­Øù╗ ­Øù░­Øù«­Øù▒­Øù« ­Øù«­Øù¢­Øù╣­ØùÂ­Øù░­Øù«­Øù░­ØùÂ├│­Øù╗\n\nCon ­Øùª­Øùÿ­Øùö­Øùƒ de ­Øùí­Øù▓­Øÿä ­Øùû­ØùÁ­Øù▓­Øù║, que contiene ­Øùö­Øÿü­Øù┐­Øù«­Øÿç­ØùÂ­Øù╗­Øù▓ 500 g/L ­Øùª­Øùû como ingrediente activo, proteges tus cultivos con una f├│rmula de acci├│n dual:\nÔ£ö´©Å ­Øùú­Øù┐­Øù▓ ­Øÿå ­Øùú­Øù╝­ØÿÇ­Øÿü ­Øùÿ­Øù║­Øù▓­Øù┐­Øù┤­Øù▓­Øù╗­Øù░­ØùÂ­Øù«\nÔ£ö´©Å ­Øùû­Øù╝­Øù╗­Øÿü­Øù┐­Øù╝­Øù╣ ­ØÿÇ­ØùÂ­ØÿÇ­Øÿü­Øù▓╠ü­Øù║­ØùÂ­Øù░­Øù╝ ­Øÿå ­Øù▒­Øù▓ ­Øù░­Øù╝­Øù╗­Øÿü­Øù«­Øù░­Øÿü­Øù╝\nÔ£ö´©Å ­ØùÑ­Øù▓­ØÿÇ­Øÿé­Øù╣­Øÿü­Øù«­Øù▒­Øù╝­ØÿÇ ­Øù¢­Øù┐­Øù▓­Øù░­ØùÂ­ØÿÇ­Øù╝­ØÿÇ ­Øÿå ­Øù▒­Øÿé­Øù┐­Øù«­Øù▒­Øù▓­Øù┐­Øù╝­ØÿÇ\n\n­Øùú­Øù╝­Øù┐­Øù¥­Øÿé­Øù▓ ­Øù░­Øù«­Øù▒­Øù« ­Øù▒­Øù▓­Øÿü­Øù«­Øù╣­Øù╣­Øù▓ ­Øù░­Øÿé­Øù▓­Øù╗­Øÿü­Øù« ­Øù▓­Øù╗ ­Øÿü­Øÿé ­Øù░­Øù«­Øù║­Øù¢­Øù╝.\n\n­ƒî▒#NewChem #SEAL #Precisi├│nQueProtege #ControlCompleto #AgriculturaEficaz",
+      "headline": "New Chem Agroqu├¡micos",
+      "media_type": "image",
+      "image_url": "https://scontent.xx.fbcdn.net/v/t39.30808-6/486841909_122123873906647561_2149651727223298154_n.jpg?stp=dst-jpg_s394x394_tt6&_nc_cat=107&ccb=1-7&_nc_sid=c8f752&_nc_ohc=Df3jpKJWfI8Q7kNvwFNuwS4&_nc_oc=Adk6xJUacS388meYFl_IwXyUmBB1Zc1GBJhGBx8ch91w_FD862Koa2mBHoN0OeLcnCsDkBxcdB0EZ8oO4Lkp_EWu&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=scontent.xx&_nc_gid=6N7lg08nJFxXmK-3kJhUPw&oh=00_AfiNP0WX37mWskRC9O9_-DX553N0g6ZMEVOxuvLUw_nrRw&oe=691CEDCD",
+      "ctwa_clid": "AfelxwVg88nYEn-IKLwmB2uQBlaMMh4Op6wU9nYwah08ihTPwlQ3cpKO2rJmc1G4GsfY13Twi89cBnhOK1GleUS5Vpu7bRvot_ccC_vuTpAfPpqmN6l90L7dWhd_1XU0DrGnG-6p6A",
+      "welcome_message": {
+        "text": "┬íHola! ┬┐C├│mo podemos ayudarte?"
+      }
+    },
+    "referralHandled": true,
+    "last_wamid": "wamid.HBgLNTkxNzU4NTU3OTMVAgASGCBBQzhGQzQyRkEwQ0Q5QjA0RThDNzAyOTY3MzM4Q0FBRgA=",
+    "preloadedFromSheet": true,
+    "lastMsg": {
+      "role": "bot",
+      "content": "Para personalizar tu atenci├│n, ┬┐cu├íl es tu *nombre completo*?",
+      "ts": 1763119533289
+    },
+    "lastAt": 1763119533289
+  },
+  "_savedToSheet": false,
+  "_closedAt": null,
+  "_expiresAt": 1763724333289
+}

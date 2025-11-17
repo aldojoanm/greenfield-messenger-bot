@@ -1,0 +1,91 @@
+{
+  "greeted": false,
+  "stage": "product",
+  "pending": "catalog_link",
+  "asked": {
+    "nombre": true,
+    "departamento": false,
+    "subzona": false,
+    "cultivo": false,
+    "hectareas": false,
+    "campana": false
+  },
+  "vars": {
+    "departamento": null,
+    "subzona": null,
+    "cultivos": [],
+    "hectareas": null,
+    "campana": null,
+    "phone": null,
+    "cart": []
+  },
+  "profileName": null,
+  "memory": [
+    {
+      "role": "user",
+      "content": "Hola la ubicaci├│n de sucursal",
+      "ts": 1763158744733
+    },
+    {
+      "role": "bot",
+      "content": "Nuestra ubicaci├│n en Google Maps ­ƒæç\nVer ubicaci├│n: https://www.google.com/maps?q=-17.7580406%2C-63.1532503",
+      "ts": 1763158744734
+    },
+    {
+      "role": "bot",
+      "content": "┬┐Hay algo m├ís en lo que pueda ayudarte? [botones]",
+      "ts": 1763158745650
+    },
+    {
+      "role": "user",
+      "content": "Y el precio del galon",
+      "ts": 1763158782651
+    },
+    {
+      "role": "bot",
+      "content": "Con gusto cotizamos. Primero te pido unos datos y seguimos ­ƒæç",
+      "ts": 1763158782652
+    },
+    {
+      "role": "bot",
+      "content": "Para personalizar tu atenci├│n, ┬┐cu├íl es tu *nombre completo*?",
+      "ts": 1763158783338
+    },
+    {
+      "role": "user",
+      "content": "Ô£à Seguir",
+      "ts": 1763158870291
+    },
+    {
+      "role": "bot",
+      "content": "Perfecto, vamos a a├▒adir tus productos ­ƒÖî.",
+      "ts": 1763158870292
+    },
+    {
+      "role": "bot",
+      "content": "Te dejo nuestro *cat├ílogo*.\nhttps://newchem-bot-production.up.railway.app/catalog.html\n\n­ƒæë A├▒ade tus productos y toca *Enviar a WhatsApp*. Yo recibir├® tu pedido y te preparar├® tu cotizaci├│n.",
+      "ts": 1763158871236
+    }
+  ],
+  "lastPrompt": "catalog_link",
+  "lastPromptTs": 1763158871236,
+  "meta": {
+    "origin": "facebook",
+    "referral": {
+      "source_url": "https://fb.me/2YSrC0QNK"
+    },
+    "referralHandled": true,
+    "last_wamid": "wamid.HBgLNTkxNzExNzM3MjIVAgASGCBBQzg4QUY5MkJDRTMwMjEyNTc4NTJEMTFGQTk3ODU4OQA=",
+    "preloadedFromSheet": true,
+    "lastMsg": {
+      "role": "bot",
+      "content": "Te dejo nuestro *cat├ílogo*.\nhttps://newchem-bot-production.up.railway.app/catalog.html\n\n­ƒæë A├▒ade tus productos y toca *Enviar a WhatsApp*. Yo recibir├® tu pedido y te preparar├® tu cotizaci├│n.",
+      "ts": 1763158871236
+    },
+    "lastAt": 1763158871236,
+    "unread": 3
+  },
+  "_savedToSheet": false,
+  "_closedAt": null,
+  "_expiresAt": 1763763671236
+}

@@ -1,0 +1,111 @@
+{
+  "greeted": true,
+  "stage": "product",
+  "pending": "subzona",
+  "asked": {
+    "nombre": true,
+    "departamento": true,
+    "subzona": true,
+    "cultivo": false,
+    "hectareas": false,
+    "campana": false
+  },
+  "vars": {
+    "departamento": "Santa Cruz",
+    "subzona": null,
+    "cultivos": [],
+    "hectareas": null,
+    "campana": null,
+    "phone": null,
+    "cart": []
+  },
+  "profileName": "Meda El Precio Porfa",
+  "memory": [
+    {
+      "role": "bot",
+      "content": "┬íHola! Soy el asistente virtual de New Chem Agroqu├¡micos.",
+      "ts": 1763111793314
+    },
+    {
+      "role": "bot",
+      "content": "Con mucho gusto te env├¡o la *ficha t├®cnica* de *DRIER* ­ƒæç",
+      "ts": 1763111794059
+    },
+    {
+      "role": "bot",
+      "content": "Te ayudo a realizar tu cotizaci├│n.",
+      "ts": 1763111796323
+    },
+    {
+      "role": "bot",
+      "content": "Para personalizar tu atenci├│n, ┬┐cu├íl es tu *nombre completo*?",
+      "ts": 1763111796940
+    },
+    {
+      "role": "user",
+      "content": "Meda el precio porfa",
+      "ts": 1763111821504
+    },
+    {
+      "role": "bot",
+      "content": "­ƒôì Cu├®ntanos, ┬┐desde qu├® *departamento* de Bolivia nos escribes? [lista: Elegir departamento]",
+      "ts": 1763111821508
+    },
+    {
+      "role": "user",
+      "content": "Santa cruz",
+      "ts": 1763111878602
+    },
+    {
+      "role": "bot",
+      "content": "Gracias. ┬┐En qu├® *zona de Santa Cruz*? [lista: Elegir zona]",
+      "ts": 1763111878604
+    },
+    {
+      "role": "user",
+      "content": "Cordillera",
+      "ts": 1763111902859
+    },
+    {
+      "role": "user",
+      "content": "Si puede me pasa el precio me interesa depende del precio",
+      "ts": 1763128617720
+    },
+    {
+      "role": "bot",
+      "content": "Para cotizar, por favor a├▒ade tus productos en el cat├ílogo y toca *Enviar a WhatsApp*:\nhttps://newchem-bot-production.up.railway.app/catalog.html",
+      "ts": 1763128617721
+    }
+  ],
+  "lastPrompt": "subzona",
+  "lastPromptTs": 1763111878603,
+  "meta": {
+    "origin": "facebook",
+    "referral": {
+      "source_url": "https://fb.me/5CA6VBwg3",
+      "source_id": "120236721074370524",
+      "source_type": "ad",
+      "body": "­ƒÆ¬ ┬┐­Øùñ­Øÿé­Øù▓­Øù┐├®­ØÿÇ ­Øù¥­Øÿé­Øù▓ ­Øù╣­Øù«­ØÿÇ ­Øù║­Øù«­Øù╣­Øù▓­Øÿç­Øù«­ØÿÇ ­Øù▒­Øù▓­ØÿÇ­Øù«­Øù¢­Øù«­Øù┐­Øù▓­Øÿç­Øù░­Øù«­Øù╗ ­Øù▓­Øù╗ ­Øÿé­Øù╗ ­ØùÂ­Øù╗­ØÿÇ­Øÿü­Øù«­Øù╗­Øÿü­Øù▓?\nDRIER (Paraquat dichloride 276 g/l SL), es nuestro herbicida de contacto y desecante con acci├│n ultrarr├ípida. El adecuado para limpiar tu terreno.\n\n­ƒî▒ Resultados visibles en poco tiempo.\n­ƒö╣ Controla malezas.\n­ƒö╣ Optimiza tu preparaci├│n de suelo.\n\n­ƒô® Escr├¡benos para m├ís informaci├│n.\n#­Øùù­Øù┐­ØùÂ­Øù▓­Øù┐ #­Øùò­Øù«­Øù┐­Øù»­Øù▓­Øù░­ØùÁ­Øù╝­Øùñ­Øÿé­ØùÂ╠ü­Øù║­ØùÂ­Øù░­Øù╝ #­Øùû­Øù╝­Øù╗­Øÿü­Øù┐­Øù╝­Øù╣­Øùù­Øù▓­Øùá­Øù«­Øù╣­Øù▓­Øÿç­Øù«­ØÿÇ #­Øùö­Øù┤­Øù┐­ØùÂ­Øù░­Øÿé­Øù╣­Øÿü­Øÿé­Øù┐­Øù«­Øùÿ­Øù│­ØùÂ­Øù░­ØùÂ­Øù▓­Øù╗­Øÿü­Øù▓",
+      "headline": "New Chem Agroqu├¡micos",
+      "media_type": "image",
+      "image_url": "https://scontent.xx.fbcdn.net/v/t39.30808-6/549239595_122145627332647561_8897723547298644487_n.jpg?stp=dst-jpg_s394x394_tt6&_nc_cat=103&ccb=1-7&_nc_sid=c8f752&_nc_ohc=TEVIAudlbYMQ7kNvwEL-vga&_nc_oc=AdlZmW3VkBWHuKE_zjqRdgHwZ9dEfLLnPFD3zA_fQTvH9pYKY8xIWGwlfTb-pP0kpYyPuqGiKN3TE6wbT4X3xUXR&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=scontent.xx&_nc_gid=HPBd7ljGG8iyvLH2qFsBaQ&oh=00_AfjSNeSKevgoCyVGOJLdUgiMGLOIQ-1lyXgEhow8V2jN1Q&oe=691CC5D2",
+      "ctwa_clid": "AfdD5IlcHIxKZBMi31O_dpAGcMvFPrUkQhzRRijRtZwHpxG4rpmnUYIt42xyHoWCQJ7OnbYQZpKODvFvq1zMkzRCjCAdmmeRj04N7EPAc56EryPefEDvrErMe_lyPIl7yV2Vnqgkmg",
+      "welcome_message": {
+        "text": "┬íHola! ┬┐C├│mo podemos ayudarte?"
+      }
+    },
+    "referralHandled": true,
+    "last_wamid": "wamid.HBgLNTkxNjc3NDc5NDQVAgASGCBBQ0QwRkIzMjU4RUIwMTYzQjlGQTg1Qzg5OTQ4ODgxQgA=",
+    "preloadedFromSheet": true,
+    "lastMsg": {
+      "role": "bot",
+      "content": "Para cotizar, por favor a├▒ade tus productos en el cat├ílogo y toca *Enviar a WhatsApp*:\nhttps://newchem-bot-production.up.railway.app/catalog.html",
+      "ts": 1763128617721
+    },
+    "lastAt": 1763128617721,
+    "unread": 4
+  },
+  "_savedToSheet": false,
+  "_closedAt": null,
+  "_expiresAt": 1763733417721
+}

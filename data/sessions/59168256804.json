@@ -1,0 +1,148 @@
+{
+  "greeted": true,
+  "stage": "product",
+  "pending": "campana",
+  "asked": {
+    "nombre": true,
+    "departamento": true,
+    "subzona": true,
+    "cultivo": true,
+    "hectareas": true,
+    "campana": true
+  },
+  "vars": {
+    "departamento": "La Paz",
+    "subzona": "Viscachani",
+    "cultivos": [
+      "Zanahoria"
+    ],
+    "hectareas": "1",
+    "campana": null,
+    "phone": null,
+    "cart": []
+  },
+  "profileName": null,
+  "memory": [
+    {
+      "role": "bot",
+      "content": "┬íHola! Soy el asistente virtual de New Chem Agroqu├¡micos.",
+      "ts": 1763293158331
+    },
+    {
+      "role": "bot",
+      "content": "Con mucho gusto te env├¡o la *ficha t├®cnica* de *FENPRONIL* ­ƒæç",
+      "ts": 1763293159311
+    },
+    {
+      "role": "bot",
+      "content": "Te ayudo a realizar tu cotizaci├│n.",
+      "ts": 1763293162466
+    },
+    {
+      "role": "bot",
+      "content": "Para personalizar tu atenci├│n, ┬┐cu├íl es tu *nombre completo*?",
+      "ts": 1763293163212
+    },
+    {
+      "role": "bot",
+      "content": "­ƒôì Cu├®ntanos, ┬┐desde qu├® *departamento* de Bolivia nos escribes? [lista: Elegir departamento]",
+      "ts": 1763293290014
+    },
+    {
+      "role": "user",
+      "content": "Ô£à La Paz",
+      "ts": 1763293297833
+    },
+    {
+      "role": "bot",
+      "content": "Perfecto. ┬┐En qu├® *zona* de *La Paz* trabajas?",
+      "ts": 1763293297834
+    },
+    {
+      "role": "user",
+      "content": "viscachani",
+      "ts": 1763293309306
+    },
+    {
+      "role": "bot",
+      "content": "­ƒôï ┬┐Para qu├® *cultivo* necesitas el producto? [lista: Elegir cultivo]",
+      "ts": 1763293309307
+    },
+    {
+      "role": "user",
+      "content": "Ô£à Otro",
+      "ts": 1763293327266
+    },
+    {
+      "role": "bot",
+      "content": "Qu├® *cultivo* manejas?",
+      "ts": 1763293327267
+    },
+    {
+      "role": "user",
+      "content": "Zanahoria",
+      "ts": 1763293330318
+    },
+    {
+      "role": "bot",
+      "content": "┬┐Cu├íntas *hect├íreas* vas a tratar? [lista: Elegir hect├íreas]",
+      "ts": 1763293330320
+    },
+    {
+      "role": "user",
+      "content": "Abas",
+      "ts": 1763293332595
+    },
+    {
+      "role": "bot",
+      "content": "Por favor ingresa un n├║mero v├ílido de *hect├íreas* (ej. 50 ha).",
+      "ts": 1763293332596
+    },
+    {
+      "role": "user",
+      "content": "1 hectarea e",
+      "ts": 1763293344563
+    },
+    {
+      "role": "bot",
+      "content": "┬┐En qu├® *campa├▒a* te encuentras?  [botones]",
+      "ts": 1763293344564
+    },
+    {
+      "role": "user",
+      "content": "No se sabe ya que ase frio calor de todo",
+      "ts": 1763293364299
+    }
+  ],
+  "lastPrompt": "campana",
+  "lastPromptTs": 1763293344563,
+  "meta": {
+    "origin": "facebook",
+    "referral": {
+      "source_url": "https://fb.me/4LY03gqEW",
+      "source_id": "120236721151250524",
+      "source_type": "ad",
+      "body": "­Øù£­Øù╗­Øù│­Øù«­Øù╣­ØùÂ­Øù»­Øù╣­Øù▓ ­Øù░­Øù╝­Øù╗­Øÿü­Øù┐­Øù« ­Øù╣­Øù«­ØÿÇ ­Øù¢­Øù╣­Øù«­Øù┤­Øù«­ØÿÇ\nCuando se trata de proteger tu cultivo, necesitas una soluci├│n que no deje margen de error. Fenpronil act├║a por contacto e ingesti├│n, eliminando de manera contundente un amplio espectro de plagas. Su alta efectividad garantiza un control preciso y duradero, asegurando que tu inversi├│n rinda al m├íximo.\n\n­ƒöÑ ­Øùö­Øù░­Øù░­ØùÂ­Øù╝╠ü­Øù╗ ­Øù╣­Øù▓­Øÿü­Øù«­Øù╣ ­Øÿå ­Øù¢­Øù┐­Øù╝­Øù╣­Øù╝­Øù╗­Øù┤­Øù«­Øù▒­Øù«\n­ƒî▒ ­Øùû­Øÿé­Øù╣­Øÿü­ØùÂ­Øÿâ­Øù╝­ØÿÇ ­Øù¢­Øù┐­Øù╝­Øÿü­Øù▓­Øù┤­ØùÂ­Øù▒­Øù╝­ØÿÇ, ­Øù░­Øù╝­ØÿÇ­Øù▓­Øù░­ØùÁ­Øù«­ØÿÇ ­ØÿÇ­Øù▓­Øù┤­Øÿé­Øù┐­Øù«­ØÿÇ\n­ƒÆ¬ ­Øùÿ­Øù│­Øù▓­Øù░­Øÿü­ØùÂ­Øÿâ­ØùÂ­Øù▒­Øù«­Øù▒ ­ØÿÇ­ØùÂ­Øù╗ ­Øù░­Øù╝­Øù╗­Øù░­Øù▓­ØÿÇ­ØùÂ­Øù╝­Øù╗­Øù▓­ØÿÇ\n\n#­Øùí­Øù▓­Øÿä­Øùû­ØùÁ­Øù▓­Øù║ #­Øùú­Øù┐­Øù╝­Øÿü­Øù▓­Øù░­Øù░­ØùÂ­Øù╝╠ü­Øù╗­Øùÿ­Øù│­ØùÂ­Øù░­Øù«­Øÿç #­Øùû­Øÿé­Øù╣­Øÿü­ØùÂ­Øÿâ­Øù╝­ØÿÇ­Øùª­Øù▓­Øù┤­Øÿé­Øù┐­Øù╝­ØÿÇ #­Øùû­Øù╝­Øù╗­Øÿü­Øù┐­Øù╝­Øù╣­Øùù­Øù▓­Øùú­Øù╣­Øù«­Øù┤­Øù«­ØÿÇ #­ØùÖ­Øù▓­Øù╗­Øù¢",
+      "headline": "New Chem Agroqu├¡micos",
+      "media_type": "image",
+      "image_url": "https://scontent.xx.fbcdn.net/v/t39.30808-6/484829412_122122542830647561_2416719996733335913_n.jpg?stp=dst-jpg_s394x394_tt6&_nc_cat=103&ccb=1-7&_nc_sid=c8f752&_nc_ohc=0url0o9yAVkQ7kNvwFq1H1q&_nc_oc=Adn-6yICqx6RiLPa3EjmqBZVTrOT6jrgBJsHw39mPG6Y-TfnKNXECjM0b_kRMb1vmcdOTUv4kua5InBwO48tflde&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=scontent.xx&_nc_gid=Zoowx7UQs0y_tXJtF41hpQ&oh=00_AfhxAVaTdMuwBVTKb7laWKRbLvPqgRg6vb78cKRII2CJnA&oe=691F8286",
+      "ctwa_clid": "AfcEvp-DaupLHNsIbOtRHvZU1U4jINuzEfEL1wXFtCHb8MsXphcEmyOkgRraQ-d5j0ea2lt7T7oDEcXuYayiRaGXbdbzuesJIlT7bShwhZkDWUc7fB0weLN_b_w_EM_swJLCsD-Wxw",
+      "welcome_message": {
+        "text": "┬íHola! ┬┐C├│mo podemos ayudarte?"
+      }
+    },
+    "referralHandled": true,
+    "last_wamid": "wamid.HBgLNTkxNjgyNTY4MDQVAgASGCBBQzBBMEJGMjkwNkU4QkUyRTQwQjBGRTc3MDYxNjlFQwA=",
+    "preloadedFromSheet": true,
+    "lastMsg": {
+      "role": "user",
+      "content": "No se sabe ya que ase frio calor de todo",
+      "ts": 1763293364299
+    },
+    "lastAt": 1763293364299,
+    "unread": 7
+  },
+  "_savedToSheet": false,
+  "_closedAt": null,
+  "_expiresAt": 1763898164299
+}

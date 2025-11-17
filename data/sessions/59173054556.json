@@ -1,0 +1,101 @@
+{
+  "greeted": true,
+  "stage": "product",
+  "pending": "subzona_libre",
+  "asked": {
+    "nombre": true,
+    "departamento": true,
+    "subzona": true,
+    "cultivo": false,
+    "hectareas": false,
+    "campana": false
+  },
+  "vars": {
+    "departamento": "La Paz",
+    "subzona": null,
+    "cultivos": [],
+    "hectareas": null,
+    "campana": null,
+    "phone": "73054556",
+    "cart": []
+  },
+  "profileName": "Delfin Paucara Nacho",
+  "memory": [
+    {
+      "role": "bot",
+      "content": "┬íHola! Soy el asistente virtual de New Chem Agroqu├¡micos.",
+      "ts": 1763124207567
+    },
+    {
+      "role": "bot",
+      "content": "Con mucho gusto te env├¡o la *ficha t├®cnica* de *DRIER* ­ƒæç",
+      "ts": 1763124208405
+    },
+    {
+      "role": "bot",
+      "content": "Te ayudo a realizar tu cotizaci├│n.",
+      "ts": 1763124210886
+    },
+    {
+      "role": "bot",
+      "content": "Para personalizar tu atenci├│n, ┬┐cu├íl es tu *nombre completo*?",
+      "ts": 1763124211643
+    },
+    {
+      "role": "user",
+      "content": "Delfin paucara nacho",
+      "ts": 1763124239051
+    },
+    {
+      "role": "bot",
+      "content": "­ƒôì Cu├®ntanos, ┬┐desde qu├® *departamento* de Bolivia nos escribes? [lista: Elegir departamento]",
+      "ts": 1763124239053
+    },
+    {
+      "role": "user",
+      "content": "Mi No es 73054556",
+      "ts": 1763124250553
+    },
+    {
+      "role": "user",
+      "content": "Dptp. La paz El alto",
+      "ts": 1763124271870
+    },
+    {
+      "role": "bot",
+      "content": "Perfecto. ┬┐En qu├® *zona* de *La Paz* trabajas?",
+      "ts": 1763124271873
+    }
+  ],
+  "lastPrompt": "subzona_libre",
+  "lastPromptTs": 1763124271872,
+  "meta": {
+    "origin": "facebook",
+    "referral": {
+      "source_url": "https://fb.me/5CA6VBwg3",
+      "source_id": "120236721074370524",
+      "source_type": "ad",
+      "body": "­ƒÆ¬ ┬┐­Øùñ­Øÿé­Øù▓­Øù┐├®­ØÿÇ ­Øù¥­Øÿé­Øù▓ ­Øù╣­Øù«­ØÿÇ ­Øù║­Øù«­Øù╣­Øù▓­Øÿç­Øù«­ØÿÇ ­Øù▒­Øù▓­ØÿÇ­Øù«­Øù¢­Øù«­Øù┐­Øù▓­Øÿç­Øù░­Øù«­Øù╗ ­Øù▓­Øù╗ ­Øÿé­Øù╗ ­ØùÂ­Øù╗­ØÿÇ­Øÿü­Øù«­Øù╗­Øÿü­Øù▓?\nDRIER (Paraquat dichloride 276 g/l SL), es nuestro herbicida de contacto y desecante con acci├│n ultrarr├ípida. El adecuado para limpiar tu terreno.\n\n­ƒî▒ Resultados visibles en poco tiempo.\n­ƒö╣ Controla malezas.\n­ƒö╣ Optimiza tu preparaci├│n de suelo.\n\n­ƒô® Escr├¡benos para m├ís informaci├│n.\n#­Øùù­Øù┐­ØùÂ­Øù▓­Øù┐ #­Øùò­Øù«­Øù┐­Øù»­Øù▓­Øù░­ØùÁ­Øù╝­Øùñ­Øÿé­ØùÂ╠ü­Øù║­ØùÂ­Øù░­Øù╝ #­Øùû­Øù╝­Øù╗­Øÿü­Øù┐­Øù╝­Øù╣­Øùù­Øù▓­Øùá­Øù«­Øù╣­Øù▓­Øÿç­Øù«­ØÿÇ #­Øùö­Øù┤­Øù┐­ØùÂ­Øù░­Øÿé­Øù╣­Øÿü­Øÿé­Øù┐­Øù«­Øùÿ­Øù│­ØùÂ­Øù░­ØùÂ­Øù▓­Øù╗­Øÿü­Øù▓",
+      "headline": "New Chem Agroqu├¡micos",
+      "media_type": "image",
+      "image_url": "https://scontent.xx.fbcdn.net/v/t39.30808-6/549239595_122145627332647561_8897723547298644487_n.jpg?stp=dst-jpg_s394x394_tt6&_nc_cat=103&ccb=1-7&_nc_sid=c8f752&_nc_ohc=TEVIAudlbYMQ7kNvwEDbcUU&_nc_oc=AdnYccVfhEcyASX_FCXlr_8i35qePvn0Rpx5TPHNs7hqpYhPaQSF5ZvBddYloJY53tDLByPoFOqBYqtjcex-33EY&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=scontent.xx&_nc_gid=Tc6Hmnjj69761OuMxGMZlQ&oh=00_AfjUfL-9ncMDlQXTQg8vY5vUr1jhJgf9gqDKAPuIte47DA&oe=691CFE12",
+      "ctwa_clid": "AfeKRZLEw5Hw5oNo43MFN-Oy8iGgaC-MPFx8s2JGcZBVIvrYFdScuD-n6l-EW4611qhHdwkHgA32TBeAdC0tJkoPwwbsftP45WwnJ8jzjT7gV0MBVw2QwxyttVeGOuwwpm2tjprCcg",
+      "welcome_message": {
+        "text": "┬íHola! ┬┐C├│mo podemos ayudarte?"
+      }
+    },
+    "referralHandled": true,
+    "last_wamid": "wamid.HBgLNTkxNzMwNTQ1NTYVAgASGCBBQzRDNUM4NDI0NDRCNjQ2NjU2MUU4MzI3ODU2QjJGNgA=",
+    "preloadedFromSheet": true,
+    "lastMsg": {
+      "role": "bot",
+      "content": "Perfecto. ┬┐En qu├® *zona* de *La Paz* trabajas?",
+      "ts": 1763124271873
+    },
+    "lastAt": 1763124271873,
+    "unread": 3
+  },
+  "_savedToSheet": false,
+  "_closedAt": null,
+  "_expiresAt": 1763729072729
+}

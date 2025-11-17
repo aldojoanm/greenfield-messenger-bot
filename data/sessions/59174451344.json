@@ -1,0 +1,138 @@
+{
+  "greeted": true,
+  "stage": "product",
+  "pending": "hectareas",
+  "asked": {
+    "nombre": true,
+    "departamento": true,
+    "subzona": true,
+    "cultivo": true,
+    "hectareas": true,
+    "campana": false
+  },
+  "vars": {
+    "departamento": "Chuquisaca",
+    "subzona": "Valles",
+    "cultivos": [
+      "Ma├¡z"
+    ],
+    "hectareas": null,
+    "campana": null,
+    "phone": null,
+    "cart": []
+  },
+  "profileName": "Solicito Saber El Precio",
+  "memory": [
+    {
+      "role": "bot",
+      "content": "┬íHola! Soy el asistente virtual de New Chem Agroqu├¡micos.",
+      "ts": 1763119774734
+    },
+    {
+      "role": "bot",
+      "content": "Con mucho gusto te env├¡o la *ficha t├®cnica* de *GLISATO* ­ƒæç",
+      "ts": 1763119775589
+    },
+    {
+      "role": "bot",
+      "content": "Te ayudo a realizar tu cotizaci├│n.",
+      "ts": 1763119777934
+    },
+    {
+      "role": "bot",
+      "content": "Para personalizar tu atenci├│n, ┬┐cu├íl es tu *nombre completo*?",
+      "ts": 1763119778650
+    },
+    {
+      "role": "user",
+      "content": "Solicito saber el precio",
+      "ts": 1763119841837
+    },
+    {
+      "role": "bot",
+      "content": "­ƒôì Cu├®ntanos, ┬┐desde qu├® *departamento* de Bolivia nos escribes? [lista: Elegir departamento]",
+      "ts": 1763119841838
+    },
+    {
+      "role": "user",
+      "content": "Ô£à Chuquisaca",
+      "ts": 1763119858973
+    },
+    {
+      "role": "bot",
+      "content": "Perfecto. ┬┐En qu├® *zona* de *Chuquisaca* trabajas?",
+      "ts": 1763119858974
+    },
+    {
+      "role": "user",
+      "content": "Valles",
+      "ts": 1763119872866
+    },
+    {
+      "role": "bot",
+      "content": "­ƒôï ┬┐Para qu├® *cultivo* necesitas el producto? [lista: Elegir cultivo]",
+      "ts": 1763119872867
+    },
+    {
+      "role": "user",
+      "content": "Barbecho",
+      "ts": 1763119889200
+    },
+    {
+      "role": "bot",
+      "content": "Por favor, *elige una opci├│n del listado* para continuar.",
+      "ts": 1763119889200
+    },
+    {
+      "role": "user",
+      "content": "Papa",
+      "ts": 1763119901060
+    },
+    {
+      "role": "bot",
+      "content": "Por favor, *elige una opci├│n del listado* para continuar.",
+      "ts": 1763119901061
+    },
+    {
+      "role": "user",
+      "content": "Ô£à Ma├¡z",
+      "ts": 1763119915349
+    },
+    {
+      "role": "bot",
+      "content": "┬┐Cu├íntas *hect├íreas* vas a tratar? [lista: Elegir hect├íreas]",
+      "ts": 1763119915350
+    }
+  ],
+  "lastPrompt": "hectareas",
+  "lastPromptTs": 1763119915349,
+  "meta": {
+    "origin": "facebook",
+    "referral": {
+      "source_url": "https://fb.me/5knZDRQwI",
+      "source_id": "120236719999840524",
+      "source_type": "ad",
+      "body": "­ƒÆ¬ ┬┐Listo para un control efectivo y completo?  \n\nGLISATO (Glifosato Sal IPA 480 g/l SL), es el herbicida no selectivo de acci├│n sist├®mica que elimina malezas desde la ra├¡z. Ideal para tu barbecho qu├¡mico.  \n\n­ƒî▒ Eficiencia comprobada contra:  \n\n­ƒö╣ Rogelia  \n\n­ƒö╣ Verdolaga camba  \n\n­ƒö╣ Chupurujume y m├ís.  \n\n­ƒö╣ Absorci├│n r├ípida y excelente performance.  \n\n­ƒô® Cont├íctanos para m├ís informaci├│n.  \n\n#Glisato #ControlDeMalezas #BarbechoQu├¡mico #AgriculturaEficiente",
+      "headline": "New Chem Agroqu├¡micos",
+      "media_type": "image",
+      "image_url": "https://scontent.xx.fbcdn.net/v/t39.30808-6/480806961_122119418834647561_7897707757282518825_n.jpg?stp=dst-jpg_s394x394_tt6&_nc_cat=108&ccb=1-7&_nc_sid=c9359e&_nc_ohc=a3HtXsrs15gQ7kNvwEZQf5p&_nc_oc=AdmaPqw6VIrWKkT6NXGaJLX2MRoaFcmioFzsH_3Slwe-yxXWP2AQR8XZYwj19KwRW0GC1Fh7iQMy6TCeeXLoxKcl&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=scontent.xx&_nc_gid=xA9kRYke8mfVDLJea5L5Pw&oh=00_AfhMnglX8O1JcqyALk2icJhzCOmZNYQZnbpdcyNZ4QuAog&oe=691CDD05",
+      "ctwa_clid": "AfcxRFzaCBylWnnZsnWJFG3DhCxSe8cw7EilSOt1GxDXUKDqFNJ_TqYVea6pemUXS9_5k1nW_5rZbSgum4W5TYe8PDN1bj2EWh0j_RRd88cfX5Sq5v0QhXrMCOuwhk_LLc_Zm48XsQ",
+      "welcome_message": {
+        "text": "┬íHola, ! ┬┐C├│mo podemos ayudarte?"
+      }
+    },
+    "referralHandled": true,
+    "last_wamid": "wamid.HBgLNTkxNzQ0NTEzNDQVAgASGCBBQ0Y5MkU2MUM3RDc0NzA1RTdBN0M0RkZDMERGQUQxNAA=",
+    "preloadedFromSheet": true,
+    "lastMsg": {
+      "role": "bot",
+      "content": "┬┐Cu├íntas *hect├íreas* vas a tratar? [lista: Elegir hect├íreas]",
+      "ts": 1763119915350
+    },
+    "lastAt": 1763119915350,
+    "unread": 6
+  },
+  "_savedToSheet": false,
+  "_closedAt": null,
+  "_expiresAt": 1763724716125
+}

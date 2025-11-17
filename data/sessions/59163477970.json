@@ -1,0 +1,111 @@
+{
+  "greeted": true,
+  "stage": "product",
+  "pending": "departamento",
+  "asked": {
+    "nombre": true,
+    "departamento": true,
+    "subzona": false,
+    "cultivo": false,
+    "hectareas": false,
+    "campana": false
+  },
+  "vars": {
+    "departamento": null,
+    "subzona": null,
+    "cultivos": [],
+    "hectareas": null,
+    "campana": null,
+    "phone": null,
+    "cart": []
+  },
+  "profileName": "Precio Por Favor",
+  "memory": [
+    {
+      "role": "bot",
+      "content": "┬íHola! Soy el asistente virtual de New Chem Agroqu├¡micos.",
+      "ts": 1763081640223
+    },
+    {
+      "role": "bot",
+      "content": "Con mucho gusto te env├¡o la *ficha t├®cnica* de *FENPRONIL* ­ƒæç",
+      "ts": 1763081640928
+    },
+    {
+      "role": "bot",
+      "content": "Te ayudo a realizar tu cotizaci├│n.",
+      "ts": 1763081643429
+    },
+    {
+      "role": "bot",
+      "content": "Para personalizar tu atenci├│n, ┬┐cu├íl es tu *nombre completo*?",
+      "ts": 1763081644104
+    },
+    {
+      "role": "user",
+      "content": "Precio por favor",
+      "ts": 1763081656114
+    },
+    {
+      "role": "bot",
+      "content": "­ƒôì Cu├®ntanos, ┬┐desde qu├® *departamento* de Bolivia nos escribes? [lista: Elegir departamento]",
+      "ts": 1763081656116
+    },
+    {
+      "role": "user",
+      "content": "Precio por favor",
+      "ts": 1763081678708
+    },
+    {
+      "role": "bot",
+      "content": "Para cotizar, por favor a├▒ade tus productos en el cat├ílogo y toca *Enviar a WhatsApp*:\nhttps://newchem-bot-production.up.railway.app/catalog.html",
+      "ts": 1763081678710
+    },
+    {
+      "role": "user",
+      "content": "Fipronil",
+      "ts": 1763081695211
+    },
+    {
+      "role": "bot",
+      "content": "Te ayudo a realizar tu cotizaci├│n.\nPara cotizar, ├íbrelo en el cat├ílogo, a├▒├ídelo al carrito y toca *Enviar a WhatsApp*:\nhttps://newchem-bot-production.up.railway.app/catalog.html",
+      "ts": 1763081696873
+    },
+    {
+      "role": "bot",
+      "content": "­ƒôì Cu├®ntanos, ┬┐desde qu├® *departamento* de Bolivia nos escribes? [lista: Elegir departamento]",
+      "ts": 1763081697619
+    }
+  ],
+  "lastPrompt": "departamento",
+  "lastPromptTs": 1763081697618,
+  "meta": {
+    "origin": "facebook",
+    "referral": {
+      "source_url": "https://fb.me/4LY03gqEW",
+      "source_id": "120236721151250524",
+      "source_type": "ad",
+      "body": "­Øù£­Øù╗­Øù│­Øù«­Øù╣­ØùÂ­Øù»­Øù╣­Øù▓ ­Øù░­Øù╝­Øù╗­Øÿü­Øù┐­Øù« ­Øù╣­Øù«­ØÿÇ ­Øù¢­Øù╣­Øù«­Øù┤­Øù«­ØÿÇ\nCuando se trata de proteger tu cultivo, necesitas una soluci├│n que no deje margen de error. Fenpronil act├║a por contacto e ingesti├│n, eliminando de manera contundente un amplio espectro de plagas. Su alta efectividad garantiza un control preciso y duradero, asegurando que tu inversi├│n rinda al m├íximo.\n\n­ƒöÑ ­Øùö­Øù░­Øù░­ØùÂ­Øù╝╠ü­Øù╗ ­Øù╣­Øù▓­Øÿü­Øù«­Øù╣ ­Øÿå ­Øù¢­Øù┐­Øù╝­Øù╣­Øù╝­Øù╗­Øù┤­Øù«­Øù▒­Øù«\n­ƒî▒ ­Øùû­Øÿé­Øù╣­Øÿü­ØùÂ­Øÿâ­Øù╝­ØÿÇ ­Øù¢­Øù┐­Øù╝­Øÿü­Øù▓­Øù┤­ØùÂ­Øù▒­Øù╝­ØÿÇ, ­Øù░­Øù╝­ØÿÇ­Øù▓­Øù░­ØùÁ­Øù«­ØÿÇ ­ØÿÇ­Øù▓­Øù┤­Øÿé­Øù┐­Øù«­ØÿÇ\n­ƒÆ¬ ­Øùÿ­Øù│­Øù▓­Øù░­Øÿü­ØùÂ­Øÿâ­ØùÂ­Øù▒­Øù«­Øù▒ ­ØÿÇ­ØùÂ­Øù╗ ­Øù░­Øù╝­Øù╗­Øù░­Øù▓­ØÿÇ­ØùÂ­Øù╝­Øù╗­Øù▓­ØÿÇ\n\n#­Øùí­Øù▓­Øÿä­Øùû­ØùÁ­Øù▓­Øù║ #­Øùú­Øù┐­Øù╝­Øÿü­Øù▓­Øù░­Øù░­ØùÂ­Øù╝╠ü­Øù╗­Øùÿ­Øù│­ØùÂ­Øù░­Øù«­Øÿç #­Øùû­Øÿé­Øù╣­Øÿü­ØùÂ­Øÿâ­Øù╝­ØÿÇ­Øùª­Øù▓­Øù┤­Øÿé­Øù┐­Øù╝­ØÿÇ #­Øùû­Øù╝­Øù╗­Øÿü­Øù┐­Øù╝­Øù╣­Øùù­Øù▓­Øùú­Øù╣­Øù«­Øù┤­Øù«­ØÿÇ #­ØùÖ­Øù▓­Øù╗­Øù¢",
+      "headline": "New Chem Agroqu├¡micos",
+      "media_type": "image",
+      "image_url": "https://scontent.xx.fbcdn.net/v/t39.30808-6/484829412_122122542830647561_2416719996733335913_n.jpg?stp=dst-jpg_s394x394_tt6&_nc_cat=103&ccb=1-7&_nc_sid=c8f752&_nc_ohc=MR31VjkveDUQ7kNvwGvlHbT&_nc_oc=AdmbHECoyBRAVwFY_X3DZVdPknSQ-vQRIy9ZGHx4hlFiN7l0MBlqajyrTaMerwp-UD2oLT1LGLR8rJnREnwlQIi-&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=scontent.xx&_nc_gid=lBgi2fRRtFgRLXsmJuWW5w&oh=00_Afg3BQ2og_p0tskdsZdXyFCWirP7rAX5NKPnFennZhQMNA&oe=691C36C6",
+      "ctwa_clid": "AffMZjP4rzs522zK3LXTBOw9OKA_nzK1Ablm0RT9qQK_kYw9rFtZ_mgIpWmS2s40SqnAvnswcd5f0G7QL6uLbrsXY3A7seNeLOazQP18AYpdZQdDiTtDzS8twxidxR8mS8zJJbExiA",
+      "welcome_message": {
+        "text": "┬íHola! ┬┐C├│mo podemos ayudarte?"
+      }
+    },
+    "referralHandled": true,
+    "last_wamid": "wamid.HBgLNTkxNjM0Nzc5NzAVAgASGCBBQ0NBRUVBODJDQjI2NjVCN0QyMTI0QkQzNUU5NEYxNQA=",
+    "preloadedFromSheet": true,
+    "lastMsg": {
+      "role": "bot",
+      "content": "­ƒôì Cu├®ntanos, ┬┐desde qu├® *departamento* de Bolivia nos escribes? [lista: Elegir departamento]",
+      "ts": 1763081697619
+    },
+    "lastAt": 1763081697619,
+    "unread": 3
+  },
+  "_savedToSheet": false,
+  "_closedAt": null,
+  "_expiresAt": 1763686498779
+}

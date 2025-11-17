@@ -1,0 +1,143 @@
+{
+  "greeted": true,
+  "stage": "product",
+  "pending": "campana",
+  "asked": {
+    "nombre": true,
+    "departamento": true,
+    "subzona": true,
+    "cultivo": true,
+    "hectareas": true,
+    "campana": true
+  },
+  "vars": {
+    "departamento": "Chuquisaca",
+    "subzona": "Municipio Sopachuy",
+    "cultivos": [
+      "Ma├¡z"
+    ],
+    "hectareas": "10",
+    "campana": null,
+    "phone": null,
+    "cart": []
+  },
+  "profileName": "Paa Hierbas",
+  "memory": [
+    {
+      "role": "bot",
+      "content": "┬íHola! Soy el asistente virtual de New Chem Agroqu├¡micos.",
+      "ts": 1763326318676
+    },
+    {
+      "role": "bot",
+      "content": "Con mucho gusto te env├¡o la *ficha t├®cnica* de *DRIER* ­ƒæç",
+      "ts": 1763326319504
+    },
+    {
+      "role": "bot",
+      "content": "Te ayudo a realizar tu cotizaci├│n.",
+      "ts": 1763326321793
+    },
+    {
+      "role": "bot",
+      "content": "Para personalizar tu atenci├│n, ┬┐cu├íl es tu *nombre completo*?",
+      "ts": 1763326322725
+    },
+    {
+      "role": "user",
+      "content": "paa hierbas",
+      "ts": 1763326349180
+    },
+    {
+      "role": "bot",
+      "content": "­ƒôì Cu├®ntanos, ┬┐desde qu├® *departamento* de Bolivia nos escribes? [lista: Elegir departamento]",
+      "ts": 1763326349182
+    },
+    {
+      "role": "user",
+      "content": "Chuquisaca",
+      "ts": 1763326371990
+    },
+    {
+      "role": "user",
+      "content": "para maiz",
+      "ts": 1763326404350
+    },
+    {
+      "role": "bot",
+      "content": "Perfecto. ┬┐En qu├® *zona* de *Chuquisaca* trabajas?",
+      "ts": 1763326404351
+    },
+    {
+      "role": "user",
+      "content": "municipio sopachuy",
+      "ts": 1763326425244
+    },
+    {
+      "role": "bot",
+      "content": "­ƒôï ┬┐Para qu├® *cultivo* necesitas el producto? [lista: Elegir cultivo]",
+      "ts": 1763326425246
+    },
+    {
+      "role": "user",
+      "content": "maiz",
+      "ts": 1763326444263
+    },
+    {
+      "role": "bot",
+      "content": "┬┐Cu├íntas *hect├íreas* vas a tratar? [lista: Elegir hect├íreas]",
+      "ts": 1763326444264
+    },
+    {
+      "role": "user",
+      "content": "10",
+      "ts": 1763326465605
+    },
+    {
+      "role": "bot",
+      "content": "┬┐En qu├® *campa├▒a* te encuentras?  [botones]",
+      "ts": 1763326465606
+    },
+    {
+      "role": "user",
+      "content": "precio",
+      "ts": 1763326509126
+    },
+    {
+      "role": "bot",
+      "content": "Para cotizar, por favor a├▒ade tus productos en el cat├ílogo y toca *Enviar a WhatsApp*:\nhttps://newchem-bot-production.up.railway.app/catalog.html",
+      "ts": 1763326509126
+    }
+  ],
+  "lastPrompt": "campana",
+  "lastPromptTs": 1763326465606,
+  "meta": {
+    "origin": "facebook",
+    "referral": {
+      "source_url": "https://fb.me/6VE70ZUFa",
+      "source_id": "120236721074370524",
+      "source_type": "ad",
+      "body": "­ƒÆ¬ ┬┐­Øùñ­Øÿé­Øù▓­Øù┐├®­ØÿÇ ­Øù¥­Øÿé­Øù▓ ­Øù╣­Øù«­ØÿÇ ­Øù║­Øù«­Øù╣­Øù▓­Øÿç­Øù«­ØÿÇ ­Øù▒­Øù▓­ØÿÇ­Øù«­Øù¢­Øù«­Øù┐­Øù▓­Øÿç­Øù░­Øù«­Øù╗ ­Øù▓­Øù╗ ­Øÿé­Øù╗ ­ØùÂ­Øù╗­ØÿÇ­Øÿü­Øù«­Øù╗­Øÿü­Øù▓?\nDRIER (Paraquat dichloride 276 g/l SL), es nuestro herbicida de contacto y desecante con acci├│n ultrarr├ípida. El adecuado para limpiar tu terreno.\n\n­ƒî▒ Resultados visibles en poco tiempo.\n­ƒö╣ Controla malezas.\n­ƒö╣ Optimiza tu preparaci├│n de suelo.\n\n­ƒô® Escr├¡benos para m├ís informaci├│n.\n#­Øùù­Øù┐­ØùÂ­Øù▓­Øù┐ #­Øùò­Øù«­Øù┐­Øù»­Øù▓­Øù░­ØùÁ­Øù╝­Øùñ­Øÿé­ØùÂ╠ü­Øù║­ØùÂ­Øù░­Øù╝ #­Øùû­Øù╝­Øù╗­Øÿü­Øù┐­Øù╝­Øù╣­Øùù­Øù▓­Øùá­Øù«­Øù╣­Øù▓­Øÿç­Øù«­ØÿÇ #­Øùö­Øù┤­Øù┐­ØùÂ­Øù░­Øÿé­Øù╣­Øÿü­Øÿé­Øù┐­Øù«­Øùÿ­Øù│­ØùÂ­Øù░­ØùÂ­Øù▓­Øù╗­Øÿü­Øù▓",
+      "headline": "New Chem Agroqu├¡micos",
+      "media_type": "image",
+      "image_url": "https://scontent.xx.fbcdn.net/v/t39.30808-6/549239595_122145627332647561_8897723547298644487_n.jpg?stp=dst-jpg_s394x394_tt6&_nc_cat=103&ccb=1-7&_nc_sid=c8f752&_nc_ohc=tU1A3c4ubBQQ7kNvwHjMnOT&_nc_oc=AdkRpYyD10ryovHZSIxVBaJXkikxcvwaZcEFoPMszBkhYO1t3RG18zamBXQWhSIv45eaEwDn4akBW1ytFrVLfqde&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=scontent.xx&_nc_gid=Ix9BeF3nlLTQ8B06vYz4WQ&oh=00_AfjmMkTkHHf7b1UPQhWGAeCbY-wREmi_xOa_LC7wZXl4hw&oe=69201192",
+      "ctwa_clid": "AfeXyL2Adqqj26tZNjBMrKDM5JKS-R8l2cx4HBQmKZBmCFXWN1XIUf9fdeKSOrQc9DMmHGQaa-AB8yQI2eGrWUJN-C0rfcvw5DqZxTGH5gCYuiXNgf3V1c7HLkVemat_ztmBJJWi7w",
+      "welcome_message": {
+        "text": "┬íHola! ┬┐C├│mo podemos ayudarte?"
+      }
+    },
+    "referralHandled": true,
+    "last_wamid": "wamid.HBgLNTkxNjc2MDE4MDQVAgASGCBBQzc5RTAzREYxRDk1RTBFMjk2MjJDQUNGQUJEM0Q5QQA=",
+    "preloadedFromSheet": true,
+    "lastMsg": {
+      "role": "bot",
+      "content": "Para cotizar, por favor a├▒ade tus productos en el cat├ílogo y toca *Enviar a WhatsApp*:\nhttps://newchem-bot-production.up.railway.app/catalog.html",
+      "ts": 1763326509126
+    },
+    "lastAt": 1763326509126,
+    "unread": 7
+  },
+  "_savedToSheet": false,
+  "_closedAt": null,
+  "_expiresAt": 1763931309126
+}

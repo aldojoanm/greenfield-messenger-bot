@@ -1,0 +1,91 @@
+{
+  "greeted": true,
+  "stage": "product",
+  "pending": "departamento",
+  "asked": {
+    "nombre": true,
+    "departamento": true,
+    "subzona": false,
+    "cultivo": false,
+    "hectareas": false,
+    "campana": false
+  },
+  "vars": {
+    "departamento": null,
+    "subzona": null,
+    "cultivos": [],
+    "hectareas": null,
+    "campana": null,
+    "phone": null,
+    "cart": []
+  },
+  "profileName": "En Q Ciudad Est├í La Tienda",
+  "memory": [
+    {
+      "role": "bot",
+      "content": "┬íHola! Soy el asistente virtual de New Chem Agroqu├¡micos.",
+      "ts": 1763344124628
+    },
+    {
+      "role": "bot",
+      "content": "Con mucho gusto te env├¡o la *ficha t├®cnica* de *FENPRONIL* ­ƒæç",
+      "ts": 1763344125886
+    },
+    {
+      "role": "bot",
+      "content": "Te ayudo a realizar tu cotizaci├│n.",
+      "ts": 1763344128815
+    },
+    {
+      "role": "bot",
+      "content": "Para personalizar tu atenci├│n, ┬┐cu├íl es tu *nombre completo*?",
+      "ts": 1763344129592
+    },
+    {
+      "role": "user",
+      "content": "En q ciudad est├í la tienda",
+      "ts": 1763344153956
+    },
+    {
+      "role": "bot",
+      "content": "­ƒôì Cu├®ntanos, ┬┐desde qu├® *departamento* de Bolivia nos escribes? [lista: Elegir departamento]",
+      "ts": 1763344153958
+    },
+    {
+      "role": "user",
+      "content": "Tiene landatrin",
+      "ts": 1763344160597
+    }
+  ],
+  "lastPrompt": "departamento",
+  "lastPromptTs": 1763344153957,
+  "meta": {
+    "origin": "facebook",
+    "referral": {
+      "source_url": "https://fb.me/4LY03gqEW",
+      "source_id": "120236721151250524",
+      "source_type": "ad",
+      "body": "­Øù£­Øù╗­Øù│­Øù«­Øù╣­ØùÂ­Øù»­Øù╣­Øù▓ ­Øù░­Øù╝­Øù╗­Øÿü­Øù┐­Øù« ­Øù╣­Øù«­ØÿÇ ­Øù¢­Øù╣­Øù«­Øù┤­Øù«­ØÿÇ\nCuando se trata de proteger tu cultivo, necesitas una soluci├│n que no deje margen de error. Fenpronil act├║a por contacto e ingesti├│n, eliminando de manera contundente un amplio espectro de plagas. Su alta efectividad garantiza un control preciso y duradero, asegurando que tu inversi├│n rinda al m├íximo.\n\n­ƒöÑ ­Øùö­Øù░­Øù░­ØùÂ­Øù╝╠ü­Øù╗ ­Øù╣­Øù▓­Øÿü­Øù«­Øù╣ ­Øÿå ­Øù¢­Øù┐­Øù╝­Øù╣­Øù╝­Øù╗­Øù┤­Øù«­Øù▒­Øù«\n­ƒî▒ ­Øùû­Øÿé­Øù╣­Øÿü­ØùÂ­Øÿâ­Øù╝­ØÿÇ ­Øù¢­Øù┐­Øù╝­Øÿü­Øù▓­Øù┤­ØùÂ­Øù▒­Øù╝­ØÿÇ, ­Øù░­Øù╝­ØÿÇ­Øù▓­Øù░­ØùÁ­Øù«­ØÿÇ ­ØÿÇ­Øù▓­Øù┤­Øÿé­Øù┐­Øù«­ØÿÇ\n­ƒÆ¬ ­Øùÿ­Øù│­Øù▓­Øù░­Øÿü­ØùÂ­Øÿâ­ØùÂ­Øù▒­Øù«­Øù▒ ­ØÿÇ­ØùÂ­Øù╗ ­Øù░­Øù╝­Øù╗­Øù░­Øù▓­ØÿÇ­ØùÂ­Øù╝­Øù╗­Øù▓­ØÿÇ\n\n#­Øùí­Øù▓­Øÿä­Øùû­ØùÁ­Øù▓­Øù║ #­Øùú­Øù┐­Øù╝­Øÿü­Øù▓­Øù░­Øù░­ØùÂ­Øù╝╠ü­Øù╗­Øùÿ­Øù│­ØùÂ­Øù░­Øù«­Øÿç #­Øùû­Øÿé­Øù╣­Øÿü­ØùÂ­Øÿâ­Øù╝­ØÿÇ­Øùª­Øù▓­Øù┤­Øÿé­Øù┐­Øù╝­ØÿÇ #­Øùû­Øù╝­Øù╗­Øÿü­Øù┐­Øù╝­Øù╣­Øùù­Øù▓­Øùú­Øù╣­Øù«­Øù┤­Øù«­ØÿÇ #­ØùÖ­Øù▓­Øù╗­Øù¢",
+      "headline": "New Chem Agroqu├¡micos",
+      "media_type": "image",
+      "image_url": "https://scontent.xx.fbcdn.net/v/t39.30808-6/484829412_122122542830647561_2416719996733335913_n.jpg?stp=dst-jpg_s394x394_tt6&_nc_cat=103&ccb=1-7&_nc_sid=c8f752&_nc_ohc=0url0o9yAVkQ7kNvwHxfcj6&_nc_oc=AdkmUfTZJj9WKFoIpmAV7d9uqbJmpt3LPbWJVAJxP03Dx_J-2byLLE4Xic02KLPVydvMg0Sb9bpaQi1_EPVT8lqo&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=scontent.xx&_nc_gid=BRPx3Czhmlt7F2m7W1BxcA&oh=00_AfgHuDNf5KB8ouE6aRsaXu80uQxIuYnz7j-w1KANz8PhpQ&oe=69206386",
+      "ctwa_clid": "AfciKPdivpL4KYPYYWRmRoB3tB7_RTesv2Jyi7Nbf4QG95Iuct-veLVmfG67VSPvvdsERtfyfQcOMEXnc8kxJ9TcQMinH7OyigAl_wpCx3LkMNebpmPMCpV3At3c4qOWxOB0jayq4w",
+      "welcome_message": {
+        "text": "┬íHola! ┬┐C├│mo podemos ayudarte?"
+      }
+    },
+    "referralHandled": true,
+    "last_wamid": "wamid.HBgLNTkxNjcyMDYyMDUVAgASGCBBQ0FBNjVFQzkwMEQ1REFFQTI1NUNCMEIxNThGRkI5QwA=",
+    "preloadedFromSheet": true,
+    "lastMsg": {
+      "role": "user",
+      "content": "Tiene landatrin",
+      "ts": 1763344160597
+    },
+    "lastAt": 1763344160597,
+    "unread": 2
+  },
+  "_savedToSheet": false,
+  "_closedAt": null,
+  "_expiresAt": 1763948960597
+}

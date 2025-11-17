@@ -1,0 +1,149 @@
+{
+  "greeted": true,
+  "stage": "product",
+  "pending": "catalog_link",
+  "asked": {
+    "nombre": true,
+    "departamento": true,
+    "subzona": true,
+    "cultivo": true,
+    "hectareas": true,
+    "campana": true
+  },
+  "vars": {
+    "departamento": "Beni",
+    "subzona": "Yucumo Municio Sal.borha",
+    "cultivos": [
+      "Maracuy├í"
+    ],
+    "hectareas": "0ÔÇô100 ha",
+    "campana": "Verano",
+    "phone": null,
+    "cart": []
+  },
+  "profileName": "Jorge Luis Chuquimia Chavarr├¡a",
+  "memory": [
+    {
+      "role": "bot",
+      "content": "┬íHola! Soy el asistente virtual de New Chem Agroqu├¡micos.",
+      "ts": 1763124702197
+    },
+    {
+      "role": "bot",
+      "content": "Con mucho gusto te env├¡o la *ficha t├®cnica* de *GLISATO* ­ƒæç",
+      "ts": 1763124703003
+    },
+    {
+      "role": "bot",
+      "content": "Te ayudo a realizar tu cotizaci├│n.",
+      "ts": 1763124705227
+    },
+    {
+      "role": "bot",
+      "content": "Para personalizar tu atenci├│n, ┬┐cu├íl es tu *nombre completo*?",
+      "ts": 1763124705923
+    },
+    {
+      "role": "user",
+      "content": "Jorge Luis Chuquimia Chavarr├¡a",
+      "ts": 1763124728351
+    },
+    {
+      "role": "bot",
+      "content": "­ƒôì Cu├®ntanos, ┬┐desde qu├® *departamento* de Bolivia nos escribes? [lista: Elegir departamento]",
+      "ts": 1763124728352
+    },
+    {
+      "role": "user",
+      "content": "Ô£à Beni",
+      "ts": 1763124737550
+    },
+    {
+      "role": "bot",
+      "content": "Perfecto. ┬┐En qu├® *zona* de *Beni* trabajas?",
+      "ts": 1763124737551
+    },
+    {
+      "role": "user",
+      "content": "Yucumo municio sal.borha",
+      "ts": 1763124758128
+    },
+    {
+      "role": "bot",
+      "content": "­ƒôï ┬┐Para qu├® *cultivo* necesitas el producto? [lista: Elegir cultivo]",
+      "ts": 1763124758130
+    },
+    {
+      "role": "user",
+      "content": "Ô£à Otro",
+      "ts": 1763124767818
+    },
+    {
+      "role": "bot",
+      "content": "Qu├® *cultivo* manejas?",
+      "ts": 1763124767818
+    },
+    {
+      "role": "user",
+      "content": "Maracuy├í",
+      "ts": 1763124775619
+    },
+    {
+      "role": "bot",
+      "content": "┬┐Cu├íntas *hect├íreas* vas a tratar? [lista: Elegir hect├íreas]",
+      "ts": 1763124775620
+    },
+    {
+      "role": "user",
+      "content": "Ô£à 0ÔÇô100 ha",
+      "ts": 1763124785825
+    },
+    {
+      "role": "bot",
+      "content": "┬┐En qu├® *campa├▒a* te encuentras?  [botones]",
+      "ts": 1763124785826
+    },
+    {
+      "role": "user",
+      "content": "Ô£à Verano",
+      "ts": 1763124790526
+    },
+    {
+      "role": "bot",
+      "content": "Te dejo nuestro *cat├ílogo*.\nhttps://newchem-bot-production.up.railway.app/catalog.html\n\n­ƒæë A├▒ade tus productos y toca *Enviar a WhatsApp*. Yo recibir├® tu pedido y te preparar├® tu cotizaci├│n.",
+      "ts": 1763124790528
+    }
+  ],
+  "lastPrompt": "catalog_link",
+  "lastPromptTs": 1763124790527,
+  "meta": {
+    "origin": "facebook",
+    "referral": {
+      "source_url": "https://fb.me/2YSrC0QNK",
+      "source_id": "120236719999840524",
+      "source_type": "ad",
+      "body": "­ƒÆ¬ ┬┐Listo para un control efectivo y completo?  \n\nGLISATO (Glifosato Sal IPA 480 g/l SL), es el herbicida no selectivo de acci├│n sist├®mica que elimina malezas desde la ra├¡z. Ideal para tu barbecho qu├¡mico.  \n\n­ƒî▒ Eficiencia comprobada contra:  \n\n­ƒö╣ Rogelia  \n\n­ƒö╣ Verdolaga camba  \n\n­ƒö╣ Chupurujume y m├ís.  \n\n­ƒö╣ Absorci├│n r├ípida y excelente performance.  \n\n­ƒô® Cont├íctanos para m├ís informaci├│n.  \n\n#Glisato #ControlDeMalezas #BarbechoQu├¡mico #AgriculturaEficiente",
+      "headline": "New Chem Agroqu├¡micos",
+      "media_type": "image",
+      "image_url": "https://scontent.xx.fbcdn.net/v/t39.30808-6/480806961_122119418834647561_7897707757282518825_n.jpg?stp=dst-jpg_s394x394_tt6&_nc_cat=108&ccb=1-7&_nc_sid=c9359e&_nc_ohc=a3HtXsrs15gQ7kNvwE0x0ur&_nc_oc=AdkCHCHmgmTAcQ_OAPl9IJHhsnKMDQDGOb5W9cxEdmFfT3Ao7K5GpGrGwS_M5uNpqCQ4W5-cqe4bl8IgoG9cfatW&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=scontent.xx&_nc_gid=T2SXzyiQQvdFI0CPDKth3w&oh=00_Afh1-YOX0eJcU15n1lXPxwGruzx7NXkWTqSd4NPcIOem6A&oe=691CDD05",
+      "ctwa_clid": "AffiB7mlnBO_g3GW8mTh6jsWcMqHOgv8OB4SHKzSsSB0M1ir8ZtK6YMpTnM_GdHWynKr24QdyHjtlgRiCS-2W7JNPVMtPyZgfv-er4PlVh_ZffeeVe7DjxzkIi1VtjafnWkugxA6JA",
+      "welcome_message": {
+        "text": "┬íHola, ! ┬┐C├│mo podemos ayudarte?"
+      }
+    },
+    "referralHandled": true,
+    "last_wamid": "wamid.HBgLNTkxNzQwMDI4MDYVAgASGCBBQ0I3RkMzNjE0QjUyODdEQjhFNjNBQTcxMEQ0QkUwMwA=",
+    "preloadedFromSheet": true,
+    "lastMsg": {
+      "role": "bot",
+      "content": "Te dejo nuestro *cat├ílogo*.\nhttps://newchem-bot-production.up.railway.app/catalog.html\n\n­ƒæë A├▒ade tus productos y toca *Enviar a WhatsApp*. Yo recibir├® tu pedido y te preparar├® tu cotizaci├│n.",
+      "ts": 1763124790528
+    },
+    "lastAt": 1763124790528,
+    "unread": 7,
+    "campanaUpdatedAt": 1763124790527
+  },
+  "_savedToSheet": false,
+  "_closedAt": null,
+  "_expiresAt": 1763729591261
+}

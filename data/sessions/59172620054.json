@@ -1,0 +1,75 @@
+{
+  "greeted": true,
+  "stage": "product",
+  "pending": "nombre",
+  "asked": {
+    "nombre": true,
+    "departamento": false,
+    "subzona": false,
+    "cultivo": false,
+    "hectareas": false,
+    "campana": false
+  },
+  "vars": {
+    "departamento": null,
+    "subzona": null,
+    "cultivos": [],
+    "hectareas": null,
+    "campana": null,
+    "phone": null,
+    "cart": []
+  },
+  "profileName": null,
+  "memory": [
+    {
+      "role": "bot",
+      "content": "┬íHola! Soy el asistente virtual de New Chem Agroqu├¡micos.",
+      "ts": 1763114836241
+    },
+    {
+      "role": "bot",
+      "content": "Con mucho gusto te env├¡o la *ficha t├®cnica* de *DRIER* ­ƒæç",
+      "ts": 1763114836999
+    },
+    {
+      "role": "bot",
+      "content": "Te ayudo a realizar tu cotizaci├│n.",
+      "ts": 1763114839696
+    },
+    {
+      "role": "bot",
+      "content": "Para personalizar tu atenci├│n, ┬┐cu├íl es tu *nombre completo*?",
+      "ts": 1763114840443
+    }
+  ],
+  "lastPrompt": "nombre",
+  "lastPromptTs": 1763114840443,
+  "meta": {
+    "origin": "facebook",
+    "referral": {
+      "source_url": "https://fb.me/5CA6VBwg3",
+      "source_id": "120236721074370524",
+      "source_type": "ad",
+      "body": "­ƒÆ¬ ┬┐­Øùñ­Øÿé­Øù▓­Øù┐├®­ØÿÇ ­Øù¥­Øÿé­Øù▓ ­Øù╣­Øù«­ØÿÇ ­Øù║­Øù«­Øù╣­Øù▓­Øÿç­Øù«­ØÿÇ ­Øù▒­Øù▓­ØÿÇ­Øù«­Øù¢­Øù«­Øù┐­Øù▓­Øÿç­Øù░­Øù«­Øù╗ ­Øù▓­Øù╗ ­Øÿé­Øù╗ ­ØùÂ­Øù╗­ØÿÇ­Øÿü­Øù«­Øù╗­Øÿü­Øù▓?\nDRIER (Paraquat dichloride 276 g/l SL), es nuestro herbicida de contacto y desecante con acci├│n ultrarr├ípida. El adecuado para limpiar tu terreno.\n\n­ƒî▒ Resultados visibles en poco tiempo.\n­ƒö╣ Controla malezas.\n­ƒö╣ Optimiza tu preparaci├│n de suelo.\n\n­ƒô® Escr├¡benos para m├ís informaci├│n.\n#­Øùù­Øù┐­ØùÂ­Øù▓­Øù┐ #­Øùò­Øù«­Øù┐­Øù»­Øù▓­Øù░­ØùÁ­Øù╝­Øùñ­Øÿé­ØùÂ╠ü­Øù║­ØùÂ­Øù░­Øù╝ #­Øùû­Øù╝­Øù╗­Øÿü­Øù┐­Øù╝­Øù╣­Øùù­Øù▓­Øùá­Øù«­Øù╣­Øù▓­Øÿç­Øù«­ØÿÇ #­Øùö­Øù┤­Øù┐­ØùÂ­Øù░­Øÿé­Øù╣­Øÿü­Øÿé­Øù┐­Øù«­Øùÿ­Øù│­ØùÂ­Øù░­ØùÂ­Øù▓­Øù╗­Øÿü­Øù▓",
+      "headline": "New Chem Agroqu├¡micos",
+      "media_type": "image",
+      "image_url": "https://scontent.xx.fbcdn.net/v/t39.30808-6/549239595_122145627332647561_8897723547298644487_n.jpg?stp=dst-jpg_s394x394_tt6&_nc_cat=103&ccb=1-7&_nc_sid=c8f752&_nc_ohc=TEVIAudlbYMQ7kNvwFMrLR4&_nc_oc=Adman3A4cPbXjiTFmbJTJjTgvyjKwRZhcYw_3Bek7_HcjfJBiKXGUVFivwMBn3PCQ4o5pBidJMw88PfsDlLU2SWG&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=scontent.xx&_nc_gid=LhOogsdyIhyvSz6BqZIBkw&oh=00_AfgyRUuDOevcEu0TiygCyVz6Y0_1neSRrpd4uTqf4EpM3w&oe=691CC5D2",
+      "ctwa_clid": "AfcAHTsuKrB0d5ElwH-gzCpjXdDR3ro1jhDvyAVdI8N0-rnIFk-AiIMAUX5hjXVfC5F6YLK6QsMfHMQprHdiqbDpyxBHfLLr5G3wvwha55tAlIKnSXeTc0vcuG6jvxPKSgJffcZmRg",
+      "welcome_message": {
+        "text": "┬íHola! ┬┐C├│mo podemos ayudarte?"
+      }
+    },
+    "referralHandled": true,
+    "last_wamid": "wamid.HBgLNTkxNzI2MjAwNTQVAgASGCBBQzM4NEY5MkU3OTE5MUUyRDU3Q0FBQTNCMjRBODAwNgA=",
+    "preloadedFromSheet": true,
+    "lastMsg": {
+      "role": "bot",
+      "content": "Para personalizar tu atenci├│n, ┬┐cu├íl es tu *nombre completo*?",
+      "ts": 1763114840443
+    },
+    "lastAt": 1763114840443
+  },
+  "_savedToSheet": false,
+  "_closedAt": null,
+  "_expiresAt": 1763719640443
+}

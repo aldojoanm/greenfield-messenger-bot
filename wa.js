@@ -235,13 +235,14 @@ function advisorProductList(s){
 
 function buildAdvisorPresetText(s){
   const quien = s.profileName || 'Cliente';
-  const lines = advisorProductList(s);
+
   return [
     `Hola ${quien}, soy ${ADVISOR_NAME}, ${ADVISOR_ROLE}.`,
-    `Te escribo por tu cotización con los siguientes productos:`,
-    lines
-  ].join('\n');
+    `Te escribo para darte seguimiento personalizado a tu cotización con *New Chem Agroquímicos*.`,
+    `Estoy aquí para ayudarte con cualquier duda.`
+  ].join('\n\n');
 }
+
 const agentClients = new Set();
 function sseSend(res, event, payload){
   try{
@@ -1153,10 +1154,17 @@ router.post('/wa/webhook', async (req,res)=>{
       s0.lastPrompt = null;
       s0.stage = 'checkout';
       persistS(fromId);
-      await toText(fromId, summaryText(s0));
+
+      await toText(fromId,
+        '✅ ¡Perfecto! Ya recibí tu pedido desde el catálogo y lo tengo listo para cotizar.\n\n' +
+        '*Compra mínima: US$ 3.000 (puedes combinar productos).* \n' +
+        '*La entrega de tu pedido se realiza en nuestro almacén*.'
+      );
+
       await toButtons(fromId, '¿Listo para *cotizar*?', [
         { title:'Cotizar', payload:'QR_FINALIZAR' }
       ]);
+
       res.sendStatus(200);
       return;
     }

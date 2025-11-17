@@ -1,0 +1,126 @@
+{
+  "greeted": true,
+  "stage": "product",
+  "pending": "subzona",
+  "asked": {
+    "nombre": true,
+    "departamento": true,
+    "subzona": true,
+    "cultivo": false,
+    "hectareas": false,
+    "campana": false
+  },
+  "vars": {
+    "departamento": "Santa Cruz",
+    "subzona": null,
+    "cultivos": [],
+    "hectareas": null,
+    "campana": null,
+    "phone": null,
+    "cart": []
+  },
+  "profileName": "El Producto Glisato A Como Vendes Por Litro Amigo",
+  "memory": [
+    {
+      "role": "bot",
+      "content": "┬íHola! Soy el asistente virtual de New Chem Agroqu├¡micos.",
+      "ts": 1763104326998
+    },
+    {
+      "role": "bot",
+      "content": "Con mucho gusto te env├¡o la *ficha t├®cnica* de *GLISATO* ­ƒæç",
+      "ts": 1763104328486
+    },
+    {
+      "role": "bot",
+      "content": "Te ayudo a realizar tu cotizaci├│n.",
+      "ts": 1763104330788
+    },
+    {
+      "role": "bot",
+      "content": "Para personalizar tu atenci├│n, ┬┐cu├íl es tu *nombre completo*?",
+      "ts": 1763104331351
+    },
+    {
+      "role": "user",
+      "content": "El producto glisato a como vendes por litro amigo",
+      "ts": 1763104650832
+    },
+    {
+      "role": "bot",
+      "content": "­ƒôì Cu├®ntanos, ┬┐desde qu├® *departamento* de Bolivia nos escribes? [lista: Elegir departamento]",
+      "ts": 1763104650834
+    },
+    {
+      "role": "user",
+      "content": "Santa cruz",
+      "ts": 1763104691564
+    },
+    {
+      "role": "bot",
+      "content": "Gracias. ┬┐En qu├® *zona de Santa Cruz*? [lista: Elegir zona]",
+      "ts": 1763104691566
+    },
+    {
+      "role": "user",
+      "content": "San julian, premera brecha casarabe",
+      "ts": 1763104755345
+    },
+    {
+      "role": "bot",
+      "content": "Gracias. ┬┐En qu├® *zona de Santa Cruz*? [lista: Elegir zona]",
+      "ts": 1763104755346
+    },
+    {
+      "role": "user",
+      "content": "En zona san julian, de la provincia ├▒uflo de Chaves",
+      "ts": 1763104867213
+    },
+    {
+      "role": "bot",
+      "content": "Gracias. ┬┐En qu├® *zona de Santa Cruz*? [lista: Elegir zona]",
+      "ts": 1763104867215
+    },
+    {
+      "role": "user",
+      "content": "Tu producto ya est├í vencido",
+      "ts": 1763113977185
+    },
+    {
+      "role": "bot",
+      "content": "Gracias. ┬┐En qu├® *zona de Santa Cruz*? [lista: Elegir zona]",
+      "ts": 1763113977187
+    }
+  ],
+  "lastPrompt": "subzona",
+  "lastPromptTs": 1763113977187,
+  "meta": {
+    "origin": "facebook",
+    "referral": {
+      "source_url": "https://fb.me/2YSrC0QNK",
+      "source_id": "120236719999840524",
+      "source_type": "ad",
+      "body": "­ƒÆ¬ ┬┐Listo para un control efectivo y completo?  \n\nGLISATO (Glifosato Sal IPA 480 g/l SL), es el herbicida no selectivo de acci├│n sist├®mica que elimina malezas desde la ra├¡z. Ideal para tu barbecho qu├¡mico.  \n\n­ƒî▒ Eficiencia comprobada contra:  \n\n­ƒö╣ Rogelia  \n\n­ƒö╣ Verdolaga camba  \n\n­ƒö╣ Chupurujume y m├ís.  \n\n­ƒö╣ Absorci├│n r├ípida y excelente performance.  \n\n­ƒô® Cont├íctanos para m├ís informaci├│n.  \n\n#Glisato #ControlDeMalezas #BarbechoQu├¡mico #AgriculturaEficiente",
+      "headline": "New Chem Agroqu├¡micos",
+      "media_type": "image",
+      "image_url": "https://scontent.xx.fbcdn.net/v/t39.30808-6/480806961_122119418834647561_7897707757282518825_n.jpg?stp=dst-jpg_s394x394_tt6&_nc_cat=108&ccb=1-7&_nc_sid=c9359e&_nc_ohc=a3HtXsrs15gQ7kNvwGE2NO1&_nc_oc=AdlaFoqItqSjxxh-AbY5x-Riav8kyxsdtyP2rDzpZ2e6k7IiC3OZUZ25TGnPYnVzmcq_z-4o-S7xqkZhG0zMKBU7&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=scontent.xx&_nc_gid=Hup-5wjVx7paMxP4amXTEg&oh=00_AfgFmdyKCMfSkV1Zm-55eouLtzbjJUsnK2nHSCct2MQ2kg&oe=691CA4C5",
+      "ctwa_clid": "AfdGV4plH_1gr-HiMuPEoMibcelzInnC-kkgsYFTE5AuxvGuyjkMIvuaUpIUb1_QvFCVsljBMNhUuK1XYCfoFo9vA6TBD7FozlQOSmeqiPxNbIDjTQfjP9pIbXi97Dy3560NteAMiA",
+      "welcome_message": {
+        "text": "┬íHola, ! ┬┐C├│mo podemos ayudarte?"
+      }
+    },
+    "referralHandled": true,
+    "last_wamid": "wamid.HBgLNTkxNzM2OTYwNzEVAgASGCBBQ0Q1RTk5RTBDRkE3MTUyNUIwRjQ0QjczMkI1NTlBQQA=",
+    "preloadedFromSheet": true,
+    "lastMsg": {
+      "role": "bot",
+      "content": "Gracias. ┬┐En qu├® *zona de Santa Cruz*? [lista: Elegir zona]",
+      "ts": 1763113977187
+    },
+    "lastAt": 1763113977187,
+    "unread": 5
+  },
+  "_savedToSheet": false,
+  "_closedAt": null,
+  "_expiresAt": 1763718777876
+}

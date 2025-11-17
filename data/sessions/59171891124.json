@@ -1,0 +1,159 @@
+{
+  "greeted": true,
+  "stage": "product",
+  "pending": "catalog_link",
+  "asked": {
+    "nombre": true,
+    "departamento": true,
+    "subzona": true,
+    "cultivo": true,
+    "hectareas": true,
+    "campana": true
+  },
+  "vars": {
+    "departamento": "Tarija",
+    "subzona": "Soy Del Campo Del Munisipio De Yunchara",
+    "cultivos": [
+      "Sebolla Y Y Puro Hortalisas"
+    ],
+    "hectareas": "0ÔÇô100 ha",
+    "campana": "Verano",
+    "phone": null,
+    "cart": []
+  },
+  "profileName": "Hola Jhomny Farfan Soy De Tarija",
+  "memory": [
+    {
+      "role": "bot",
+      "content": "┬íHola! Soy el asistente virtual de New Chem Agroqu├¡micos.",
+      "ts": 1763065683516
+    },
+    {
+      "role": "bot",
+      "content": "Con mucho gusto te env├¡o la *ficha t├®cnica* de *FENPRONIL* ­ƒæç",
+      "ts": 1763065684619
+    },
+    {
+      "role": "bot",
+      "content": "Te ayudo a realizar tu cotizaci├│n.",
+      "ts": 1763065687378
+    },
+    {
+      "role": "bot",
+      "content": "Para personalizar tu atenci├│n, ┬┐cu├íl es tu *nombre completo*?",
+      "ts": 1763065688132
+    },
+    {
+      "role": "user",
+      "content": "Hola jhomny farfan soy de  tarija",
+      "ts": 1763065774837
+    },
+    {
+      "role": "bot",
+      "content": "­ƒôì Cu├®ntanos, ┬┐desde qu├® *departamento* de Bolivia nos escribes? [lista: Elegir departamento]",
+      "ts": 1763065774838
+    },
+    {
+      "role": "user",
+      "content": "Ô£à Tarija",
+      "ts": 1763065787512
+    },
+    {
+      "role": "bot",
+      "content": "Perfecto. ┬┐En qu├® *zona* de *Tarija* trabajas?",
+      "ts": 1763065787513
+    },
+    {
+      "role": "user",
+      "content": "Soy del campo del munisipio de yunchara",
+      "ts": 1763065862229
+    },
+    {
+      "role": "bot",
+      "content": "­ƒôï ┬┐Para qu├® *cultivo* necesitas el producto? [lista: Elegir cultivo]",
+      "ts": 1763065862231
+    },
+    {
+      "role": "user",
+      "content": "Para sebolla soy proctor de sebolla",
+      "ts": 1763065905941
+    },
+    {
+      "role": "bot",
+      "content": "Por favor, *elige una opci├│n del listado* para continuar.",
+      "ts": 1763065905942
+    },
+    {
+      "role": "user",
+      "content": "Ô£à Otro",
+      "ts": 1763065920663
+    },
+    {
+      "role": "bot",
+      "content": "Qu├® *cultivo* manejas?",
+      "ts": 1763065920669
+    },
+    {
+      "role": "user",
+      "content": "Sebolla y y puro hortalisas",
+      "ts": 1763065978350
+    },
+    {
+      "role": "bot",
+      "content": "┬┐Cu├íntas *hect├íreas* vas a tratar? [lista: Elegir hect├íreas]",
+      "ts": 1763065978353
+    },
+    {
+      "role": "user",
+      "content": "Ô£à 0ÔÇô100 ha",
+      "ts": 1763066043803
+    },
+    {
+      "role": "bot",
+      "content": "┬┐En qu├® *campa├▒a* te encuentras?  [botones]",
+      "ts": 1763066043805
+    },
+    {
+      "role": "user",
+      "content": "Ô£à Verano",
+      "ts": 1763066280951
+    },
+    {
+      "role": "bot",
+      "content": "Te dejo nuestro *cat├ílogo*.\nhttps://newchem-bot-production.up.railway.app/catalog.html\n\n­ƒæë A├▒ade tus productos y toca *Enviar a WhatsApp*. Yo recibir├® tu pedido y te preparar├® tu cotizaci├│n.",
+      "ts": 1763066280952
+    }
+  ],
+  "lastPrompt": "catalog_link",
+  "lastPromptTs": 1763066280952,
+  "meta": {
+    "origin": "facebook",
+    "referral": {
+      "source_url": "https://fb.me/4LY03gqEW",
+      "source_id": "120236721151250524",
+      "source_type": "ad",
+      "body": "­Øù£­Øù╗­Øù│­Øù«­Øù╣­ØùÂ­Øù»­Øù╣­Øù▓ ­Øù░­Øù╝­Øù╗­Øÿü­Øù┐­Øù« ­Øù╣­Øù«­ØÿÇ ­Øù¢­Øù╣­Øù«­Øù┤­Øù«­ØÿÇ\nCuando se trata de proteger tu cultivo, necesitas una soluci├│n que no deje margen de error. Fenpronil act├║a por contacto e ingesti├│n, eliminando de manera contundente un amplio espectro de plagas. Su alta efectividad garantiza un control preciso y duradero, asegurando que tu inversi├│n rinda al m├íximo.\n\n­ƒöÑ ­Øùö­Øù░­Øù░­ØùÂ­Øù╝╠ü­Øù╗ ­Øù╣­Øù▓­Øÿü­Øù«­Øù╣ ­Øÿå ­Øù¢­Øù┐­Øù╝­Øù╣­Øù╝­Øù╗­Øù┤­Øù«­Øù▒­Øù«\n­ƒî▒ ­Øùû­Øÿé­Øù╣­Øÿü­ØùÂ­Øÿâ­Øù╝­ØÿÇ ­Øù¢­Øù┐­Øù╝­Øÿü­Øù▓­Øù┤­ØùÂ­Øù▒­Øù╝­ØÿÇ, ­Øù░­Øù╝­ØÿÇ­Øù▓­Øù░­ØùÁ­Øù«­ØÿÇ ­ØÿÇ­Øù▓­Øù┤­Øÿé­Øù┐­Øù«­ØÿÇ\n­ƒÆ¬ ­Øùÿ­Øù│­Øù▓­Øù░­Øÿü­ØùÂ­Øÿâ­ØùÂ­Øù▒­Øù«­Øù▒ ­ØÿÇ­ØùÂ­Øù╗ ­Øù░­Øù╝­Øù╗­Øù░­Øù▓­ØÿÇ­ØùÂ­Øù╝­Øù╗­Øù▓­ØÿÇ\n\n#­Øùí­Øù▓­Øÿä­Øùû­ØùÁ­Øù▓­Øù║ #­Øùú­Øù┐­Øù╝­Øÿü­Øù▓­Øù░­Øù░­ØùÂ­Øù╝╠ü­Øù╗­Øùÿ­Øù│­ØùÂ­Øù░­Øù«­Øÿç #­Øùû­Øÿé­Øù╣­Øÿü­ØùÂ­Øÿâ­Øù╝­ØÿÇ­Øùª­Øù▓­Øù┤­Øÿé­Øù┐­Øù╝­ØÿÇ #­Øùû­Øù╝­Øù╗­Øÿü­Øù┐­Øù╝­Øù╣­Øùù­Øù▓­Øùú­Øù╣­Øù«­Øù┤­Øù«­ØÿÇ #­ØùÖ­Øù▓­Øù╗­Øù¢",
+      "headline": "New Chem Agroqu├¡micos",
+      "media_type": "image",
+      "image_url": "https://scontent.xx.fbcdn.net/v/t39.30808-6/484829412_122122542830647561_2416719996733335913_n.jpg?stp=dst-jpg_s394x394_tt6&_nc_cat=103&ccb=1-7&_nc_sid=c8f752&_nc_ohc=MR31VjkveDUQ7kNvwGgfbxV&_nc_oc=Adl2mchY6G1MxMBYufOr6oLilQKVD7zNiAqSGPOa_jI665zE8UDGWPlwD89uu0led3IaFciri0kjtjXPOYO9OoL8&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=scontent.xx&_nc_gid=V71bnkaTgFkul4IDGDL8Kw&oh=00_Afh2b5wergB_92YCYrAgP0T-TbHGb-rcfAKd2U6TWZhs4Q&oe=691BFE86",
+      "ctwa_clid": "AfftP2jxA4v_2q6VRbyydQZEjdrZ7TwPaNm3glbRsH2hNWIQ0se2wODYxaZ76cnnyZJC_fymFqv-cn3y54G_wtBF96MTvi_egN_OwAB3w53_jogR_tDSGfgcirJ3ZW6NtmcDDb5McQ",
+      "welcome_message": {
+        "text": "┬íHola! ┬┐C├│mo podemos ayudarte?"
+      }
+    },
+    "referralHandled": true,
+    "last_wamid": "wamid.HBgLNTkxNzE4OTExMjQVAgASGCBBQ0ZEREU5Rjc0NDVGMjIzREFEQzM2ODU2NTFCM0NDRAA=",
+    "preloadedFromSheet": true,
+    "lastMsg": {
+      "role": "bot",
+      "content": "Te dejo nuestro *cat├ílogo*.\nhttps://newchem-bot-production.up.railway.app/catalog.html\n\n­ƒæë A├▒ade tus productos y toca *Enviar a WhatsApp*. Yo recibir├® tu pedido y te preparar├® tu cotizaci├│n.",
+      "ts": 1763066280952
+    },
+    "lastAt": 1763066280952,
+    "unread": 0,
+    "campanaUpdatedAt": 1763066280952
+  },
+  "_savedToSheet": false,
+  "_closedAt": null,
+  "_expiresAt": 1763685968476
+}

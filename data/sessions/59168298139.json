@@ -1,0 +1,131 @@
+{
+  "greeted": true,
+  "stage": "product",
+  "pending": "cultivo",
+  "asked": {
+    "nombre": true,
+    "departamento": true,
+    "subzona": true,
+    "cultivo": true,
+    "hectareas": false,
+    "campana": false
+  },
+  "vars": {
+    "departamento": "Oruro",
+    "subzona": "Salinas",
+    "cultivos": [],
+    "hectareas": null,
+    "campana": null,
+    "phone": null,
+    "cart": []
+  },
+  "profileName": "Por Favor",
+  "memory": [
+    {
+      "role": "bot",
+      "content": "┬íHola! Soy el asistente virtual de New Chem Agroqu├¡micos.",
+      "ts": 1763254005561
+    },
+    {
+      "role": "bot",
+      "content": "Con mucho gusto te env├¡o la *ficha t├®cnica* de *DRIER* ­ƒæç",
+      "ts": 1763254006838
+    },
+    {
+      "role": "bot",
+      "content": "Te ayudo a realizar tu cotizaci├│n.",
+      "ts": 1763254009411
+    },
+    {
+      "role": "bot",
+      "content": "Para personalizar tu atenci├│n, ┬┐cu├íl es tu *nombre completo*?",
+      "ts": 1763254010348
+    },
+    {
+      "role": "user",
+      "content": "Por favor",
+      "ts": 1763254284455
+    },
+    {
+      "role": "bot",
+      "content": "­ƒôì Cu├®ntanos, ┬┐desde qu├® *departamento* de Bolivia nos escribes? [lista: Elegir departamento]",
+      "ts": 1763254284457
+    },
+    {
+      "role": "user",
+      "content": "Oruro",
+      "ts": 1763254303522
+    },
+    {
+      "role": "user",
+      "content": "Ô£à Oruro",
+      "ts": 1763254319108
+    },
+    {
+      "role": "bot",
+      "content": "Perfecto. ┬┐En qu├® *zona* de *Oruro* trabajas?",
+      "ts": 1763254319109
+    },
+    {
+      "role": "user",
+      "content": "Salinas",
+      "ts": 1763254342032
+    },
+    {
+      "role": "bot",
+      "content": "­ƒôï ┬┐Para qu├® *cultivo* necesitas el producto? [lista: Elegir cultivo]",
+      "ts": 1763254342033
+    },
+    {
+      "role": "user",
+      "content": "Quinua",
+      "ts": 1763254388736
+    },
+    {
+      "role": "bot",
+      "content": "Por favor, *elige una opci├│n del listado* para continuar.",
+      "ts": 1763254388736
+    },
+    {
+      "role": "user",
+      "content": "Quiero para fumigar quinua",
+      "ts": 1763254507464
+    },
+    {
+      "role": "bot",
+      "content": "Por favor, *elige una opci├│n del listado* para continuar.",
+      "ts": 1763254507465
+    }
+  ],
+  "lastPrompt": "cultivo",
+  "lastPromptTs": 1763254342033,
+  "meta": {
+    "origin": "facebook",
+    "referral": {
+      "source_url": "https://fb.me/3bFikGJ78",
+      "source_id": "120236721074370524",
+      "source_type": "ad",
+      "body": "­ƒÆ¬ ┬┐­Øùñ­Øÿé­Øù▓­Øù┐├®­ØÿÇ ­Øù¥­Øÿé­Øù▓ ­Øù╣­Øù«­ØÿÇ ­Øù║­Øù«­Øù╣­Øù▓­Øÿç­Øù«­ØÿÇ ­Øù▒­Øù▓­ØÿÇ­Øù«­Øù¢­Øù«­Øù┐­Øù▓­Øÿç­Øù░­Øù«­Øù╗ ­Øù▓­Øù╗ ­Øÿé­Øù╗ ­ØùÂ­Øù╗­ØÿÇ­Øÿü­Øù«­Øù╗­Øÿü­Øù▓?\nDRIER (Paraquat dichloride 276 g/l SL), es nuestro herbicida de contacto y desecante con acci├│n ultrarr├ípida. El adecuado para limpiar tu terreno.\n\n­ƒî▒ Resultados visibles en poco tiempo.\n­ƒö╣ Controla malezas.\n­ƒö╣ Optimiza tu preparaci├│n de suelo.\n\n­ƒô® Escr├¡benos para m├ís informaci├│n.\n#­Øùù­Øù┐­ØùÂ­Øù▓­Øù┐ #­Øùò­Øù«­Øù┐­Øù»­Øù▓­Øù░­ØùÁ­Øù╝­Øùñ­Øÿé­ØùÂ╠ü­Øù║­ØùÂ­Øù░­Øù╝ #­Øùû­Øù╝­Øù╗­Øÿü­Øù┐­Øù╝­Øù╣­Øùù­Øù▓­Øùá­Øù«­Øù╣­Øù▓­Øÿç­Øù«­ØÿÇ #­Øùö­Øù┤­Øù┐­ØùÂ­Øù░­Øÿé­Øù╣­Øÿü­Øÿé­Øù┐­Øù«­Øùÿ­Øù│­ØùÂ­Øù░­ØùÂ­Øù▓­Øù╗­Øÿü­Øù▓",
+      "headline": "New Chem Agroqu├¡micos",
+      "media_type": "image",
+      "image_url": "https://scontent.xx.fbcdn.net/v/t39.30808-6/549239595_122145627332647561_8897723547298644487_n.jpg?stp=dst-jpg_s394x394_tt6&_nc_cat=103&ccb=1-7&_nc_sid=c8f752&_nc_ohc=TEVIAudlbYMQ7kNvwHIv5Zh&_nc_oc=Adlq6gYowrtiXbcjgBt-e-_qxiJsxTUh43ADrCTZKjWvVPBfyyqJmNCnVxj2D8nWTShMfKq3ENiXrqKK_Q_Qub_a&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=scontent.xx&_nc_gid=nt1VpNJVVjOpRKTn0sgRrw&oh=00_AfhmMN19Wqi5A-fyY5VxAGNQHoSL11jQoZYAr0Ri2qUHzA&oe=691EF852",
+      "ctwa_clid": "AfdSTGXg-Xxq8HIru5IRcVmO225YtUY1KYNHYc1GkoGNB0hyglaWeDrrNp1Ei4Q3rPTmkp00sN4A9CpUfxDAsYaPzc_7_IU32nlJ3nFmkGr6Z58uLHHIYpEmkCOV6Dj416ek4y1zmA",
+      "welcome_message": {
+        "text": "┬íHola! ┬┐C├│mo podemos ayudarte?"
+      }
+    },
+    "referralHandled": true,
+    "last_wamid": "wamid.HBgLNTkxNjgyOTgxMzkVAgASGCBBNTVCMzc5QzZENTkzM0ZCRDdFOTE5QjI1RUIzQjkzRAA=",
+    "preloadedFromSheet": true,
+    "lastMsg": {
+      "role": "bot",
+      "content": "Por favor, *elige una opci├│n del listado* para continuar.",
+      "ts": 1763254507465
+    },
+    "lastAt": 1763254507465,
+    "unread": 6
+  },
+  "_savedToSheet": false,
+  "_closedAt": null,
+  "_expiresAt": 1763859307465
+}

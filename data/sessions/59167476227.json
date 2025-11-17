@@ -1,0 +1,86 @@
+{
+  "greeted": true,
+  "stage": "product",
+  "pending": "nombre",
+  "asked": {
+    "nombre": true,
+    "departamento": false,
+    "subzona": false,
+    "cultivo": false,
+    "hectareas": false,
+    "campana": false
+  },
+  "vars": {
+    "departamento": null,
+    "subzona": null,
+    "cultivos": [],
+    "hectareas": null,
+    "campana": null,
+    "phone": null,
+    "cart": []
+  },
+  "profileName": null,
+  "memory": [
+    {
+      "role": "bot",
+      "content": "┬íHola! Soy el asistente virtual de New Chem Agroqu├¡micos.",
+      "ts": 1763114567381
+    },
+    {
+      "role": "bot",
+      "content": "Con mucho gusto te env├¡o la *ficha t├®cnica* de *GLISATO* ­ƒæç",
+      "ts": 1763114568069
+    },
+    {
+      "role": "bot",
+      "content": "Te ayudo a realizar tu cotizaci├│n.",
+      "ts": 1763114570451
+    },
+    {
+      "role": "bot",
+      "content": "Para personalizar tu atenci├│n, ┬┐cu├íl es tu *nombre completo*?",
+      "ts": 1763114571235
+    },
+    {
+      "role": "user",
+      "content": "https://www.facebook.com/groups/385568091577439/permalink/3829343840533163/?mibextid=rS40aB7S9Ucbxw6v",
+      "ts": 1763115019448
+    },
+    {
+      "role": "bot",
+      "content": "Para continuar, por favor escribe tu *nombre y apellido*.",
+      "ts": 1763115019449
+    }
+  ],
+  "lastPrompt": "nombre",
+  "lastPromptTs": 1763114571234,
+  "meta": {
+    "origin": "facebook",
+    "referral": {
+      "source_url": "https://fb.me/2YSrC0QNK",
+      "source_id": "120236719999840524",
+      "source_type": "ad",
+      "body": "­ƒÆ¬ ┬┐Listo para un control efectivo y completo?  \n\nGLISATO (Glifosato Sal IPA 480 g/l SL), es el herbicida no selectivo de acci├│n sist├®mica que elimina malezas desde la ra├¡z. Ideal para tu barbecho qu├¡mico.  \n\n­ƒî▒ Eficiencia comprobada contra:  \n\n­ƒö╣ Rogelia  \n\n­ƒö╣ Verdolaga camba  \n\n­ƒö╣ Chupurujume y m├ís.  \n\n­ƒö╣ Absorci├│n r├ípida y excelente performance.  \n\n­ƒô® Cont├íctanos para m├ís informaci├│n.  \n\n#Glisato #ControlDeMalezas #BarbechoQu├¡mico #AgriculturaEficiente",
+      "headline": "New Chem Agroqu├¡micos",
+      "media_type": "image",
+      "image_url": "https://scontent.xx.fbcdn.net/v/t39.30808-6/480806961_122119418834647561_7897707757282518825_n.jpg?stp=dst-jpg_s394x394_tt6&_nc_cat=108&ccb=1-7&_nc_sid=c9359e&_nc_ohc=a3HtXsrs15gQ7kNvwHKzxsN&_nc_oc=Adk6at3x4RM8BsAJ0Wmxadl8cjD_HK-Kcp5eWWCXkbNm2M8Iem1waeqykVQs9Lp4zTiJMaJ5-EjVmcXZgcK9u4br&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=scontent.xx&_nc_gid=WjTw9wIdZtj_OF-ooFUIzA&oh=00_Afiifgu9uefK-DKskHSs5ycSOTEIT0DLIi29EgJ8Jsa5Og&oe=691CDD05",
+      "ctwa_clid": "AfcFZnNbd8Zgb0pnn-MC94TrlZ-JA2G49sy92FUoxPfXvllKLcxLZ3VUgIVrtXP9NCjLDLO7gYHzn16FbUAL-JTr-cMna_Mo3c85lv8vzN98U4Z6GPxuYqB9CssmuTUBCMhnWA4UZg",
+      "welcome_message": {
+        "text": "┬íHola, ! ┬┐C├│mo podemos ayudarte?"
+      }
+    },
+    "referralHandled": true,
+    "last_wamid": "wamid.HBgLNTkxNjc0NzYyMjcVAgASGCBBQzI4Qzk3ODNBNUEwQzk3MUQ4QkQ2REFGQTkzNjlCQgA=",
+    "preloadedFromSheet": true,
+    "lastMsg": {
+      "role": "bot",
+      "content": "Para continuar, por favor escribe tu *nombre y apellido*.",
+      "ts": 1763115019449
+    },
+    "lastAt": 1763115019449,
+    "unread": 1
+  },
+  "_savedToSheet": false,
+  "_closedAt": null,
+  "_expiresAt": 1763719819449
+}

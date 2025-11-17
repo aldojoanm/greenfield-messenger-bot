@@ -1,0 +1,189 @@
+{
+  "greeted": true,
+  "stage": "product",
+  "pending": "catalog_link",
+  "asked": {
+    "nombre": true,
+    "departamento": true,
+    "subzona": true,
+    "cultivo": true,
+    "hectareas": true,
+    "campana": true
+  },
+  "vars": {
+    "departamento": "Beni",
+    "subzona": "Rurrenabaque",
+    "cultivos": [
+      "Para Malezas De Potreros"
+    ],
+    "hectareas": "0ÔÇô100 ha",
+    "campana": "Verano",
+    "phone": null,
+    "cart": []
+  },
+  "profileName": "A Como ├®L 20 L.",
+  "memory": [
+    {
+      "role": "bot",
+      "content": "┬íHola! Soy el asistente virtual de New Chem Agroqu├¡micos.",
+      "ts": 1763220227807
+    },
+    {
+      "role": "bot",
+      "content": "Con mucho gusto te env├¡o la *ficha t├®cnica* de *DRIER* ­ƒæç",
+      "ts": 1763220228482
+    },
+    {
+      "role": "bot",
+      "content": "Te ayudo a realizar tu cotizaci├│n.",
+      "ts": 1763220230907
+    },
+    {
+      "role": "bot",
+      "content": "Para personalizar tu atenci├│n, ┬┐cu├íl es tu *nombre completo*?",
+      "ts": 1763220231647
+    },
+    {
+      "role": "user",
+      "content": "A como ├®l 20 L.",
+      "ts": 1763220350437
+    },
+    {
+      "role": "bot",
+      "content": "­ƒôì Cu├®ntanos, ┬┐desde qu├® *departamento* de Bolivia nos escribes? [lista: Elegir departamento]",
+      "ts": 1763220350439
+    },
+    {
+      "role": "user",
+      "content": "Ô£à Beni",
+      "ts": 1763220820216
+    },
+    {
+      "role": "bot",
+      "content": "Perfecto. ┬┐En qu├® *zona* de *Beni* trabajas?",
+      "ts": 1763220820217
+    },
+    {
+      "role": "user",
+      "content": "Rurrenabaque",
+      "ts": 1763220837191
+    },
+    {
+      "role": "bot",
+      "content": "­ƒôï ┬┐Para qu├® *cultivo* necesitas el producto? [lista: Elegir cultivo]",
+      "ts": 1763220837193
+    },
+    {
+      "role": "user",
+      "content": "Ô£à Otro",
+      "ts": 1763220856371
+    },
+    {
+      "role": "bot",
+      "content": "Qu├® *cultivo* manejas?",
+      "ts": 1763220856372
+    },
+    {
+      "role": "user",
+      "content": "Para malezas de potreros",
+      "ts": 1763220883870
+    },
+    {
+      "role": "bot",
+      "content": "┬┐Cu├íntas *hect├íreas* vas a tratar? [lista: Elegir hect├íreas]",
+      "ts": 1763220883871
+    },
+    {
+      "role": "user",
+      "content": "Ô£à 0ÔÇô100 ha",
+      "ts": 1763220905237
+    },
+    {
+      "role": "bot",
+      "content": "┬┐En qu├® *campa├▒a* te encuentras?  [botones]",
+      "ts": 1763220905238
+    },
+    {
+      "role": "user",
+      "content": "Ô£à Verano",
+      "ts": 1763220931778
+    },
+    {
+      "role": "bot",
+      "content": "Te dejo nuestro *cat├ílogo*.\nhttps://newchem-bot-production.up.railway.app/catalog.html\n\n­ƒæë A├▒ade tus productos y toca *Enviar a WhatsApp*. Yo recibir├® tu pedido y te preparar├® tu cotizaci├│n.",
+      "ts": 1763220931780
+    },
+    {
+      "role": "user",
+      "content": "De d├│nde asen los env├¡os",
+      "ts": 1763221237300
+    },
+    {
+      "role": "bot",
+      "content": "Te dejo nuestro *cat├ílogo*.\nhttps://newchem-bot-production.up.railway.app/catalog.html\n\n­ƒæë A├▒ade tus productos y toca *Enviar a WhatsApp*. Yo recibir├® tu pedido y te preparar├® tu cotizaci├│n.",
+      "ts": 1763221237302
+    },
+    {
+      "role": "user",
+      "content": "Quiero 20 L",
+      "ts": 1763221274925
+    },
+    {
+      "role": "bot",
+      "content": "Te dejo nuestro *cat├ílogo*.\nhttps://newchem-bot-production.up.railway.app/catalog.html\n\n­ƒæë A├▒ade tus productos y toca *Enviar a WhatsApp*. Yo recibir├® tu pedido y te preparar├® tu cotizaci├│n.",
+      "ts": 1763221274926
+    },
+    {
+      "role": "user",
+      "content": "El carrito no sirve",
+      "ts": 1763221394805
+    },
+    {
+      "role": "bot",
+      "content": "Te dejo nuestro *cat├ílogo*.\nhttps://newchem-bot-production.up.railway.app/catalog.html\n\n­ƒæë A├▒ade tus productos y toca *Enviar a WhatsApp*. Yo recibir├® tu pedido y te preparar├® tu cotizaci├│n.",
+      "ts": 1763221394807
+    },
+    {
+      "role": "user",
+      "content": "No quiere hacer mi oedido",
+      "ts": 1763221404402
+    },
+    {
+      "role": "user",
+      "content": "Pedido",
+      "ts": 1763221407217
+    }
+  ],
+  "lastPrompt": "catalog_link",
+  "lastPromptTs": 1763221394806,
+  "meta": {
+    "origin": "facebook",
+    "referral": {
+      "source_url": "https://fb.me/3bFikGJ78",
+      "source_id": "120236721074370524",
+      "source_type": "ad",
+      "body": "­ƒÆ¬ ┬┐­Øùñ­Øÿé­Øù▓­Øù┐├®­ØÿÇ ­Øù¥­Øÿé­Øù▓ ­Øù╣­Øù«­ØÿÇ ­Øù║­Øù«­Øù╣­Øù▓­Øÿç­Øù«­ØÿÇ ­Øù▒­Øù▓­ØÿÇ­Øù«­Øù¢­Øù«­Øù┐­Øù▓­Øÿç­Øù░­Øù«­Øù╗ ­Øù▓­Øù╗ ­Øÿé­Øù╗ ­ØùÂ­Øù╗­ØÿÇ­Øÿü­Øù«­Øù╗­Øÿü­Øù▓?\nDRIER (Paraquat dichloride 276 g/l SL), es nuestro herbicida de contacto y desecante con acci├│n ultrarr├ípida. El adecuado para limpiar tu terreno.\n\n­ƒî▒ Resultados visibles en poco tiempo.\n­ƒö╣ Controla malezas.\n­ƒö╣ Optimiza tu preparaci├│n de suelo.\n\n­ƒô® Escr├¡benos para m├ís informaci├│n.\n#­Øùù­Øù┐­ØùÂ­Øù▓­Øù┐ #­Øùò­Øù«­Øù┐­Øù»­Øù▓­Øù░­ØùÁ­Øù╝­Øùñ­Øÿé­ØùÂ╠ü­Øù║­ØùÂ­Øù░­Øù╝ #­Øùû­Øù╝­Øù╗­Øÿü­Øù┐­Øù╝­Øù╣­Øùù­Øù▓­Øùá­Øù«­Øù╣­Øù▓­Øÿç­Øù«­ØÿÇ #­Øùö­Øù┤­Øù┐­ØùÂ­Øù░­Øÿé­Øù╣­Øÿü­Øÿé­Øù┐­Øù«­Øùÿ­Øù│­ØùÂ­Øù░­ØùÂ­Øù▓­Øù╗­Øÿü­Øù▓",
+      "headline": "New Chem Agroqu├¡micos",
+      "media_type": "image",
+      "image_url": "https://scontent.xx.fbcdn.net/v/t39.30808-6/549239595_122145627332647561_8897723547298644487_n.jpg?stp=dst-jpg_s394x394_tt6&_nc_cat=103&ccb=1-7&_nc_sid=c8f752&_nc_ohc=TEVIAudlbYMQ7kNvwFmhMDf&_nc_oc=Adkvoye_QtH79l9cW0rmJeEEb_Xeoruruef9tiVigNWrmOp5lySjKfQUexvAev7R1BU3AfVjLvzEVkU5Kr1X4zqG&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=scontent.xx&_nc_gid=zO98kk0CDL_UQ4KyOK8mYA&oh=00_AfgIke2mEGq4yLT0nyXYkvoogaGooU5jh2_MQulradmypA&oe=691E87D2",
+      "ctwa_clid": "Afea_w__USQuZauSVvFAnYLE8R3zcESwDVNYF4vysPnTk7bKA_qC8ofKdykvQxIK3QibgpG-hBcMfvMdFy4wa9RCmADUkrUDaBhrJkzUGRvJ824AeuozYVeIfYJK1lzQ30nIw0fOAg",
+      "welcome_message": {
+        "text": "┬íHola! ┬┐C├│mo podemos ayudarte?"
+      }
+    },
+    "referralHandled": true,
+    "last_wamid": "wamid.HBgLNTkxNjg3NDM3MjIVAgASGCBBQzIwNTg5RDg4QUY3NUE0NzVDQTgxNzUwOEY1NEIyQgA=",
+    "preloadedFromSheet": true,
+    "lastMsg": {
+      "role": "user",
+      "content": "Pedido",
+      "ts": 1763221407217
+    },
+    "lastAt": 1763221407217,
+    "unread": 12,
+    "campanaUpdatedAt": 1763220931779
+  },
+  "_savedToSheet": false,
+  "_closedAt": null,
+  "_expiresAt": 1763826207217
+}

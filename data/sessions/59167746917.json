@@ -1,0 +1,134 @@
+{
+  "greeted": true,
+  "stage": "product",
+  "pending": "catalog_link",
+  "asked": {
+    "nombre": true,
+    "departamento": true,
+    "subzona": true,
+    "cultivo": true,
+    "hectareas": true,
+    "campana": true
+  },
+  "vars": {
+    "departamento": "Santa Cruz",
+    "subzona": "Sur",
+    "cultivos": [
+      "Yuca"
+    ],
+    "hectareas": "0ÔÇô100 ha",
+    "campana": "Verano",
+    "phone": null,
+    "cart": []
+  },
+  "profileName": "Edwin Galvan Cortez",
+  "memory": [
+    {
+      "role": "user",
+      "content": "┬íHola! Quiero m├ís informaci├│n.",
+      "ts": 1763073185968
+    },
+    {
+      "role": "bot",
+      "content": "┬íHola! Soy el asistente virtual de New Chem Agroqu├¡micos.",
+      "ts": 1763073185968
+    },
+    {
+      "role": "bot",
+      "content": "Para personalizar tu atenci├│n, ┬┐cu├íl es tu *nombre completo*?",
+      "ts": 1763073187245
+    },
+    {
+      "role": "user",
+      "content": "Edwin Galvan Cortez",
+      "ts": 1763073200253
+    },
+    {
+      "role": "bot",
+      "content": "­ƒôì Cu├®ntanos, ┬┐desde qu├® *departamento* de Bolivia nos escribes? [lista: Elegir departamento]",
+      "ts": 1763073200254
+    },
+    {
+      "role": "user",
+      "content": "Ô£à Santa Cruz",
+      "ts": 1763073210974
+    },
+    {
+      "role": "bot",
+      "content": "Gracias. ┬┐En qu├® *zona de Santa Cruz*? [lista: Elegir zona]",
+      "ts": 1763073210975
+    },
+    {
+      "role": "user",
+      "content": "Ô£à Sur",
+      "ts": 1763073220671
+    },
+    {
+      "role": "bot",
+      "content": "­ƒôï ┬┐Para qu├® *cultivo* necesitas el producto? [lista: Elegir cultivo]",
+      "ts": 1763073220672
+    },
+    {
+      "role": "user",
+      "content": "Ô£à Otro",
+      "ts": 1763073235391
+    },
+    {
+      "role": "bot",
+      "content": "Qu├® *cultivo* manejas?",
+      "ts": 1763073235392
+    },
+    {
+      "role": "user",
+      "content": "Yuca",
+      "ts": 1763073242844
+    },
+    {
+      "role": "bot",
+      "content": "┬┐Cu├íntas *hect├íreas* vas a tratar? [lista: Elegir hect├íreas]",
+      "ts": 1763073242845
+    },
+    {
+      "role": "user",
+      "content": "Ô£à 0ÔÇô100 ha",
+      "ts": 1763073255437
+    },
+    {
+      "role": "bot",
+      "content": "┬┐En qu├® *campa├▒a* te encuentras?  [botones]",
+      "ts": 1763073255439
+    },
+    {
+      "role": "user",
+      "content": "Ô£à Verano",
+      "ts": 1763073260922
+    },
+    {
+      "role": "bot",
+      "content": "Te dejo nuestro *cat├ílogo*.\nhttps://newchem-bot-production.up.railway.app/catalog.html\n\n­ƒæë A├▒ade tus productos y toca *Enviar a WhatsApp*. Yo recibir├® tu pedido y te preparar├® tu cotizaci├│n.",
+      "ts": 1763073260923
+    }
+  ],
+  "lastPrompt": "catalog_link",
+  "lastPromptTs": 1763073260922,
+  "meta": {
+    "origin": "facebook",
+    "referral": {
+      "source_url": "https://fb.me/3NmtI3nb1"
+    },
+    "referralHandled": true,
+    "last_wamid": "wamid.HBgLNTkxNjc3NDY5MTcVAgASGCBBQ0JGMDNFRkRDMDBGQjRDQkRERTczMjdFQjQ3M0JGQwA=",
+    "preloadedFromSheet": true,
+    "lastMsg": {
+      "role": "bot",
+      "content": "Te dejo nuestro *cat├ílogo*.\nhttps://newchem-bot-production.up.railway.app/catalog.html\n\n­ƒæë A├▒ade tus productos y toca *Enviar a WhatsApp*. Yo recibir├® tu pedido y te preparar├® tu cotizaci├│n.",
+      "ts": 1763073260923
+    },
+    "lastAt": 1763073260923,
+    "unread": 8,
+    "campanaUpdatedAt": 1763073260922
+  },
+  "_savedToSheet": false,
+  "_closedAt": null,
+  "_expiresAt": 1763678061753
+}

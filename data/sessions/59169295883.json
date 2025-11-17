@@ -1,0 +1,195 @@
+{
+  "greeted": true,
+  "stage": "closed",
+  "pending": null,
+  "asked": {
+    "nombre": true,
+    "departamento": true,
+    "subzona": true,
+    "cultivo": true,
+    "hectareas": true,
+    "campana": true
+  },
+  "vars": {
+    "departamento": "Santa Cruz",
+    "subzona": "Este",
+    "cultivos": [
+      "Girasol"
+    ],
+    "hectareas": "101ÔÇô300 ha",
+    "campana": "Invierno",
+    "phone": null,
+    "cart": [
+      {
+        "nombre": "FENPRONIL",
+        "presentacion": "1KG",
+        "cantidad": "12336 Kg",
+        "cantidad_num": 12336,
+        "unidad": "Kg",
+        "subtotal_usd": 1503388.32,
+        "subtotal_bs": 10463641.92
+      },
+      {
+        "nombre": "SEAL",
+        "presentacion": "20L",
+        "cantidad": "120 L",
+        "cantidad_num": 120,
+        "unidad": "L",
+        "subtotal_usd": 750,
+        "subtotal_bs": 5220
+      },
+      {
+        "nombre": "DRIER",
+        "presentacion": "20L",
+        "cantidad": "120 L",
+        "cantidad_num": 120,
+        "unidad": "L",
+        "subtotal_usd": 644.4,
+        "subtotal_bs": 4485.6
+      },
+      {
+        "nombre": "SINERGY",
+        "presentacion": "20L",
+        "cantidad": "120 L",
+        "cantidad_num": 120,
+        "unidad": "L",
+        "subtotal_usd": 1690.8,
+        "subtotal_bs": 11768.4
+      }
+    ],
+    "cotizacion_id": "1763068570044-9295883"
+  },
+  "profileName": "Camila Quiroga",
+  "memory": [
+    {
+      "role": "user",
+      "content": "Hola New Chem Agroqu├¡micos, quiero solicitar una cotizaci├│n",
+      "ts": 1763068344370
+    },
+    {
+      "role": "bot",
+      "content": "┬íHola! Soy el asistente virtual de New Chem Agroqu├¡micos.",
+      "ts": 1763068344383
+    },
+    {
+      "role": "bot",
+      "content": "Para personalizar tu atenci├│n, ┬┐cu├íl es tu *nombre completo*?",
+      "ts": 1763068345451
+    },
+    {
+      "role": "user",
+      "content": "Camilita 12",
+      "ts": 1763068355901
+    },
+    {
+      "role": "bot",
+      "content": "Para continuar, por favor escribe tu *nombre y apellido*.",
+      "ts": 1763068355902
+    },
+    {
+      "role": "user",
+      "content": "Camila Quiroga",
+      "ts": 1763068369558
+    },
+    {
+      "role": "bot",
+      "content": "­ƒôì Cu├®ntanos, ┬┐desde qu├® *departamento* de Bolivia nos escribes? [lista: Elegir departamento]",
+      "ts": 1763068369560
+    },
+    {
+      "role": "user",
+      "content": "Ô£à Santa Cruz",
+      "ts": 1763068378146
+    },
+    {
+      "role": "bot",
+      "content": "Gracias. ┬┐En qu├® *zona de Santa Cruz*? [lista: Elegir zona]",
+      "ts": 1763068378148
+    },
+    {
+      "role": "user",
+      "content": "Ô£à Este",
+      "ts": 1763068387675
+    },
+    {
+      "role": "bot",
+      "content": "­ƒôï ┬┐Para qu├® *cultivo* necesitas el producto? [lista: Elegir cultivo]",
+      "ts": 1763068387676
+    },
+    {
+      "role": "user",
+      "content": "Ô£à Girasol",
+      "ts": 1763068404001
+    },
+    {
+      "role": "bot",
+      "content": "┬┐Cu├íntas *hect├íreas* vas a tratar? [lista: Elegir hect├íreas]",
+      "ts": 1763068404002
+    },
+    {
+      "role": "user",
+      "content": "Ô£à 101ÔÇô300 ha",
+      "ts": 1763068414242
+    },
+    {
+      "role": "bot",
+      "content": "┬┐En qu├® *campa├▒a* te encuentras?  [botones]",
+      "ts": 1763068414244
+    },
+    {
+      "role": "user",
+      "content": "Ô£à Invierno",
+      "ts": 1763068419631
+    },
+    {
+      "role": "bot",
+      "content": "Te dejo nuestro *cat├ílogo*.\nhttps://newchem-bot-production.up.railway.app/catalog.html\n\n­ƒæë A├▒ade tus productos y toca *Enviar a WhatsApp*. Yo recibir├® tu pedido y te preparar├® tu cotizaci├│n.",
+      "ts": 1763068419632
+    },
+    {
+      "role": "bot",
+      "content": "Perfecto, enseguida te enviaremos una cotizaci├│n con estos datos:\n* Camila Quiroga\n* Departamento: Santa Cruz\n* Zona: Este\n* Cultivo: Girasol\n* Hect├íreas: 101ÔÇô300 ha\n* Campa├▒a: Invierno\n* FENPRONIL (1KG) ÔÇö 12336 Kg\n* SEAL (20L) ÔÇö 120 L\n* DRIER (20L) ÔÇö 120 L\n* SINERGY (20L) ÔÇö 120 L\n*Compra m├¡nima: US$ 3.000 (puedes combinar productos).\n*La entrega de tu pedido se realiza en nuestro almac├®n*.",
+      "ts": 1763068559401
+    },
+    {
+      "role": "bot",
+      "content": "┬┐Listo para *cotizar*? [botones]",
+      "ts": 1763068560270
+    },
+    {
+      "role": "user",
+      "content": "Ô£à Cotizar",
+      "ts": 1763068568335
+    },
+    {
+      "role": "bot",
+      "content": "┬íGracias por escribirnos! Te env├¡o la *cotizaci├│n en PDF*. Si requieres mas informaci├│n, estamos a tu disposici├│n.",
+      "ts": 1763068570493
+    },
+    {
+      "role": "bot",
+      "content": "Para volver a activar el asistente, por favor, escribe *Asistente New Chem*.",
+      "ts": 1763068571331
+    }
+  ],
+  "lastPrompt": null,
+  "lastPromptTs": 1763068419632,
+  "meta": {
+    "origin": null,
+    "referral": null,
+    "referralHandled": false,
+    "last_wamid": "wamid.HBgLNTkxNjkyOTU4ODMVAgASGBYzRUIwNDBDQzAxODlBNzM5OERFRkJGAA==",
+    "preloadedFromSheet": true,
+    "lastMsg": {
+      "role": "bot",
+      "content": "Para volver a activar el asistente, por favor, escribe *Asistente New Chem*.",
+      "ts": 1763068571331
+    },
+    "lastAt": 1763068571331,
+    "unread": 9,
+    "campanaUpdatedAt": 1763068419631
+  },
+  "_savedToSheet": true,
+  "_closedAt": 1763068573768,
+  "_expiresAt": 1763673373768
+}

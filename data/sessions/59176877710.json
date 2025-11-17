@@ -1,0 +1,59 @@
+{
+  "greeted": false,
+  "stage": "discovery",
+  "pending": null,
+  "asked": {
+    "nombre": false,
+    "departamento": false,
+    "subzona": false,
+    "cultivo": false,
+    "hectareas": false,
+    "campana": false
+  },
+  "vars": {
+    "departamento": null,
+    "subzona": null,
+    "cultivos": [],
+    "hectareas": null,
+    "campana": null,
+    "phone": null,
+    "cart": []
+  },
+  "profileName": null,
+  "memory": [
+    {
+      "role": "user",
+      "content": "Su direcci├│n en santa cruz y precio del glisato por favor",
+      "ts": 1763378119582
+    },
+    {
+      "role": "bot",
+      "content": "Nuestra ubicaci├│n en Google Maps ­ƒæç\nVer ubicaci├│n: https://www.google.com/maps?q=-17.7580406%2C-63.1532503",
+      "ts": 1763378119583
+    },
+    {
+      "role": "bot",
+      "content": "┬┐Hay algo m├ís en lo que pueda ayudarte? [botones]",
+      "ts": 1763378120390
+    }
+  ],
+  "lastPrompt": null,
+  "lastPromptTs": 0,
+  "meta": {
+    "origin": null,
+    "referral": null,
+    "referralHandled": false,
+    "last_wamid": "wamid.HBgLNTkxNzY4Nzc3MTAVAgASGCBBQzgyRTQ0MEZDQUQzRkQxMDlEQTIwOUY0NDE5NTg4NgA=",
+    "preloadedFromSheet": true,
+    "lastMsg": {
+      "role": "bot",
+      "content": "┬┐Hay algo m├ís en lo que pueda ayudarte? [botones]",
+      "ts": 1763378120390
+    },
+    "lastAt": 1763378120390,
+    "unread": 1
+  },
+  "_savedToSheet": false,
+  "_closedAt": null,
+  "_expiresAt": 1763982920390
+}

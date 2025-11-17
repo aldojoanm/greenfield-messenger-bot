@@ -1,0 +1,198 @@
+{
+  "greeted": true,
+  "stage": "product",
+  "pending": "hectareas_text",
+  "asked": {
+    "nombre": true,
+    "departamento": true,
+    "subzona": true,
+    "cultivo": true,
+    "hectareas": true,
+    "campana": false
+  },
+  "vars": {
+    "departamento": "Tarija",
+    "subzona": "X El Lado Del Chaco",
+    "cultivos": [
+      "Ma├¡z"
+    ],
+    "hectareas": null,
+    "campana": null,
+    "phone": null,
+    "cart": []
+  },
+  "profileName": "Precio Xfavor",
+  "memory": [
+    {
+      "role": "bot",
+      "content": "┬íHola! Soy el asistente virtual de New Chem Agroqu├¡micos.",
+      "ts": 1763153413117
+    },
+    {
+      "role": "bot",
+      "content": "Con mucho gusto te env├¡o la *ficha t├®cnica* de *GLISATO* ­ƒæç",
+      "ts": 1763153414272
+    },
+    {
+      "role": "user",
+      "content": "Buenas tardes",
+      "ts": 1763153415202
+    },
+    {
+      "role": "bot",
+      "content": "Para personalizar tu atenci├│n, ┬┐cu├íl es tu *nombre completo*?",
+      "ts": 1763153415203
+    },
+    {
+      "role": "bot",
+      "content": "Te ayudo a realizar tu cotizaci├│n.",
+      "ts": 1763153417368
+    },
+    {
+      "role": "user",
+      "content": "Precio xfavor",
+      "ts": 1763153442092
+    },
+    {
+      "role": "bot",
+      "content": "­ƒôì Cu├®ntanos, ┬┐desde qu├® *departamento* de Bolivia nos escribes? [lista: Elegir departamento]",
+      "ts": 1763153442093
+    },
+    {
+      "role": "user",
+      "content": "Yamil choque cespedes",
+      "ts": 1763153451904
+    },
+    {
+      "role": "user",
+      "content": "Ô£à Santa Cruz",
+      "ts": 1763153458483
+    },
+    {
+      "role": "bot",
+      "content": "Gracias. ┬┐En qu├® *zona de Santa Cruz*? [lista: Elegir zona]",
+      "ts": 1763153458484
+    },
+    {
+      "role": "user",
+      "content": "Ô£à Sur",
+      "ts": 1763153471199
+    },
+    {
+      "role": "bot",
+      "content": "­ƒôï ┬┐Para qu├® *cultivo* necesitas el producto? [lista: Elegir cultivo]",
+      "ts": 1763153471200
+    },
+    {
+      "role": "user",
+      "content": "Kiero para tarija perro",
+      "ts": 1763153478891
+    },
+    {
+      "role": "bot",
+      "content": "Por favor, *elige una opci├│n del listado* para continuar.",
+      "ts": 1763153478892
+    },
+    {
+      "role": "user",
+      "content": "Pero",
+      "ts": 1763153481044
+    },
+    {
+      "role": "bot",
+      "content": "Por favor, *elige una opci├│n del listado* para continuar.",
+      "ts": 1763153481044
+    },
+    {
+      "role": "user",
+      "content": "Ô£à Ma├¡z",
+      "ts": 1763153496035
+    },
+    {
+      "role": "bot",
+      "content": "Perfecto. ┬┐En qu├® *zona* de *Tarija* trabajas?",
+      "ts": 1763153496036
+    },
+    {
+      "role": "user",
+      "content": "X el lado del chaco",
+      "ts": 1763153511184
+    },
+    {
+      "role": "bot",
+      "content": "┬┐Cu├íntas *hect├íreas* vas a tratar? [lista: Elegir hect├íreas]",
+      "ts": 1763153511185
+    },
+    {
+      "role": "user",
+      "content": "Ô£à Otras cantidades",
+      "ts": 1763153525100
+    },
+    {
+      "role": "bot",
+      "content": "Podrias escribir el total de *hect├íreas*.",
+      "ts": 1763153525100
+    },
+    {
+      "role": "user",
+      "content": "Unas 10 maso",
+      "ts": 1763153767359
+    },
+    {
+      "role": "bot",
+      "content": "Por favor escribe un n├║mero v├ílido de *hect├íreas* (ej. 50).",
+      "ts": 1763153767360
+    },
+    {
+      "role": "user",
+      "content": "Ya",
+      "ts": 1763154113085
+    },
+    {
+      "role": "bot",
+      "content": "Por favor escribe un n├║mero v├ílido de *hect├íreas* (ej. 50).",
+      "ts": 1763154113086
+    },
+    {
+      "role": "user",
+      "content": "Yha",
+      "ts": 1763154316995
+    },
+    {
+      "role": "bot",
+      "content": "Por favor escribe un n├║mero v├ílido de *hect├íreas* (ej. 50).",
+      "ts": 1763154316996
+    }
+  ],
+  "lastPrompt": "hectareas_text",
+  "lastPromptTs": 1763153525100,
+  "meta": {
+    "origin": "facebook",
+    "referral": {
+      "source_url": "https://fb.me/2YSrC0QNK",
+      "source_id": "120236719999840524",
+      "source_type": "ad",
+      "body": "­ƒÆ¬ ┬┐Listo para un control efectivo y completo?  \n\nGLISATO (Glifosato Sal IPA 480 g/l SL), es el herbicida no selectivo de acci├│n sist├®mica que elimina malezas desde la ra├¡z. Ideal para tu barbecho qu├¡mico.  \n\n­ƒî▒ Eficiencia comprobada contra:  \n\n­ƒö╣ Rogelia  \n\n­ƒö╣ Verdolaga camba  \n\n­ƒö╣ Chupurujume y m├ís.  \n\n­ƒö╣ Absorci├│n r├ípida y excelente performance.  \n\n­ƒô® Cont├íctanos para m├ís informaci├│n.  \n\n#Glisato #ControlDeMalezas #BarbechoQu├¡mico #AgriculturaEficiente",
+      "headline": "New Chem Agroqu├¡micos",
+      "media_type": "image",
+      "image_url": "https://scontent.xx.fbcdn.net/v/t39.30808-6/480806961_122119418834647561_7897707757282518825_n.jpg?stp=dst-jpg_s394x394_tt6&_nc_cat=108&ccb=1-7&_nc_sid=c9359e&_nc_ohc=a3HtXsrs15gQ7kNvwHjaXNL&_nc_oc=AdkxPlxzEiLV4e-VG4QAdrjh-v2CMmriA8Qs5IcfG2rx-aAVyuu5pK8I6Dz9O6FHkp4u2wwfONM8v-PBnBsOuEzX&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=scontent.xx&_nc_gid=musdb4tGjTNbTe-N4E4KaQ&oh=00_Afg5rj8AxfvYenMelqElBcVPjAkczBJHHHD8XGRKPijD8g&oe=691D4D85",
+      "ctwa_clid": "AfdufYXvRVywWkjfttCfyyl68RCLoBjGXMC2T-biH0M6LQT-48hSqV4HcJs-IxgFp1njgcK8BlPuB_SQDudIiRbe9CvvnQ9sWRb3vGqlNAdwuOEJEIG_x1M3DOETTK3JQNGEcnHnxg",
+      "welcome_message": {
+        "text": "┬íHola, ! ┬┐C├│mo podemos ayudarte?"
+      }
+    },
+    "referralHandled": true,
+    "last_wamid": "wamid.HBgLNTkxNzQ0NDU5NTMVAgASGCBBQzYyNzI3NURBQjRGM0RDNzQ3MUMxQjBBMUQ2RDY0MQA=",
+    "preloadedFromSheet": true,
+    "lastMsg": {
+      "role": "bot",
+      "content": "Por favor escribe un n├║mero v├ílido de *hect├íreas* (ej. 50).",
+      "ts": 1763154316996
+    },
+    "lastAt": 1763154316996,
+    "unread": 13
+  },
+  "_savedToSheet": false,
+  "_closedAt": null,
+  "_expiresAt": 1763759116996
+}

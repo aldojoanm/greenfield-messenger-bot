@@ -1,0 +1,138 @@
+{
+  "greeted": true,
+  "stage": "product",
+  "pending": "campana",
+  "asked": {
+    "nombre": true,
+    "departamento": true,
+    "subzona": true,
+    "cultivo": true,
+    "hectareas": true,
+    "campana": true
+  },
+  "vars": {
+    "departamento": "La Paz",
+    "subzona": "Provincia Caranavi",
+    "cultivos": [
+      "Coca Y Cafe"
+    ],
+    "hectareas": "0ÔÇô100 ha",
+    "campana": null,
+    "phone": null,
+    "cart": []
+  },
+  "profileName": "Fernando Mamani Mamani",
+  "memory": [
+    {
+      "role": "bot",
+      "content": "┬íHola! Soy el asistente virtual de New Chem Agroqu├¡micos.",
+      "ts": 1763381201180
+    },
+    {
+      "role": "bot",
+      "content": "Con mucho gusto te env├¡o la *ficha t├®cnica* de *GLISATO* ­ƒæç",
+      "ts": 1763381202153
+    },
+    {
+      "role": "bot",
+      "content": "Te ayudo a realizar tu cotizaci├│n.",
+      "ts": 1763381204608
+    },
+    {
+      "role": "bot",
+      "content": "Para personalizar tu atenci├│n, ┬┐cu├íl es tu *nombre completo*?",
+      "ts": 1763381205300
+    },
+    {
+      "role": "user",
+      "content": "Fernando Mamani Mamani",
+      "ts": 1763381304765
+    },
+    {
+      "role": "bot",
+      "content": "­ƒôì Cu├®ntanos, ┬┐desde qu├® *departamento* de Bolivia nos escribes? [lista: Elegir departamento]",
+      "ts": 1763381304766
+    },
+    {
+      "role": "user",
+      "content": "Ô£à La Paz",
+      "ts": 1763381324353
+    },
+    {
+      "role": "bot",
+      "content": "Perfecto. ┬┐En qu├® *zona* de *La Paz* trabajas?",
+      "ts": 1763381324355
+    },
+    {
+      "role": "user",
+      "content": "Provincia Caranavi",
+      "ts": 1763381341920
+    },
+    {
+      "role": "bot",
+      "content": "­ƒôï ┬┐Para qu├® *cultivo* necesitas el producto? [lista: Elegir cultivo]",
+      "ts": 1763381341922
+    },
+    {
+      "role": "user",
+      "content": "Ô£à Otro",
+      "ts": 1763381360462
+    },
+    {
+      "role": "bot",
+      "content": "Qu├® *cultivo* manejas?",
+      "ts": 1763381360463
+    },
+    {
+      "role": "user",
+      "content": "Coca y cafe",
+      "ts": 1763381378296
+    },
+    {
+      "role": "bot",
+      "content": "┬┐Cu├íntas *hect├íreas* vas a tratar? [lista: Elegir hect├íreas]",
+      "ts": 1763381378299
+    },
+    {
+      "role": "user",
+      "content": "Ô£à 0ÔÇô100 ha",
+      "ts": 1763381408905
+    },
+    {
+      "role": "bot",
+      "content": "┬┐En qu├® *campa├▒a* te encuentras?  [botones]",
+      "ts": 1763381408906
+    }
+  ],
+  "lastPrompt": "campana",
+  "lastPromptTs": 1763381408905,
+  "meta": {
+    "origin": "facebook",
+    "referral": {
+      "source_url": "https://fb.me/2YSrC0QNK",
+      "source_id": "120236719999840524",
+      "source_type": "ad",
+      "body": "­ƒÆ¬ ┬┐Listo para un control efectivo y completo?  \n\nGLISATO (Glifosato Sal IPA 480 g/l SL), es el herbicida no selectivo de acci├│n sist├®mica que elimina malezas desde la ra├¡z. Ideal para tu barbecho qu├¡mico.  \n\n­ƒî▒ Eficiencia comprobada contra:  \n\n­ƒö╣ Rogelia  \n\n­ƒö╣ Verdolaga camba  \n\n­ƒö╣ Chupurujume y m├ís.  \n\n­ƒö╣ Absorci├│n r├ípida y excelente performance.  \n\n­ƒô® Cont├íctanos para m├ís informaci├│n.  \n\n#Glisato #ControlDeMalezas #BarbechoQu├¡mico #AgriculturaEficiente",
+      "headline": "New Chem Agroqu├¡micos",
+      "media_type": "image",
+      "image_url": "https://scontent.xx.fbcdn.net/v/t39.30808-6/480806961_122119418834647561_7897707757282518825_n.jpg?stp=dst-jpg_s394x394_tt6&_nc_cat=108&ccb=1-7&_nc_sid=c9359e&_nc_ohc=bBooqSXNbTMQ7kNvwEAFqBi&_nc_oc=AdmqiP1o04RLFopoJF-rOPb8szmWFP09iNCrFhVQlLbj_Gy3-lq4c5wCkK9vTAkO31aItTMhTrToBAS1NdHmsJMf&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=scontent.xx&_nc_gid=C3fMJOnR2UNX_uS9pDkcMA&oh=00_Afhu7cs-1ISFPgGgMRs7HNU1FqXP3utgjiL8oZJz7wKGDg&oe=6920D185",
+      "ctwa_clid": "Afd6IwnKTB7SK2-rMyTPdoiOWQoejlhBU9iP3X2Iud4gEj44VrXXRA_nNBzIXm1xET_KacJxkHm4TWJf9UlXABG7NKZ8IPihtV8ZETPesJ-OuRfYcq_WjQw-oOMfcOTwUnUx1gnLRw",
+      "welcome_message": {
+        "text": "┬íHola, ! ┬┐C├│mo podemos ayudarte?"
+      }
+    },
+    "referralHandled": true,
+    "last_wamid": "wamid.HBgLNTkxNzE5NjIyNDIVAgASGCBBNTNCMzNGNDhFNzVDMzdDQzlERDg5QzM4RTE5RjM5NwA=",
+    "preloadedFromSheet": true,
+    "lastMsg": {
+      "role": "bot",
+      "content": "┬┐En qu├® *campa├▒a* te encuentras?  [botones]",
+      "ts": 1763381408906
+    },
+    "lastAt": 1763381408906,
+    "unread": 6
+  },
+  "_savedToSheet": false,
+  "_closedAt": null,
+  "_expiresAt": 1763986209638
+}

@@ -1,0 +1,96 @@
+{
+  "greeted": true,
+  "stage": "product",
+  "pending": "departamento",
+  "asked": {
+    "nombre": true,
+    "departamento": true,
+    "subzona": false,
+    "cultivo": false,
+    "hectareas": false,
+    "campana": false
+  },
+  "vars": {
+    "departamento": null,
+    "subzona": null,
+    "cultivos": [],
+    "hectareas": null,
+    "campana": null,
+    "phone": null,
+    "cart": []
+  },
+  "profileName": "Desculpe Estara Vien Para Fumigar Platanal",
+  "memory": [
+    {
+      "role": "bot",
+      "content": "┬íHola! Soy el asistente virtual de New Chem Agroqu├¡micos.",
+      "ts": 1763123266969
+    },
+    {
+      "role": "bot",
+      "content": "Con mucho gusto te env├¡o la *ficha t├®cnica* de *GLISATO* ­ƒæç",
+      "ts": 1763123267907
+    },
+    {
+      "role": "bot",
+      "content": "Te ayudo a realizar tu cotizaci├│n.",
+      "ts": 1763123270410
+    },
+    {
+      "role": "bot",
+      "content": "Para personalizar tu atenci├│n, ┬┐cu├íl es tu *nombre completo*?",
+      "ts": 1763123271174
+    },
+    {
+      "role": "user",
+      "content": "Desculpe estara vien para fumigar platanal",
+      "ts": 1763123344605
+    },
+    {
+      "role": "bot",
+      "content": "­ƒôì Cu├®ntanos, ┬┐desde qu├® *departamento* de Bolivia nos escribes? [lista: Elegir departamento]",
+      "ts": 1763123344606
+    },
+    {
+      "role": "user",
+      "content": "Desde el departamento d cochamba mas claro del tropico de cbba",
+      "ts": 1763126007541
+    },
+    {
+      "role": "bot",
+      "content": "­ƒôì Cu├®ntanos, ┬┐desde qu├® *departamento* de Bolivia nos escribes? [lista: Elegir departamento]",
+      "ts": 1763126007542
+    }
+  ],
+  "lastPrompt": "departamento",
+  "lastPromptTs": 1763126007541,
+  "meta": {
+    "origin": "facebook",
+    "referral": {
+      "source_url": "https://fb.me/2YSrC0QNK",
+      "source_id": "120236719999840524",
+      "source_type": "ad",
+      "body": "­ƒÆ¬ ┬┐Listo para un control efectivo y completo?  \n\nGLISATO (Glifosato Sal IPA 480 g/l SL), es el herbicida no selectivo de acci├│n sist├®mica que elimina malezas desde la ra├¡z. Ideal para tu barbecho qu├¡mico.  \n\n­ƒî▒ Eficiencia comprobada contra:  \n\n­ƒö╣ Rogelia  \n\n­ƒö╣ Verdolaga camba  \n\n­ƒö╣ Chupurujume y m├ís.  \n\n­ƒö╣ Absorci├│n r├ípida y excelente performance.  \n\n­ƒô® Cont├íctanos para m├ís informaci├│n.  \n\n#Glisato #ControlDeMalezas #BarbechoQu├¡mico #AgriculturaEficiente",
+      "headline": "New Chem Agroqu├¡micos",
+      "media_type": "image",
+      "image_url": "https://scontent.xx.fbcdn.net/v/t39.30808-6/480806961_122119418834647561_7897707757282518825_n.jpg?stp=dst-jpg_s394x394_tt6&_nc_cat=108&ccb=1-7&_nc_sid=c9359e&_nc_ohc=a3HtXsrs15gQ7kNvwEDm_TK&_nc_oc=AdnGRSiYGIpFKpnBwQlRY2MOvxEFMS7G0BojuDVC8NgCV_zZV68oqPMtveyhQvZkd1QFHYyi9aa6F8tTCwdhr9RB&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=scontent.xx&_nc_gid=PeXoWsTld19qeFV0duN1IQ&oh=00_AfjYXUFBF5bLcXi3YYrkHJAdQEUKPNCbS--_CS8RLHaDfQ&oe=691CDD05",
+      "ctwa_clid": "AffdH8k4m8zLjQR4eBsf09zC6TZu7S4ITEh5hztkrzD5SsqkQmm4xXI3KxpIMHHwuDDvblBfpezILeS4pcDwOfRBnco8-Y8yiyh28QODecP5ERw2D4k_sr_luSRknNs0qD75xhtFFw",
+      "welcome_message": {
+        "text": "┬íHola, ! ┬┐C├│mo podemos ayudarte?"
+      }
+    },
+    "referralHandled": true,
+    "last_wamid": "wamid.HBgLNTkxNzIyMjYxODEVAgASGCBBQ0QyNEI0MkUyQTZBMDI4MTE5QzQ3NDBFRUJDOUJFRQA=",
+    "preloadedFromSheet": true,
+    "lastMsg": {
+      "role": "bot",
+      "content": "­ƒôì Cu├®ntanos, ┬┐desde qu├® *departamento* de Bolivia nos escribes? [lista: Elegir departamento]",
+      "ts": 1763126007542
+    },
+    "lastAt": 1763126007542,
+    "unread": 2
+  },
+  "_savedToSheet": false,
+  "_closedAt": null,
+  "_expiresAt": 1763730808393
+}

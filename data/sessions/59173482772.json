@@ -1,0 +1,139 @@
+{
+  "greeted": true,
+  "stage": "product",
+  "pending": "catalog_link",
+  "asked": {
+    "nombre": true,
+    "departamento": true,
+    "subzona": true,
+    "cultivo": true,
+    "hectareas": true,
+    "campana": true
+  },
+  "vars": {
+    "departamento": "Tarija",
+    "subzona": "Carapari",
+    "cultivos": [
+      "Ma├¡z"
+    ],
+    "hectareas": "0ÔÇô100 ha",
+    "campana": "Verano",
+    "phone": null,
+    "cart": []
+  },
+  "profileName": "Eligio Rovera",
+  "memory": [
+    {
+      "role": "bot",
+      "content": "Para personalizar tu atenci├│n, ┬┐cu├íl es tu *nombre completo*?",
+      "ts": 1763354742686
+    },
+    {
+      "role": "user",
+      "content": "Eligio rovera",
+      "ts": 1763372015887
+    },
+    {
+      "role": "bot",
+      "content": "­ƒôì Cu├®ntanos, ┬┐desde qu├® *departamento* de Bolivia nos escribes? [lista: Elegir departamento]",
+      "ts": 1763372015888
+    },
+    {
+      "role": "user",
+      "content": "Ô£à Tarija",
+      "ts": 1763372034290
+    },
+    {
+      "role": "bot",
+      "content": "Perfecto. ┬┐En qu├® *zona* de *Tarija* trabajas?",
+      "ts": 1763372034291
+    },
+    {
+      "role": "user",
+      "content": "Carapari",
+      "ts": 1763372048660
+    },
+    {
+      "role": "bot",
+      "content": "­ƒôï ┬┐Para qu├® *cultivo* necesitas el producto? [lista: Elegir cultivo]",
+      "ts": 1763372048662
+    },
+    {
+      "role": "user",
+      "content": "Ô£à Ma├¡z",
+      "ts": 1763372062419
+    },
+    {
+      "role": "bot",
+      "content": "┬┐Cu├íntas *hect├íreas* vas a tratar? [lista: Elegir hect├íreas]",
+      "ts": 1763372062420
+    },
+    {
+      "role": "user",
+      "content": "Ô£à 0ÔÇô100 ha",
+      "ts": 1763372076524
+    },
+    {
+      "role": "bot",
+      "content": "┬┐En qu├® *campa├▒a* te encuentras?  [botones]",
+      "ts": 1763372076525
+    },
+    {
+      "role": "user",
+      "content": "Ô£à Verano",
+      "ts": 1763372081678
+    },
+    {
+      "role": "bot",
+      "content": "Te dejo nuestro *cat├ílogo*.\nhttps://newchem-bot-production.up.railway.app/catalog.html\n\n­ƒæë A├▒ade tus productos y toca *Enviar a WhatsApp*. Yo recibir├® tu pedido y te preparar├® tu cotizaci├│n.",
+      "ts": 1763372081679
+    },
+    {
+      "role": "user",
+      "content": "Glifosato",
+      "ts": 1763372178254
+    },
+    {
+      "role": "bot",
+      "content": "┬íHola! Soy el asistente virtual de New Chem Agroqu├¡micos.",
+      "ts": 1763372178254
+    },
+    {
+      "role": "bot",
+      "content": "Con mucho gusto te env├¡o la *ficha t├®cnica* de *GLISATO* ­ƒæç",
+      "ts": 1763372179045
+    },
+    {
+      "role": "bot",
+      "content": "Te ayudo a realizar tu cotizaci├│n.",
+      "ts": 1763372181445
+    },
+    {
+      "role": "bot",
+      "content": "Te dejo nuestro *cat├ílogo*.\nhttps://newchem-bot-production.up.railway.app/catalog.html\n\n­ƒæë A├▒ade tus productos y toca *Enviar a WhatsApp*. Yo recibir├® tu pedido y te preparar├® tu cotizaci├│n.",
+      "ts": 1763372182271
+    }
+  ],
+  "lastPrompt": "catalog_link",
+  "lastPromptTs": 1763372182271,
+  "meta": {
+    "origin": "facebook",
+    "referral": {
+      "source_url": "https://fb.me/2YSrC0QNK"
+    },
+    "referralHandled": true,
+    "last_wamid": "wamid.HBgLNTkxNzM0ODI3NzIVAgASGCBBQzU4QTMzMkVFRDc3MUI2RTVBQTNBMUExQzg3QzEzNAA=",
+    "preloadedFromSheet": true,
+    "lastMsg": {
+      "role": "bot",
+      "content": "Te dejo nuestro *cat├ílogo*.\nhttps://newchem-bot-production.up.railway.app/catalog.html\n\n­ƒæë A├▒ade tus productos y toca *Enviar a WhatsApp*. Yo recibir├® tu pedido y te preparar├® tu cotizaci├│n.",
+      "ts": 1763372182271
+    },
+    "lastAt": 1763372182271,
+    "unread": 7,
+    "campanaUpdatedAt": 1763372081679
+  },
+  "_savedToSheet": false,
+  "_closedAt": null,
+  "_expiresAt": 1763976983053
+}
