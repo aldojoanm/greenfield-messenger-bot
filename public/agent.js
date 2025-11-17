@@ -24,19 +24,24 @@ const backBtn    = document.getElementById('backBtn');
 const chatName   = document.getElementById('chatName');
 const chatMeta   = document.getElementById('chatMeta');
 const msgsEl     = document.getElementById('msgs');
+
 const moreBtn    = document.getElementById('moreBtn');
-const sheetModal = document.getElementById('sheet');     // MOBILE modal
-const sheetRow   = document.getElementById('sheetRow');  // DESKTOP row
 const fileInput  = document.getElementById('fileInput');
 const dropZone   = document.getElementById('dropZone');
 const box        = document.getElementById('box');
 const sendBtn    = document.getElementById('send');
+
 const refreshBtn = document.getElementById('refresh');
 const importBtn  = document.getElementById('importWA');
 const logoutBtn  = document.getElementById('logout');
 const searchEl   = document.getElementById('search');
 const segBtns    = Array.from(document.querySelectorAll('.segmented .seg'));
 const attachBtn  = document.getElementById('attachBtn');
+
+// Móvil panel
+const mobileActions   = document.getElementById('mobileActions');
+const toggleBotIcon   = document.getElementById('toggleBotIcon');
+const toggleBotLabel  = document.getElementById('toggleBotLabel');
 
 // ====== Estado ======
 let current = null;
@@ -110,13 +115,8 @@ function setConn(status, title=''){
 }
 
 /* ===== SSE con reconexión y fallback de sondeo ===== */
-function startPolling(){
-  stopPolling();
-  pollTimer = setInterval(()=> refresh(false), 20000);
-}
-function stopPolling(){
-  if (pollTimer){ clearInterval(pollTimer); pollTimer=null; }
-}
+function startPolling(){ stopPolling(); pollTimer = setInterval(()=> refresh(false), 20000); }
+function stopPolling(){ if (pollTimer){ clearInterval(pollTimer); pollTimer=null; } }
 
 function startSSE(){
   try{ if (sse) sse.close(); }catch{}
@@ -137,7 +137,6 @@ function startSSE(){
   });
   sse.onerror = ()=>{
     setConn('off','reintentando');
-    // iOS puede cerrar SSE al suspender; usa fallback
     startPolling();
     try{ sse.close(); }catch{}
     setTimeout(startSSE, 4000);
@@ -165,7 +164,7 @@ async function forceReauth(){
   const ok = await requestToken(true); if (ok) await refresh(true);
 }
 
-// Reconecta cuando la app vuelve a primer plano (iOS PWA)
+// Reconecta cuando vuelve a primer plano
 document.addEventListener('visibilitychange', ()=>{
   if (document.visibilityState === 'visible'){ setConn('wait','reconectando'); startSSE(); refresh(false); }
 });
@@ -217,6 +216,7 @@ function renderThreads(){
     threadList.appendChild(row);
   }
 }
+
 // ====== CHAT ======
 function renderMsgs(mem){
   msgsEl.innerHTML = '';
@@ -249,11 +249,12 @@ async function openChat(id){
       viewList.classList.remove('active');
       viewChat.classList.add('active');
     }
+    refreshToggleUI();
   }catch{ alert('No pude abrir el chat.'); }
 }
 backBtn.onclick = ()=>{ current=null; viewChat.classList.remove('active'); viewList.classList.add('active'); };
 
-// ====== Acciones (comparten lógica Desktop/Mobile) ======
+// ====== Acciones comunes ======
 async function doRequestInfo(){
   if (!current) return;
   const nombre = current.name?.trim() || 'cliente';
@@ -270,7 +271,6 @@ async function doRequestInfo(){
   ].join('\n');
   await api.send(current.id, part1);
   await api.send(current.id, part2);
-  closeSheet();
 }
 async function doSendQR(){
   if (!current) return;
@@ -281,51 +281,84 @@ async function doSendQR(){
   if (!blob){ alert('No encontré el archivo QR.'); return; }
   const file = new File([blob], 'qr-pagos.png', { type: mime });
   await api.sendMedia(current.id, [file], '');
-  closeSheet();
 }
-async function doSendAccounts(){ if (!current) return; await api.send(current.id, ACCOUNTS_TEXT); closeSheet(); }
-async function doMarkRead(){ if(!current) return; await api.read(current.id); closeSheet(); refresh(false); }
-async function doTakeHuman(){ if(!current) return; await api.handoff(current.id,'human'); statusPill.style.display='inline-block'; closeSheet(); }
-async function doResumeBot(){ if(!current) return; await api.handoff(current.id,'bot'); statusPill.style.display='none'; closeSheet(); }
+async function doSendAccounts(){ if (!current) return; await api.send(current.id, ACCOUNTS_TEXT); }
+async function doMarkRead(){ if(!current) return; await api.read(current.id); refresh(false); }
+async function doTakeHuman(){ if(!current) return; await api.handoff(current.id,'human'); statusPill.style.display='inline-block'; refreshToggleUI(); }
+async function doResumeBot(){ if(!current) return; await api.handoff(current.id,'bot');   statusPill.style.display='none';         refreshToggleUI(); }
 
 // Desktop row
-document.getElementById('requestInfo').onclick = doRequestInfo;
-document.getElementById('sendQR').onclick = doSendQR;
+document.getElementById('requestInfo') .onclick = doRequestInfo;
+document.getElementById('sendQR')      .onclick = doSendQR;
 document.getElementById('sendAccounts').onclick = doSendAccounts;
-document.getElementById('markRead').onclick  = doMarkRead;
-document.getElementById('takeHuman').onclick = doTakeHuman;
-document.getElementById('resumeBot').onclick = doResumeBot;
+document.getElementById('markRead')    .onclick = doMarkRead;
+document.getElementById('takeHuman')   .onclick = doTakeHuman;
+document.getElementById('resumeBot')   .onclick = doResumeBot;
 
-// Mobile sheet
-document.getElementById('requestInfo_m').onclick = doRequestInfo;
-document.getElementById('sendQR_m').onclick = doSendQR;
-document.getElementById('sendAccounts_m').onclick = doSendAccounts;
-document.getElementById('markRead_m').onclick  = doMarkRead;
-document.getElementById('takeHuman_m').onclick = doTakeHuman;
-document.getElementById('resumeBot_m').onclick = doResumeBot;
+// ====== PANEL MÓVIL ======
+function botIsOn(){ return current ? !current.human : true; }
 
-const closeSheet = ()=> sheetModal.classList.remove('show');
-moreBtn.onclick = ()=> sheetModal.classList.toggle('show');
-document.getElementById('closeSheet').onclick = closeSheet;
+function refreshToggleUI(){
+  if (!current) return;
+  if (botIsOn()){
+    toggleBotIcon.src = '/iconos/icono-pausa.png';
+    toggleBotLabel.textContent = 'Apagar';
+  } else {
+    toggleBotIcon.src = '/iconos/icono-play.png';
+    toggleBotLabel.textContent = 'Encender';
+  }
+}
+
+// Abrir/cerrar panel como teclado
+let panelOpen = false;
+function setPanel(open){
+  panelOpen = !!open;
+  mobileActions.classList.toggle('show', panelOpen);
+  // cambia símbolo de + a teclado
+  moreBtn.textContent = panelOpen ? '⌨️' : '+';
+  // Ajusta padding inferior de mensajes para que no tape
+  const basePad = getComputedStyle(document.documentElement)
+    .getPropertyValue('--composer-min-h');
+  msgsEl.style.paddingBottom = panelOpen
+    ? `calc(${basePad} + 260px + var(--safe-bottom))`
+    : `calc(${basePad} + 16px + var(--safe-bottom))`;
+  msgsEl.scrollTop = msgsEl.scrollHeight;
+}
+moreBtn?.addEventListener('click', ()=> setPanel(!panelOpen));
+
+// Acciones del panel móvil
+document.getElementById('ma-location').onclick = async ()=>{
+  if(!current) return;
+  await api.send(current.id, `📍 Ubicación: 17°45'29.0"S 63°09'11.6"W`);
+  setPanel(false);
+};
+document.getElementById('ma-qr').onclick = async ()=>{ await doSendQR(); setPanel(false); };
+document.getElementById('ma-datos').onclick = async ()=>{ await doRequestInfo(); setPanel(false); };
+document.getElementById('ma-cuentas').onclick = async ()=>{ await doSendAccounts(); setPanel(false); };
+document.getElementById('ma-archivos').onclick = ()=>{ fileInput.click(); };
+
+document.getElementById('ma-toggle').onclick = async ()=>{
+  if (!current) return;
+  if (botIsOn()) await doTakeHuman(); else await doResumeBot();
+};
 
 // ====== Envío / inputs ======
 sendBtn.onclick = async ()=>{
   const txt = box.value.trim();
   if(!txt || !current) return;
-  box.value='';
-  await api.send(current.id, txt);
+  box.value=''; await api.send(current.id, txt);
 };
 box.addEventListener('keydown', (e)=>{ if(e.key==='Enter' && !e.shiftKey){ e.preventDefault(); sendBtn.click(); } });
 
-attachBtn.onclick = ()=> fileInput.click();
+attachBtn?.addEventListener('click', ()=> fileInput.click());
 fileInput.onchange = async (e)=>{
   const files = Array.from(e.target.files||[]);
   if(!files.length || !current) return;
   try{ await api.sendMedia(current.id, files, ''); } catch{ alert('Error subiendo archivo(s).'); }
-  e.target.value='';
+  e.target.value=''; setPanel(false);
 };
 
-// Drag&drop
+// Drag&drop (solo desktop)
 ['dragenter','dragover'].forEach(ev=> dropZone.addEventListener(ev, e=>{ e.preventDefault(); e.stopPropagation(); dropZone.classList.add('drag'); }));
 ['dragleave','drop'].forEach(ev=> dropZone.addEventListener(ev, e=>{ e.preventDefault(); e.stopPropagation(); dropZone.classList.remove('drag'); }));
 dropZone.addEventListener('drop', async (e)=>{ const files = Array.from(e.dataTransfer?.files||[]); if (!files.length || !current) return; try{ await api.sendMedia(current.id, files, ''); } catch{ alert('Error subiendo archivo(s).'); } });
@@ -347,19 +380,15 @@ async function refresh(openFirst=false){
   }catch{}
 }
 
-// ====== Personalización Desktop: botón "Subir archivo" ======
+// ====== Personalización Desktop ======
 function adjustDesktopControls(){
   if (isDesktop()){
-    attachBtn.textContent = 'Subir archivo';
-    attachBtn.classList.add('btn');
-  } else {
-    attachBtn.textContent = '📎';
-    attachBtn.classList.remove('btn');
+    // Se mantiene botón "Subir archivo"
   }
 }
 window.addEventListener('resize', adjustDesktopControls);
 
-/* === Salir: limpiar credenciales y forzar login nuevamente === */
+/* === Salir === */
 logoutBtn.onclick = ()=>{ api.clear(); localStorage.removeItem(LS_DEVID); location.reload(); };
 
 // Bootstrap

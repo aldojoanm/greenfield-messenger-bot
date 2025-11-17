@@ -15,6 +15,7 @@
 </head>
 <body>
   <div id="app" class="app">
+    <!-- LISTA -->
     <section id="view-list" class="view view-list active safe-top">
       <header class="topbar">
         <h1>Inbox</h1>
@@ -43,6 +44,7 @@
       <div id="threadList" class="threads"></div>
     </section>
 
+    <!-- CHAT -->
     <section id="view-chat" class="view view-chat">
       <header class="chatbar">
         <button id="backBtn" class="icon-btn only-mobile" aria-label="Volver">←</button>
@@ -53,6 +55,7 @@
         <span id="status" class="pill" style="display:none">HUMANO</span>
       </header>
 
+      <!-- Acciones desktop -->
       <div id="sheetRow" class="sheet-row only-desktop" role="toolbar" aria-label="Acciones del chat">
         <button class="sheet-item" id="takeHuman">⏸️ Pausar bot</button>
         <button class="sheet-item" id="resumeBot">▶️ Bot ON</button>
@@ -64,25 +67,62 @@
 
       <main id="msgs" class="msgs"></main>
 
+      <!-- Composer fijo -->
       <footer class="composer" id="dropZone">
         <div class="left-actions">
-          <button id="moreBtn" class="icon-btn only-mobile" aria-label="Más">＋</button>
-          <input id="fileInput" type="file" multiple style="display:none" accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,image/*,video/*,audio/*">
-          <button id="attachBtn" class="icon-btn" aria-label="Adjuntar">Adjuntar Archivo</button>
-        </div>
-        <textarea id="box" placeholder="Escribe un mensaje…"></textarea>
-        <button id="send" class="icon-btn send" aria-label="Enviar">➤</button>
+          <!-- Botón '+' grande sin caja -->
+          <button id="moreBtn" class="only-mobile more-btn" aria-label="Más" title="Más">+</button>
 
-        <div id="sheet" class="sheet">
-          <button class="sheet-item" id="takeHuman_m">⏸️ Pausar bot</button>
-          <button class="sheet-item" id="resumeBot_m">▶️ Bot ON</button>
-          <button class="sheet-item" id="markRead_m">✓ Marcar leído</button>
-          <button class="sheet-item" id="requestInfo_m">📋 Solicitar datos</button>
-          <button class="sheet-item" id="sendQR_m">🧾 Enviar QR</button>
-          <button class="sheet-item" id="sendAccounts_m">🏦 Cuentas</button>
-          <button class="sheet-item alt" id="closeSheet">Cerrar</button>
+          <!-- input file oculto -->
+          <input id="fileInput" type="file" multiple style="display:none"
+                 accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,image/*,video/*,audio/*">
+
+          <!-- En desktop se muestra botón texto; en móvil se hace desde el panel -->
+          <button id="attachBtn" class="icon-btn only-desktop" aria-label="Adjuntar">Subir archivo</button>
         </div>
+
+        <textarea id="box" placeholder="Escribe un mensaje…"></textarea>
+
+        <!-- Botón enviar con icono (sin caja) -->
+        <button id="send" class="send-btn" aria-label="Enviar" title="Enviar">
+          <img src="/iconos/icono-avion.png" alt="Enviar">
+        </button>
       </footer>
+
+      <!-- PANEL acciones móvil (como teclado) -->
+      <div id="mobileActions" class="mobile-actions">
+        <div class="ma-grid">
+          <button class="ma-item" id="ma-location">
+            <span class="ma-circle"><img src="/iconos/icono-ubi.png" alt=""></span>
+            <span class="ma-label">Ubicación</span>
+          </button>
+
+          <button class="ma-item" id="ma-qr">
+            <span class="ma-circle"><img src="/iconos/icono-qr.png" alt=""></span>
+            <span class="ma-label">QR</span>
+          </button>
+
+          <button class="ma-item" id="ma-toggle">
+            <span class="ma-circle"><img id="toggleBotIcon" src="/iconos/icono-play.png" alt=""></span>
+            <span id="toggleBotLabel" class="ma-label">Encender</span>
+          </button>
+
+          <button class="ma-item" id="ma-datos">
+            <span class="ma-circle"><img src="/iconos/icono-datos.png" alt=""></span>
+            <span class="ma-label">Solicitar datos</span>
+          </button>
+
+          <button class="ma-item" id="ma-cuentas">
+            <span class="ma-circle"><img src="/iconos/icono-cuentas.png" alt=""></span>
+            <span class="ma-label">Cuentas</span>
+          </button>
+
+          <button class="ma-item" id="ma-archivos">
+            <span class="ma-circle"><img src="/iconos/icono-carpeta.png" alt=""></span>
+            <span class="ma-label">Archivos</span>
+          </button>
+        </div>
+      </div>
     </section>
   </div>
 
