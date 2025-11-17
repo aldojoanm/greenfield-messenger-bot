@@ -1155,13 +1155,11 @@ if (parsedCart && !isAdvisor(fromId)) {
   s.stage = 'checkout';
   persistS(fromId);
 
-  // Mensaje de confirmación inicial
   await toText(
     fromId,
-    '✅ ¡Perfecto! Ya recibí tu pedido desde el catálogo y lo tengo listo para cotizar.\n\n'
+    '¡Gracias por escribirnos! Te envío la *cotización en PDF*. Si requieres mas información, estamos a tu disposición.'
   );
 
-  // === MISMA LÓGICA QUE QR_FINALIZAR, PERO DISPARADA POR EL TEXTO ===
   let pdfInfo = null;
   try {
     pdfInfo = await sendAutoQuotePDF(fromId, s);
@@ -1197,17 +1195,11 @@ if (parsedCart && !isAdvisor(fromId)) {
     console.error('upsert WA_CLIENTES (desde catálogo) error:', e);
   }
 
-  // Mensajes de cierre al cliente (igual que en QR_FINALIZAR)
-  await toText(
-    fromId,
-    '¡Gracias por escribirnos! Te envío la *cotización en PDF*. Si requieres mas información, estamos a tu disposición.'
-  );
   await toText(
     fromId,
     'Para volver a activar el asistente, por favor, escribe *Asistente New Chem*.'
   );
 
-  // Aviso y PDF al asesor (reutilizando el mismo pdfInfo)
   if (ADVISOR_WA_NUMBERS.length) {
     const txt = compileAdvisorAlert(s, fromId);
     for (const advisor of ADVISOR_WA_NUMBERS) {
