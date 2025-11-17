@@ -1156,9 +1156,7 @@ router.post('/wa/webhook', async (req,res)=>{
       persistS(fromId);
 
       await toText(fromId,
-        '✅ ¡Perfecto! Ya recibí tu pedido desde el catálogo y lo tengo listo para cotizar.\n\n' +
-        '*Compra mínima: US$ 3.000 (puedes combinar productos).* \n' +
-        '*La entrega de tu pedido se realiza en nuestro almacén*.'
+        '✅ ¡Perfecto! Ya recibí tu pedido desde el catálogo y lo tengo listo para cotizar.\n\n'
       );
 
       await toButtons(fromId, '¿Listo para *cotizar*?', [
