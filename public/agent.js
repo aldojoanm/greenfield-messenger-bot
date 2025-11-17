@@ -24,12 +24,12 @@ const chatName   = document.getElementById('chatName');
 const chatMeta   = document.getElementById('chatMeta');
 const msgsEl     = document.getElementById('msgs');
 
-const moreBtn    = document.getElementById('moreBtn');
-const actionPanel= document.getElementById('actionPanel');
-const fileInput  = document.getElementById('fileInput');
-const dropZone   = document.getElementById('dropZone');
-const box        = document.getElementById('box');
-const sendBtn    = document.getElementById('send');
+const moreBtn     = document.getElementById('moreBtn');
+const actionPanel = document.getElementById('actionPanel');
+const fileInput   = document.getElementById('fileInput');
+const dropZone    = document.getElementById('dropZone');
+const box         = document.getElementById('box');
+const sendBtn     = document.getElementById('send');
 
 const refreshBtn = document.getElementById('refresh');
 const importBtn  = document.getElementById('importWA');
@@ -37,8 +37,12 @@ const logoutBtn  = document.getElementById('logout');
 const searchEl   = document.getElementById('search');
 const segBtns    = Array.from(document.querySelectorAll('.segmented .seg'));
 
-const toggleBotIcon   = document.getElementById('toggleBotIcon');
-const toggleBotLabel  = document.getElementById('toggleBotLabel');
+const dateFromEl = document.getElementById('dateFrom');
+const dateToEl   = document.getElementById('dateTo');
+const clearDates = document.getElementById('clearDates');
+
+const toggleBotIcon  = document.getElementById('toggleBotIcon');
+const toggleBotLabel = document.getElementById('toggleBotLabel');
 
 // ====== Estado ======
 let current = null;
@@ -52,6 +56,7 @@ const isDesktop = () => window.matchMedia('(min-width:1024px)').matches;
 const normId = v => String(v ?? '');
 const sameId = (a,b)=> normId(a) === normId(b);
 const looksLikeMediaLine = (t='')=> /^([🖼️🎬🎧📎])/.test(String(t).trim());
+
 const timeAgo = (ts)=> {
   if (!ts) return '';
   const d = typeof ts === 'number' ? ts : new Date(ts).getTime();
@@ -163,15 +168,18 @@ window.addEventListener('pageshow', (e)=>{ if (e.persisted){ startSSE(); refresh
 const lastFromMemory = (m=[]) => m.length ? m[m.length-1] : null;
 const initial = (name='?') => name.trim()[0]?.toUpperCase?.() || '?';
 
-// Heurística "done" si hay cotización o “flujo finalizado” en los últimos mensajes
+// Heurística "done" mejorada
 function inferDone(c){
-  if (c.finalizado || c.done) return true;
-  const txt = (c.last || '').toLowerCase();
-  if (/(cotizaci[oó]n|flujo\s+finalizado)/.test(txt)) return true;
+  const status = (c.status||'').toLowerCase();
+  if (['finalizado','finished','closed','done','completed'].includes(status)) return true;
+  if (c.finalizado === true || c.done === true) return true;
+
+  const K = /(cotizaci[oó]n|flujo\s+finalizado|pedido\s+enviado|orden\s+cerrada|gracias\s+por\s+su\s+compra)/i;
+  if (K.test(String(c.last||''))) return true;
+
   const mem = c.memory || [];
-  for (let i = mem.length-1; i >= Math.max(0, mem.length-6); i--){
-    const t = (mem[i]?.content || '').toLowerCase();
-    if (/(cotizaci[oó]n|flujo\s+finalizado)/.test(t)) return true;
+  for (let i = mem.length-1; i >= Math.max(0, mem.length-10); i--){
+    if (K.test(String(mem[i]?.content||''))) return true;
   }
   return false;
 }
@@ -191,7 +199,7 @@ function renderThreads(){
     return { ...c, done, finalizado: done, files: hasFiles(c) };
   });
 
-  // filtros
+  // filtros por estado
   if (filter==='done')    rows = rows.filter(c => c.done);
   if (filter==='active')  rows = rows.filter(c => !c.done);
   if (filter==='new')     rows = rows.filter(c => !c.done && !c.human && (c.unread>0));
@@ -199,7 +207,23 @@ function renderThreads(){
   if (filter==='unread')  rows = rows.filter(c => (c.unread||0)>0);
   if (filter==='files')   rows = rows.filter(c => c.files);
 
+  // filtro por texto
   rows = rows.filter(c => (c.name||'').toLowerCase().includes(q) || String(c.id||'').includes(q));
+
+  // filtro por rango de fechas
+  const fromStr = dateFromEl?.value || '';
+  const toStr   = dateToEl?.value   || '';
+  const fromMs = fromStr ? new Date(fromStr + 'T00:00:00').getTime() : 0;
+  const toMs   = toStr   ? new Date(toStr   + 'T23:59:59').getTime() : Infinity;
+
+  rows = rows.filter(c=>{
+    const lastMem = c.memory && c.memory.length ? c.memory[c.memory.length-1] : null;
+    const ts = c.ts || lastMem?.ts || 0;
+    if (!ts) return fromMs===0 && toMs===Infinity;
+    const t = (typeof ts === 'number') ? ts : new Date(ts).getTime();
+    return (t >= fromMs && t <= toMs);
+  });
+
   msgCount.textContent = `Mensajes (${rows.length})`;
 
   for (const c0 of rows){
@@ -210,7 +234,9 @@ function renderThreads(){
     const prefix = lastRole==='bot' || lastRole==='agent' ? 'You: ' : (c.name ? `${c.name}: ` : '');
     if (lastTxt) lastTxt = (prefix + lastTxt).slice(0,120);
 
-    const ts = c.ts || lastMem?.ts; const when = ts ? timeAgo(ts) : '';
+    const ts = c.ts || lastMem?.ts;
+    const tms = ts ? new Date(ts) : null;
+    const when = tms ? tms.toLocaleString() : '';
     const dot = c.human ? 'agent' : (c.done ? 'done' : (c.unread ? 'unread' : 'done'));
     const avatar = c.avatar ? `<img src="${c.avatar}" alt="">` : `<span>${initial(c.name||c.id)}</span>`;
 
@@ -221,7 +247,7 @@ function renderThreads(){
       <div class="t-main">
         <div class="t-row1">
           <div class="t-name">${c.name || c.id}</div>
-          <div class="t-time">${when}</div>
+          <div class="t-time" title="${tms ? tms.toISOString() : ''}">${when}</div>
         </div>
         <div class="t-row2"><div class="t-last">${lastTxt || ''}</div></div>
       </div>
@@ -302,25 +328,13 @@ async function doMarkRead(){ if(!current) return; await api.read(current.id); re
 async function doTakeHuman(){ if(!current) return; await api.handoff(current.id,'human'); statusPill.style.display='inline-block'; refreshToggleUI(true); }
 async function doResumeBot(){ if(!current) return; await api.handoff(current.id,'bot');   statusPill.style.display='none';         refreshToggleUI(true); }
 
-// Desktop row
-document.getElementById('requestInfo').onclick = doRequestInfo;
-document.getElementById('sendQR').onclick = doSendQR;
-document.getElementById('sendAccounts').onclick = doSendAccounts;
-document.getElementById('markRead').onclick = doMarkRead;
-document.getElementById('takeHuman').onclick = doTakeHuman;
-document.getElementById('resumeBot').onclick = doResumeBot;
-
 // ===== Panel (móvil + desktop) =====
 function botIsOn(){ return current ? !current.human : true; }
 function refreshToggleUI(changed=false){
   if (!current) return;
-  if (botIsOn()){
-    toggleBotIcon.src = '/iconos/icono-pausa.png';
-    toggleBotLabel.textContent = 'Apagar';
-  } else {
-    toggleBotIcon.src = '/iconos/icono-play.png';
-    toggleBotLabel.textContent = 'Encender';
-  }
+  const isOn = !current.human;
+  toggleBotIcon.src   = isOn ? '/iconos/icono-pausa.png' : '/iconos/icono-play.png';
+  toggleBotLabel.textContent = isOn ? 'Apagar' : 'Encender';
   if (changed) setPanel(false);
 }
 
@@ -348,6 +362,17 @@ document.getElementById('ap-datos').onclick = async ()=>{ await doRequestInfo();
 document.getElementById('ap-cuentas').onclick = async ()=>{ await doSendAccounts(); setPanel(false); };
 document.getElementById('ap-archivos').onclick = ()=>{ fileInput.click(); };
 
+// Toggler robusto: detecta estado real antes de decidir
+document.getElementById('ap-toggle').onclick = async ()=>{
+  if (!current) return;
+  try {
+    const fresh = await api.history(encodeURIComponent(current.id));
+    current = {...fresh, id: String(fresh.id||current.id)};
+  } catch {}
+  const isOn = current ? !current.human : true;
+  if (isOn) { await doTakeHuman(); } else { await doResumeBot(); }
+};
+
 // ===== Envío / inputs =====
 sendBtn.onclick = async ()=>{
   const txt = box.value.trim();
@@ -372,12 +397,14 @@ dropZone.addEventListener('drop', async (e)=>{ const files = Array.from(e.dataTr
 function renderList(){ renderThreads(); }
 searchEl.oninput = renderList;
 segBtns.forEach(b=> b.onclick = ()=>{ segBtns.forEach(x=>x.classList.remove('active')); b.classList.add('active'); filter = b.dataset.filter; renderList(); });
+dateFromEl?.addEventListener('change', renderList);
+dateToEl?.addEventListener('change', renderList);
+clearDates?.addEventListener('click', ()=>{ if(dateFromEl) dateFromEl.value=''; if(dateToEl) dateToEl.value=''; renderList(); });
 
 // ===== Datos =====
 async function refresh(openFirst=false){
   try{
     const {convos} = await api.convos();
-    // normalizo id y guardo last/memory si viniera
     allConvos = (convos||[]).map(c=>({...c, id:normId(c.id)}));
     renderList();
     if (openFirst && !current && allConvos.length && isDesktop()){
@@ -397,6 +424,7 @@ logoutBtn.onclick = ()=>{ api.clear(); localStorage.removeItem('agent.deviceId')
   startSSE();
 })();
 
+// PWA
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => { navigator.serviceWorker.register('./sw.js').catch(()=>{}); });
 }
@@ -411,3 +439,8 @@ window.addEventListener('beforeinstallprompt',(e)=>{
 });
 window.addEventListener('offline', ()=> setConn('off','sin red'));
 window.addEventListener('online',  ()=> { setConn('wait','reconectando'); startSSE(); });
+
+// iOS: cuando el panel está abierto, reduce rebote
+document.addEventListener('touchmove', (e)=>{
+  if (panelOpen) e.stopPropagation();
+}, {passive:true});
