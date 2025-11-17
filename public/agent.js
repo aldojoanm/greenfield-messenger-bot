@@ -13,7 +13,6 @@ const ACCOUNTS_TEXT = [
 ].join('\n');
 
 // ====== DOM ======
-const app        = document.getElementById('app');
 const viewList   = document.getElementById('view-list');
 const viewChat   = document.getElementById('view-chat');
 const threadList = document.getElementById('threadList');
@@ -26,6 +25,7 @@ const chatMeta   = document.getElementById('chatMeta');
 const msgsEl     = document.getElementById('msgs');
 
 const moreBtn    = document.getElementById('moreBtn');
+const actionPanel= document.getElementById('actionPanel');
 const fileInput  = document.getElementById('fileInput');
 const dropZone   = document.getElementById('dropZone');
 const box        = document.getElementById('box');
@@ -36,10 +36,7 @@ const importBtn  = document.getElementById('importWA');
 const logoutBtn  = document.getElementById('logout');
 const searchEl   = document.getElementById('search');
 const segBtns    = Array.from(document.querySelectorAll('.segmented .seg'));
-const attachBtn  = document.getElementById('attachBtn');
 
-// Móvil panel
-const mobileActions   = document.getElementById('mobileActions');
 const toggleBotIcon   = document.getElementById('toggleBotIcon');
 const toggleBotLabel  = document.getElementById('toggleBotLabel');
 
@@ -89,9 +86,7 @@ function deviceId(){
 const api = {
   token: localStorage.getItem(LS_TOKEN) || '',
   tokenAt: Number(localStorage.getItem(LS_TOKENAT) || 0),
-  headers(){
-    return { 'Authorization':'Bearer '+this.token, 'Content-Type':'application/json', 'X-Device': deviceId() };
-  },
+  headers(){ return { 'Authorization':'Bearer '+this.token, 'Content-Type':'application/json', 'X-Device': deviceId() }; },
   isExpired(){ return !this.tokenAt || (Date.now() - this.tokenAt) > TOKEN_TTL_MS; },
   persist(t){ this.token=t; this.tokenAt=Date.now(); localStorage.setItem(LS_TOKEN,t); localStorage.setItem(LS_TOKENAT,String(this.tokenAt)); },
   clear(){ this.token=''; this.tokenAt=0; localStorage.removeItem(LS_TOKEN); localStorage.removeItem(LS_TOKENAT); },
@@ -114,7 +109,7 @@ function setConn(status, title=''){
   elConn.textContent = (map[status]||'') + (title?` — ${title}`:'');
 }
 
-/* ===== SSE con reconexión y fallback de sondeo ===== */
+/* ===== SSE + polling ===== */
 function startPolling(){ stopPolling(); pollTimer = setInterval(()=> refresh(false), 20000); }
 function stopPolling(){ if (pollTimer){ clearInterval(pollTimer); pollTimer=null; } }
 
@@ -122,8 +117,7 @@ function startSSE(){
   try{ if (sse) sse.close(); }catch{}
   if (!api.token) return;
   sse = new EventSource('/wa/agent/stream?token=' + encodeURIComponent(api.token));
-  setConn('ok');
-  stopPolling();
+  setConn('ok'); stopPolling();
 
   sse.addEventListener('open', ()=> setConn('ok'));
   sse.addEventListener('ping', ()=> setConn('ok'));
@@ -136,17 +130,15 @@ function startSSE(){
     refresh(false);
   });
   sse.onerror = ()=>{
-    setConn('off','reintentando');
-    startPolling();
-    try{ sse.close(); }catch{}
-    setTimeout(startSSE, 4000);
+    setConn('off','reintentando'); startPolling();
+    try{ sse.close(); }catch{}; setTimeout(startSSE, 4000);
   };
 }
 
 async function requestToken(force=false){
   if (!force && api.token && !api.isExpired()) return true;
   while (true){
-    const t = prompt('Token de agente (vigencia 24h en este dispositivo)'); 
+    const t = prompt('Token de agente (vigencia 24h en este dispositivo)');
     if (!t) { alert('Se requiere token para continuar.'); return false; }
     api.persist(t.trim());
     try{
@@ -164,25 +156,48 @@ async function forceReauth(){
   const ok = await requestToken(true); if (ok) await refresh(true);
 }
 
-// Reconecta cuando vuelve a primer plano
-document.addEventListener('visibilitychange', ()=>{
-  if (document.visibilityState === 'visible'){ setConn('wait','reconectando'); startSSE(); refresh(false); }
-});
+document.addEventListener('visibilitychange', ()=>{ if (document.visibilityState === 'visible'){ setConn('wait','reconectando'); startSSE(); refresh(false); }});
 window.addEventListener('pageshow', (e)=>{ if (e.persisted){ startSSE(); refresh(false); }});
 
-// ====== LISTA estilo Messenger ======
+// ====== LISTA ======
 const lastFromMemory = (m=[]) => m.length ? m[m.length-1] : null;
-const statusDot = (c)=> c.unread ? 'unread' : (c.done||c.finalizado) ? 'done' : c.human ? 'agent' : 'done';
 const initial = (name='?') => name.trim()[0]?.toUpperCase?.() || '?';
+
+// Heurística "done" si hay cotización o “flujo finalizado” en los últimos mensajes
+function inferDone(c){
+  if (c.finalizado || c.done) return true;
+  const txt = (c.last || '').toLowerCase();
+  if (/(cotizaci[oó]n|flujo\s+finalizado)/.test(txt)) return true;
+  const mem = c.memory || [];
+  for (let i = mem.length-1; i >= Math.max(0, mem.length-6); i--){
+    const t = (mem[i]?.content || '').toLowerCase();
+    if (/(cotizaci[oó]n|flujo\s+finalizado)/.test(t)) return true;
+  }
+  return false;
+}
+function hasFiles(c){
+  const txt = String(c.last||'');
+  return looksLikeMediaLine(txt) || /📎\s*Archivo/i.test(txt);
+}
 
 function renderThreads(){
   threadList.innerHTML = '';
   const q = (searchEl.value||'').toLowerCase();
   let rows = allConvos.slice();
 
-  if (filter==='done')    rows = rows.filter(c => c.done || c.finalizado);
-  if (filter==='pending') rows = rows.filter(c => !c.done && !c.finalizado);
+  // compute virtual flags
+  rows = rows.map(c=>{
+    const done = inferDone(c);
+    return { ...c, done, finalizado: done, files: hasFiles(c) };
+  });
+
+  // filtros
+  if (filter==='done')    rows = rows.filter(c => c.done);
+  if (filter==='active')  rows = rows.filter(c => !c.done);
+  if (filter==='new')     rows = rows.filter(c => !c.done && !c.human && (c.unread>0));
   if (filter==='agent')   rows = rows.filter(c => c.human);
+  if (filter==='unread')  rows = rows.filter(c => (c.unread||0)>0);
+  if (filter==='files')   rows = rows.filter(c => c.files);
 
   rows = rows.filter(c => (c.name||'').toLowerCase().includes(q) || String(c.id||'').includes(q));
   msgCount.textContent = `Mensajes (${rows.length})`;
@@ -196,7 +211,7 @@ function renderThreads(){
     if (lastTxt) lastTxt = (prefix + lastTxt).slice(0,120);
 
     const ts = c.ts || lastMem?.ts; const when = ts ? timeAgo(ts) : '';
-    const dot = statusDot(c);
+    const dot = c.human ? 'agent' : (c.done ? 'done' : (c.unread ? 'unread' : 'done'));
     const avatar = c.avatar ? `<img src="${c.avatar}" alt="">` : `<span>${initial(c.name||c.id)}</span>`;
 
     const row = document.createElement('div');
@@ -249,12 +264,12 @@ async function openChat(id){
       viewList.classList.remove('active');
       viewChat.classList.add('active');
     }
-    refreshToggleUI();
+    refreshToggleUI(false);
   }catch{ alert('No pude abrir el chat.'); }
 }
 backBtn.onclick = ()=>{ current=null; viewChat.classList.remove('active'); viewList.classList.add('active'); };
 
-// ====== Acciones comunes ======
+// ===== Acciones comunes =====
 async function doRequestInfo(){
   if (!current) return;
   const nombre = current.name?.trim() || 'cliente';
@@ -284,21 +299,20 @@ async function doSendQR(){
 }
 async function doSendAccounts(){ if (!current) return; await api.send(current.id, ACCOUNTS_TEXT); }
 async function doMarkRead(){ if(!current) return; await api.read(current.id); refresh(false); }
-async function doTakeHuman(){ if(!current) return; await api.handoff(current.id,'human'); statusPill.style.display='inline-block'; refreshToggleUI(); }
-async function doResumeBot(){ if(!current) return; await api.handoff(current.id,'bot');   statusPill.style.display='none';         refreshToggleUI(); }
+async function doTakeHuman(){ if(!current) return; await api.handoff(current.id,'human'); statusPill.style.display='inline-block'; refreshToggleUI(true); }
+async function doResumeBot(){ if(!current) return; await api.handoff(current.id,'bot');   statusPill.style.display='none';         refreshToggleUI(true); }
 
 // Desktop row
-document.getElementById('requestInfo') .onclick = doRequestInfo;
-document.getElementById('sendQR')      .onclick = doSendQR;
+document.getElementById('requestInfo').onclick = doRequestInfo;
+document.getElementById('sendQR').onclick = doSendQR;
 document.getElementById('sendAccounts').onclick = doSendAccounts;
-document.getElementById('markRead')    .onclick = doMarkRead;
-document.getElementById('takeHuman')   .onclick = doTakeHuman;
-document.getElementById('resumeBot')   .onclick = doResumeBot;
+document.getElementById('markRead').onclick = doMarkRead;
+document.getElementById('takeHuman').onclick = doTakeHuman;
+document.getElementById('resumeBot').onclick = doResumeBot;
 
-// ====== PANEL MÓVIL ======
+// ===== Panel (móvil + desktop) =====
 function botIsOn(){ return current ? !current.human : true; }
-
-function refreshToggleUI(){
+function refreshToggleUI(changed=false){
   if (!current) return;
   if (botIsOn()){
     toggleBotIcon.src = '/iconos/icono-pausa.png';
@@ -307,42 +321,34 @@ function refreshToggleUI(){
     toggleBotIcon.src = '/iconos/icono-play.png';
     toggleBotLabel.textContent = 'Encender';
   }
+  if (changed) setPanel(false);
 }
 
-// Abrir/cerrar panel como teclado
 let panelOpen = false;
 function setPanel(open){
   panelOpen = !!open;
-  mobileActions.classList.toggle('show', panelOpen);
-  // cambia símbolo de + a teclado
-  moreBtn.textContent = panelOpen ? '⌨️' : '+';
-  // Ajusta padding inferior de mensajes para que no tape
-  const basePad = getComputedStyle(document.documentElement)
-    .getPropertyValue('--composer-min-h');
-  msgsEl.style.paddingBottom = panelOpen
-    ? `calc(${basePad} + 260px + var(--safe-bottom))`
-    : `calc(${basePad} + 16px + var(--safe-bottom))`;
-  msgsEl.scrollTop = msgsEl.scrollHeight;
+  actionPanel.classList.toggle('show', panelOpen);
+  actionPanel.setAttribute('aria-hidden', String(!panelOpen));
+  moreBtn.setAttribute('aria-expanded', String(panelOpen));
+  // Cambia ícono del botón entre PLUS y KEYBOARD (SVG)
+  const kbTpl = document.getElementById('tpl-keyboard-icon');
+  moreBtn.innerHTML = panelOpen ? kbTpl.innerHTML
+    : `<svg viewBox="0 0 24 24" width="22" height="22"><path d="M12 4v16M4 12h16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>`;
 }
-moreBtn?.addEventListener('click', ()=> setPanel(!panelOpen));
+moreBtn.addEventListener('click', ()=> setPanel(!panelOpen));
 
-// Acciones del panel móvil
-document.getElementById('ma-location').onclick = async ()=>{
+// Acciones del panel
+document.getElementById('ap-location').onclick = async ()=>{
   if(!current) return;
   await api.send(current.id, `📍 Ubicación: 17°45'29.0"S 63°09'11.6"W`);
   setPanel(false);
 };
-document.getElementById('ma-qr').onclick = async ()=>{ await doSendQR(); setPanel(false); };
-document.getElementById('ma-datos').onclick = async ()=>{ await doRequestInfo(); setPanel(false); };
-document.getElementById('ma-cuentas').onclick = async ()=>{ await doSendAccounts(); setPanel(false); };
-document.getElementById('ma-archivos').onclick = ()=>{ fileInput.click(); };
+document.getElementById('ap-qr').onclick = async ()=>{ await doSendQR(); setPanel(false); };
+document.getElementById('ap-datos').onclick = async ()=>{ await doRequestInfo(); setPanel(false); };
+document.getElementById('ap-cuentas').onclick = async ()=>{ await doSendAccounts(); setPanel(false); };
+document.getElementById('ap-archivos').onclick = ()=>{ fileInput.click(); };
 
-document.getElementById('ma-toggle').onclick = async ()=>{
-  if (!current) return;
-  if (botIsOn()) await doTakeHuman(); else await doResumeBot();
-};
-
-// ====== Envío / inputs ======
+// ===== Envío / inputs =====
 sendBtn.onclick = async ()=>{
   const txt = box.value.trim();
   if(!txt || !current) return;
@@ -350,7 +356,6 @@ sendBtn.onclick = async ()=>{
 };
 box.addEventListener('keydown', (e)=>{ if(e.key==='Enter' && !e.shiftKey){ e.preventDefault(); sendBtn.click(); } });
 
-attachBtn?.addEventListener('click', ()=> fileInput.click());
 fileInput.onchange = async (e)=>{
   const files = Array.from(e.target.files||[]);
   if(!files.length || !current) return;
@@ -363,15 +368,16 @@ fileInput.onchange = async (e)=>{
 ['dragleave','drop'].forEach(ev=> dropZone.addEventListener(ev, e=>{ e.preventDefault(); e.stopPropagation(); dropZone.classList.remove('drag'); }));
 dropZone.addEventListener('drop', async (e)=>{ const files = Array.from(e.dataTransfer?.files||[]); if (!files.length || !current) return; try{ await api.sendMedia(current.id, files, ''); } catch{ alert('Error subiendo archivo(s).'); } });
 
-// ====== Filtros lista ======
+// ===== Filtros =====
 function renderList(){ renderThreads(); }
 searchEl.oninput = renderList;
 segBtns.forEach(b=> b.onclick = ()=>{ segBtns.forEach(x=>x.classList.remove('active')); b.classList.add('active'); filter = b.dataset.filter; renderList(); });
 
-// ====== Datos ======
+// ===== Datos =====
 async function refresh(openFirst=false){
   try{
     const {convos} = await api.convos();
+    // normalizo id y guardo last/memory si viniera
     allConvos = (convos||[]).map(c=>({...c, id:normId(c.id)}));
     renderList();
     if (openFirst && !current && allConvos.length && isDesktop()){
@@ -380,20 +386,10 @@ async function refresh(openFirst=false){
   }catch{}
 }
 
-// ====== Personalización Desktop ======
-function adjustDesktopControls(){
-  if (isDesktop()){
-    // Se mantiene botón "Subir archivo"
-  }
-}
-window.addEventListener('resize', adjustDesktopControls);
+// ==== Básicos ====
+logoutBtn.onclick = ()=>{ api.clear(); localStorage.removeItem('agent.deviceId'); location.reload(); };
 
-/* === Salir === */
-logoutBtn.onclick = ()=>{ api.clear(); localStorage.removeItem(LS_DEVID); location.reload(); };
-
-// Bootstrap
 (async function(){
-  adjustDesktopControls();
   const ok = await requestToken(false);
   if (!ok) return;
   await refresh(true);
@@ -401,11 +397,8 @@ logoutBtn.onclick = ()=>{ api.clear(); localStorage.removeItem(LS_DEVID); locati
   startSSE();
 })();
 
-// PWA (rutas relativas)
 if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js').catch(()=>{});
-  });
+  window.addEventListener('load', () => { navigator.serviceWorker.register('./sw.js').catch(()=>{}); });
 }
 let deferredPrompt=null;
 window.addEventListener('beforeinstallprompt',(e)=>{

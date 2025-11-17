@@ -240,7 +240,7 @@ function buildAdvisorPresetText(s){
     `Hola ${quien}, soy ${ADVISOR_NAME}, ${ADVISOR_ROLE}.`,
     `Te escribo para darte seguimiento personalizado a tu cotización con *New Chem Agroquímicos*.`,
     `Estoy aquí para ayudarte con cualquier duda.`
-  ].join('\n\n');
+  ].join('\n\n')
 }
 
 const agentClients = new Set();
@@ -1148,24 +1148,141 @@ router.post('/wa/webhook', async (req,res)=>{
     const parsedCart = parseCartFromText(textRaw);
 
     if (parsedCart && !isAdvisor(fromId)) {
-      const s0 = S(fromId);
-      s0.vars.cart = parsedCart.items || [];
-      s0.pending = null;
-      s0.lastPrompt = null;
-      s0.stage = 'checkout';
+  const s0 = S(fromId);
+  s0.vars.cart = parsedCart.items || [];
+  s0.pending = null;
+  s0.lastPrompt = null;
+  s0.stage = 'checkout';
+  persistS(fromId);
+
+  // 1) Mensaje de confirmación inmediato
+  await toText(
+    fromId,
+    '✅ ¡Perfecto! Ya recibí tu pedido desde el catálogo y lo tengo listo para cotizar.\n\n'
+  );
+
+  // 2) Generar la cotización en PDF (igual que en QR_FINALIZAR)
+  let pdfInfo = null;
+  try {
+    pdfInfo = await sendAutoQuotePDF(fromId, s0);
+  } catch (err) {
+    console.error('AutoQuote (desde catálogo) error:', err);
+  }
+
+  // 3) Guardar en hoja WA_COTIZACIONES (si aún no se guardó)
+  try {
+    if (!s0._savedToSheet) {
+      const cotId = await appendFromSession(s0, fromId, 'nuevo');
+      s0.vars.cotizacion_id = cotId;
+      s0._savedToSheet = true;
       persistS(fromId);
-
-      await toText(fromId,
-        '✅ ¡Perfecto! Ya recibí tu pedido desde el catálogo y lo tengo listo para cotizar.\n\n'
-      );
-
-      await toButtons(fromId, '¿Listo para *cotizar*?', [
-        { title:'Cotizar', payload:'QR_FINALIZAR' }
-      ]);
-
-      res.sendStatus(200);
-      return;
     }
+  } catch (err) {
+    console.error('Sheets append (desde catálogo) error:', err);
+  }
+
+  // 4) Actualizar / crear cliente en WA_CLIENTES
+  try {
+    const rec = {
+      telefono: String(fromId),
+      nombre: s0.profileName || '',
+      ubicacion: [
+        s0?.vars?.departamento || '',
+        s0?.vars?.subzona || ''
+      ].filter(Boolean).join(' - '),
+      cultivo: (s0?.vars?.cultivos && s0.vars.cultivos[0]) || '',
+      hectareas: s0?.vars?.hectareas || '',
+      campana: s0?.vars?.campana || ''
+    };
+    await upsertClientByPhone(rec);
+  } catch (e) {
+    console.error('upsert WA_CLIENTES (desde catálogo) error:', e);
+  }
+
+  // 5) Texto corto avisando que le mandás el PDF
+  await toText(
+    fromId,
+    'Te envío la *cotización en PDF* por este mismo chat. Si necesitas ajustar algo del pedido o tienes dudas sobre productos o dosis, estoy a tu disposición. 🙌'
+  );
+
+  // (Opcional) reenviar PDF al cliente si sendAutoQuotePDF devuelve info reutilizable
+  try {
+    const safeName = (s0.profileName || String(fromId))
+      .replace(/[^\w\s\-.]/g, '')
+      .replace(/\s+/g, '_');
+
+    const filename = pdfInfo?.filename || `Cotizacion_${safeName}.pdf`;
+    const caption  = `Cotización — ${s0.profileName || fromId}`;
+    const mediaId  = await waUploadPDFSmart(pdfInfo, filename);
+
+    if (mediaId) {
+      await waSendQ(fromId, {
+        messaging_product: 'whatsapp',
+        to: fromId,
+        type: 'document',
+        document: { id: mediaId, filename, caption }
+      });
+    }
+  } catch (err) {
+    console.error('[CLIENTE] error al enviar PDF (desde catálogo):', err);
+  }
+
+  // 6) Avisar al/los asesores igual que antes
+  if (ADVISOR_WA_NUMBERS.length) {
+    try {
+      const txt = compileAdvisorAlert(s0, fromId);
+      for (const advisor of ADVISOR_WA_NUMBERS) {
+        const okTxt = await waSendQ(advisor, {
+          messaging_product: 'whatsapp',
+          to: advisor,
+          type: 'text',
+          text: { body: txt.slice(0, 4096) }
+        });
+        if (!okTxt) console.warn('[ADVISOR] no se pudo enviar alerta (desde catálogo) a', advisor);
+      }
+
+      // Reusar el mismo PDF para los asesores
+      try {
+        const safeName = (s0.profileName || String(fromId))
+          .replace(/[^\w\s\-.]/g, '')
+          .replace(/\s+/g, '_');
+
+        const filename = pdfInfo?.filename || `Cotizacion_${safeName}.pdf`;
+        const caption  = `Cotización — ${s0.profileName || fromId}`;
+        const mediaId  = await waUploadPDFSmart(pdfInfo, filename);
+
+        if (mediaId) {
+          for (const advisor of ADVISOR_WA_NUMBERS) {
+            const okDoc = await waSendQ(advisor, {
+              messaging_product: 'whatsapp',
+              to: advisor,
+              type: 'document',
+              document: { id: mediaId, filename, caption }
+            });
+            if (!okDoc) console.warn('[ADVISOR] PDF no enviado (desde catálogo) a', advisor);
+          }
+        } else {
+          console.warn('[ADVISOR] No se obtuvo mediaId ni path del PDF (desde catálogo).');
+        }
+      } catch (err) {
+        console.error('[ADVISOR] error al reenviar PDF (desde catálogo):', err);
+      }
+    } catch (e) {
+      console.error('[ADVISOR] error al enviar alerta desde catálogo:', e);
+    }
+  }
+
+  // 7) Cerrar conversación y habilitar humano igual que en QR_FINALIZAR
+  humanOn(fromId, 4);
+  s0._closedAt = Date.now();
+  s0.stage = 'closed';
+  persistS(fromId);
+  broadcastAgent('convos', { id: fromId });
+
+  res.sendStatus(200);
+  return;
+}
+
 
     try {
       if (!s.meta) s.meta = {};

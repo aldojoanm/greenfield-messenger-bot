@@ -27,9 +27,12 @@
           <span id="msgCount" class="count">Mensajes (0)</span>
           <div class="segmented">
             <button class="seg active" data-filter="all">Todos</button>
+            <button class="seg" data-filter="new">Nuevos</button>
+            <button class="seg" data-filter="active">Activos</button>
             <button class="seg" data-filter="done">Finalizados</button>
-            <button class="seg" data-filter="pending">No completados</button>
             <button class="seg" data-filter="agent">Asesor</button>
+            <button class="seg" data-filter="unread">Sin leer</button>
+            <button class="seg" data-filter="files">Con archivos</button>
           </div>
         </div>
 
@@ -55,7 +58,7 @@
         <span id="status" class="pill" style="display:none">HUMANO</span>
       </header>
 
-      <!-- Acciones desktop -->
+      <!-- Acciones desktop (fila) -->
       <div id="sheetRow" class="sheet-row only-desktop" role="toolbar" aria-label="Acciones del chat">
         <button class="sheet-item" id="takeHuman">⏸️ Pausar bot</button>
         <button class="sheet-item" id="resumeBot">▶️ Bot ON</button>
@@ -67,62 +70,75 @@
 
       <main id="msgs" class="msgs"></main>
 
-      <!-- Composer fijo -->
+      <!-- Composer fijo SOLO en el lado del chat -->
       <footer class="composer" id="dropZone">
-        <div class="left-actions">
-          <!-- Botón '+' grande sin caja -->
-          <button id="moreBtn" class="only-mobile more-btn" aria-label="Más" title="Más">+</button>
+        <div class="composer-inner">
+          <button id="moreBtn" class="more-btn" aria-label="Más" title="Más" data-state="plus" aria-expanded="false">
+            <!-- Ícono PLUS (SVG) -->
+            <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+              <path d="M12 4v16M4 12h16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </button>
 
-          <!-- input file oculto -->
-          <input id="fileInput" type="file" multiple style="display:none"
-                 accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,image/*,video/*,audio/*">
+          <textarea id="box" placeholder="Escribe un mensaje…"></textarea>
 
-          <!-- En desktop se muestra botón texto; en móvil se hace desde el panel -->
-          <button id="attachBtn" class="icon-btn only-desktop" aria-label="Adjuntar">Subir archivo</button>
+          <!-- Enviar (paper plane negro) -->
+          <button id="send" class="send-btn" aria-label="Enviar" title="Enviar">
+            <img src="/iconos/icono-avion-negro.png" alt="Enviar">
+          </button>
         </div>
-
-        <textarea id="box" placeholder="Escribe un mensaje…"></textarea>
-
-        <!-- Botón enviar con icono (sin caja) -->
-        <button id="send" class="send-btn" aria-label="Enviar" title="Enviar">
-          <img src="/iconos/icono-avion.png" alt="Enviar">
-        </button>
       </footer>
 
-      <!-- PANEL acciones móvil (como teclado) -->
-      <div id="mobileActions" class="mobile-actions">
-        <div class="ma-grid">
-          <button class="ma-item" id="ma-location">
-            <span class="ma-circle"><img src="/iconos/icono-ubi.png" alt=""></span>
-            <span class="ma-label">Ubicación</span>
+      <!-- Panel de acciones (móvil y desktop), como teclado -->
+      <div id="actionPanel" class="action-panel" role="menu" aria-hidden="true">
+        <div class="ap-grid">
+          <button class="ap-item" id="ap-location">
+            <span class="ap-circle"><img src="/iconos/icono-ubi.png" alt=""></span>
+            <span class="ap-label">Ubicación</span>
           </button>
 
-          <button class="ma-item" id="ma-qr">
-            <span class="ma-circle"><img src="/iconos/icono-qr.png" alt=""></span>
-            <span class="ma-label">QR</span>
+          <button class="ap-item" id="ap-qr">
+            <span class="ap-circle"><img src="/iconos/icono-qr.png" alt=""></span>
+            <span class="ap-label">QR</span>
           </button>
 
-          <button class="ma-item" id="ma-toggle">
-            <span class="ma-circle"><img id="toggleBotIcon" src="/iconos/icono-play.png" alt=""></span>
-            <span id="toggleBotLabel" class="ma-label">Encender</span>
+          <button class="ap-item" id="ap-toggle">
+            <span class="ap-circle">
+              <img id="toggleBotIcon" src="/iconos/icono-play.png" alt="">
+            </span>
+            <span id="toggleBotLabel" class="ap-label">Encender</span>
           </button>
 
-          <button class="ma-item" id="ma-datos">
-            <span class="ma-circle"><img src="/iconos/icono-datos.png" alt=""></span>
-            <span class="ma-label">Solicitar datos</span>
+          <button class="ap-item" id="ap-datos">
+            <span class="ap-circle"><img src="/iconos/icono-datos.png" alt=""></span>
+            <span class="ap-label">Solicitar datos</span>
           </button>
 
-          <button class="ma-item" id="ma-cuentas">
-            <span class="ma-circle"><img src="/iconos/icono-cuentas.png" alt=""></span>
-            <span class="ma-label">Cuentas</span>
+          <button class="ap-item" id="ap-cuentas">
+            <span class="ap-circle"><img src="/iconos/icono-cuentas.png" alt=""></span>
+            <span class="ap-label">Cuentas</span>
           </button>
 
-          <button class="ma-item" id="ma-archivos">
-            <span class="ma-circle"><img src="/iconos/icono-carpeta.png" alt=""></span>
-            <span class="ma-label">Archivos</span>
+          <button class="ap-item" id="ap-archivos">
+            <span class="ap-circle"><img src="/iconos/icono-carpeta.png" alt=""></span>
+            <span class="ap-label">Archivos</span>
           </button>
         </div>
+
+        <!-- Ícono de teclado (SVG ajustado) para el botón cuando está abierto -->
+        <template id="tpl-keyboard-icon">
+          <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+            <rect x="2.5" y="6" width="19" height="12" rx="2.5" fill="none" stroke="currentColor" stroke-width="2"/>
+            <path d="M5.5 10h1.5M8.5 10h1.5M11.5 10h1.5M14.5 10h1.5M17.5 10h1.5
+                     M5.5 13h3M9.5 13h9" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </template>
+
       </div>
+
+      <!-- input file oculto (lo disparamos desde 'Archivos') -->
+      <input id="fileInput" type="file" multiple style="display:none"
+             accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,image/*,video/*,audio/*">
     </section>
   </div>
 
