@@ -1,98 +1,242 @@
 <!doctype html>
 <html lang="es">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Dashboard Facebook</title>
-  <link rel="stylesheet" href="metricas.css" />
-  <!-- Chart.js -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" defer></script>
-  <!-- App -->
-  <script src="metricas.js" defer></script>
-</head>
-<body>
-  <header class="topbar">
-    <div class="brand">
-      <h1>Reporte Facebook</h1>
-      <small>Mensual / Semanal</small>
-    </div>
-    <div class="ctl">
-      <label>Mes:
-        <select id="mesSelect"></select>
-      </label>
-      <label>Semana:
-        <select id="semanaSelect">
-          <option value="all">Todo el mes</option>
-        </select>
-      </label>
-      <button id="btnXlsx" class="btn">Descargar Excel</button>
-    </div>
-  </header>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Panel Facebook – Métricas</title>
 
-  <main class="wrap">
-    <section class="kpis">
-      <button class="kpi" data-metric="Visualizaciones" type="button">
-        <div class="kpi-v" id="kpi-visual">0</div><div class="kpi-l">Visualizaciones</div>
-      </button>
-      <button class="kpi" data-metric="Espectadores" type="button">
-        <div class="kpi-v" id="kpi-espec">0</div><div class="kpi-l">Espectadores</div>
-      </button>
-      <button class="kpi" data-metric="Interacciones" type="button">
-        <div class="kpi-v" id="kpi-inter">0</div><div class="kpi-l">Interacciones</div>
-      </button>
-      <button class="kpi" data-metric="Visitas" type="button">
-        <div class="kpi-v" id="kpi-visitas">0</div><div class="kpi-l">Visitas</div>
-      </button>
-      <button class="kpi" data-metric="Clics" type="button">
-        <div class="kpi-v" id="kpi-clics">0</div><div class="kpi-l">Clics</div>
-      </button>
-      <button class="kpi" data-metric="Seguidores" type="button">
-        <div class="kpi-v" id="kpi-seg">0</div><div class="kpi-l">Seguidores nuevos</div>
-      </button>
-    </section>
+    <link rel="stylesheet" href="metricas.css" />
 
-    <section class="grid">
-      <div class="card">
-        <h2>Tendencia diaria</h2>
-        <canvas id="chLine"></canvas>
-      </div>
+    <!-- Chart.js -->
+    <script
+      src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"
+      defer
+    ></script>
 
-      <div class="card">
-        <h2>KPIs por semana (L–D)</h2>
-        <canvas id="chBar"></canvas>
-      </div>
-
-      <!-- 4 DONAS EN TARJETAS SEPARADAS -->
-      <div class="card pie-card">
-        <h2>Distribución mensual</h2>
-        <canvas id="chPieAll"></canvas>
-      </div>
-      <div class="card pie-card">
-        <h2>Distribución mensual — Visualizaciones vs Espectadores</h2>
-        <canvas id="chPie1"></canvas>
-      </div>
-      <div class="card pie-card">
-        <h2>Distribución mensual — Visitas vs Clics</h2>
-        <canvas id="chPie2"></canvas>
-      </div>
-      <div class="card pie-card">
-        <h2>Distribución mensual — Interacciones vs Seguidores</h2>
-        <canvas id="chPie3"></canvas>
-      </div>
-
-      <!-- Dona extra cuando hay filtro de KPI -->
-      <div class="card wide hidden" id="pieSelWrap">
-        <h2>Participación de la métrica seleccionada</h2>
-        <canvas id="chPieSel"></canvas>
-      </div>
-
-      <div class="card wide">
-        <h2>Tabla del período</h2>
-        <div class="table-wrap">
-          <table id="tbl" class="tbl"></table>
+    <!-- App -->
+    <script src="metricas.js" defer></script>
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="topbar-left">
+        <div class="badge">Facebook</div>
+        <div>
+          <h1 class="page-title">Panel de resultados</h1>
+          <p class="page-subtitle">Resumen mensual y por semana</p>
         </div>
       </div>
-    </section>
-  </main>
-</body>
+
+      <div class="topbar-right">
+        <label class="field">
+          <span>Mes</span>
+          <select id="mesSelect"></select>
+        </label>
+
+        <label class="field">
+          <span>Semana</span>
+          <select id="semanaSelect">
+            <option value="all">Todo el mes</option>
+          </select>
+        </label>
+
+        <button id="btnXlsx" class="btn primary">Exportar Excel</button>
+      </div>
+    </header>
+
+    <main class="wrap">
+      <!-- KPIs PRINCIPALES -->
+      <section class="kpis">
+        <button class="kpi" data-metric="Visualizaciones" type="button">
+          <div class="kpi-top">
+            <span class="kpi-label"></span>
+            <span class="kpi-tag">Visualizaciones</span>
+          </div>
+          <div class="kpi-main">
+            <span class="kpi-value" id="kpi-visual">0</span>
+          </div>
+          <p class="kpi-sub" id="kpi-visual-extra">
+            Cuantas veces se ha visto una publicación o video.
+          </p>
+        </button>
+
+        <button class="kpi" data-metric="Espectadores" type="button">
+          <div class="kpi-top">
+            <span class="kpi-label"></span>
+            <span class="kpi-tag">Espectadores</span>
+          </div>
+          <div class="kpi-main">
+            <span class="kpi-value" id="kpi-espec">0</span>
+          </div>
+          <p class="kpi-sub">
+            Número de personas únicas que han visto el contenido.
+          </p>
+        </button>
+
+        <button class="kpi" data-metric="Interacciones" type="button">
+          <div class="kpi-top">
+            <span class="kpi-label"></span>
+            <span class="kpi-tag">Interacciones</span>
+          </div>
+          <div class="kpi-main">
+            <span class="kpi-value" id="kpi-inter">0</span>
+          </div>
+          <p class="kpi-sub">
+            Reacciones, comentarios, compartidos y clics.
+          </p>
+        </button>
+
+        <button class="kpi" data-metric="Visitas" type="button">
+          <div class="kpi-top">
+            <span class="kpi-label"></span>
+            <span class="kpi-tag">Visitas</span>
+          </div>
+          <div class="kpi-main">
+            <span class="kpi-value" id="kpi-visitas">0</span>
+          </div>
+          <p class="kpi-sub">
+            Visitas que hicieron al perfil de Facebook.
+          </p>
+        </button>
+
+        <button class="kpi" data-metric="Clics" type="button">
+          <div class="kpi-top">
+            <span class="kpi-label"></span>
+            <span class="kpi-tag">Clics</span>
+          </div>
+          <div class="kpi-main">
+            <span class="kpi-value" id="kpi-clics">0</span>
+          </div>
+          <p class="kpi-sub">
+            Cuantas veces se hizo click en el contenido.
+        </button>
+
+        <button class="kpi" data-metric="Seguidores" type="button">
+          <div class="kpi-top">
+            <span class="kpi-label"></span>
+            <span class="kpi-tag">Seguidores</span>
+          </div>
+          <div class="kpi-main">
+            <span class="kpi-value" id="kpi-seg">0</span>
+          </div>
+          <p class="kpi-sub">
+            Crecimiento de la comunidad en el período.
+          </p>
+        </button>
+      </section>
+
+      <!-- LAYOUT PRINCIPAL (MÉTRICAS) -->
+<section class="layout">
+  <div class="card card-large">
+    <div class="card-header">
+      <h2>Tendencia diaria</h2>
+      <p>Evolución de las métricas día a día.</p>
+    </div>
+    <div class="card-body chart-body">
+      <canvas id="chLine"></canvas>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <h2>Comparativo semanal</h2>
+      <p>Totales por semana (Lunes a Domingo).</p>
+    </div>
+    <div class="card-body chart-body">
+      <canvas id="chBar"></canvas>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <h2>Distribución de KPIs</h2>
+      <p id="pieSubtitle">
+        Participación de cada métrica en el período seleccionado.
+      </p>
+    </div>
+    <div class="card-body chart-body">
+      <canvas id="chPieAll"></canvas>
+    </div>
+  </div>
+</section>
+
+      <!-- SECCIÓN DEMOGRAFÍA (usa hoja Demografia) -->
+      <section class="layout layout-demografia">
+  <!-- BOLIVIA: MAPA GRANDE + BARRAS DEPARTAMENTOS -->
+  <div class="card card-large">
+    <div class="card-header">
+      <h2>Distribución por departamento (Bolivia)</h2>
+      <p>
+        Distribución de tu audiencia por departamento (datos desde hoja
+        “Demografia”).
+      </p>
+    </div>
+    <div class="card-body chart-body chart-body--map">
+      <!-- Mapa grande al centro -->
+      <div class="map-bo">
+        <img
+          src="./mapa.png"
+          alt="Distribución por departamento"
+          class="map-bo__img"
+          loading="lazy"
+        />
+      </div>
+
+      <!-- Barras por departamento abajo -->
+      <div class="chart-bo">
+        <canvas id="chDeptosBo"></canvas>
+      </div>
+    </div>
+  </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h2>Distribución por país</h2>
+            <p>Porcentaje de audiencia por país.</p>
+          </div>
+          <div class="card-body chart-body">
+            <canvas id="chPais"></canvas>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h2>Rango de edad y género</h2>
+            <p>
+              Hombres, mujeres y total por rango de edad. Puedes activar /
+              desactivar cada serie.
+            </p>
+          </div>
+          <div class="card-body chart-body">
+            <canvas id="chEdadGenero"></canvas>
+          </div>
+        </div>
+
+        <div class="card card-wide">
+          <div class="card-header">
+            <h2>Páginas de interés de la audiencia</h2>
+            <p>
+              Principales páginas que también sigue tu audiencia en Facebook.
+            </p>
+          </div>
+          <div class="card-body chart-body">
+            <canvas id="chPages"></canvas>
+          </div>
+        </div>
+      </section>
+      <section class="layout layout-detalle">
+  <div class="card card-wide">
+    <div class="card-header">
+      <h2>Detalle diario</h2>
+      <p>Tabla con el desglose de cada día.</p>
+    </div>
+    <div class="card-body table-body">
+      <div class="table-wrap">
+        <table id="tbl" class="tbl"></table>
+      </div>
+    </div>
+  </div>
+</section>
+
+    </main>
+  </body>
 </html>

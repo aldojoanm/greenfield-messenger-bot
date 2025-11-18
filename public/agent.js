@@ -37,10 +37,6 @@ const logoutBtn  = document.getElementById('logout');
 const searchEl   = document.getElementById('search');
 const segBtns    = Array.from(document.querySelectorAll('.segmented .seg'));
 
-const dateFromEl = document.getElementById('dateFrom');
-const dateToEl   = document.getElementById('dateTo');
-const clearDates = document.getElementById('clearDates');
-
 const toggleBotIcon  = document.getElementById('toggleBotIcon');
 const toggleBotLabel = document.getElementById('toggleBotLabel');
 
@@ -56,6 +52,37 @@ const isDesktop = () => window.matchMedia('(min-width:1024px)').matches;
 const normId = v => String(v ?? '');
 const sameId = (a,b)=> normId(a) === normId(b);
 const looksLikeMediaLine = (t='')=> /^([🖼️🎬🎧📎])/.test(String(t).trim());
+
+const pad2 = n => String(n).padStart(2,'0');
+function isSameDay(a,b){
+  return a.getFullYear()===b.getFullYear() && a.getMonth()===b.getMonth() && a.getDate()===b.getDate();
+}
+function isYesterday(d){
+  const now = new Date();
+  const y = new Date(now.getFullYear(), now.getMonth(), now.getDate()-1);
+  return isSameDay(d, y);
+}
+// Estilo WhatsApp: hoy => HH:MM, ayer => "Ayer", mismo año => dd/MM, otro año => dd/MM/yy
+function formatListStamp(ts){
+  if (!ts) return '';
+  const d = typeof ts === 'number' ? new Date(ts) : new Date(ts);
+  const now = new Date();
+  if (isSameDay(d, now)) return `${pad2(d.getHours())}:${pad2(d.getMinutes())}`;
+  if (isYesterday(d)) return 'Ayer';
+  const dd = pad2(d.getDate()), mm = pad2(d.getMonth()+1);
+  if (d.getFullYear() === now.getFullYear()) return `${dd}/${mm}`;
+  const yy = String(d.getFullYear()).slice(-2);
+  return `${dd}/${mm}/${yy}`;
+}
+function fullStamp(ts){
+  const d = typeof ts === 'number' ? new Date(ts) : new Date(ts);
+  return d.toLocaleString();
+}
+
+const fmtBubbleStamp = (ts)=>{
+  const d = typeof ts === 'number' ? new Date(ts) : new Date(ts);
+  return `${pad2(d.getHours())}:${pad2(d.getMinutes())} • ${pad2(d.getDate())}/${pad2(d.getMonth()+1)}`;
+};
 
 const timeAgo = (ts)=> {
   if (!ts) return '';
@@ -168,7 +195,7 @@ window.addEventListener('pageshow', (e)=>{ if (e.persisted){ startSSE(); refresh
 const lastFromMemory = (m=[]) => m.length ? m[m.length-1] : null;
 const initial = (name='?') => name.trim()[0]?.toUpperCase?.() || '?';
 
-// Heurística "done" mejorada
+// Heurística "done"
 function inferDone(c){
   const status = (c.status||'').toLowerCase();
   if (['finalizado','finished','closed','done','completed'].includes(status)) return true;
@@ -188,18 +215,39 @@ function hasFiles(c){
   return looksLikeMediaLine(txt) || /📎\s*Archivo/i.test(txt);
 }
 
+function fmtStamp(ts){
+  if (!ts) return '';
+  const d = (typeof ts === 'number') ? new Date(ts) : new Date(ts);
+  const now = new Date();
+
+  const pad = n => String(n).padStart(2,'0');
+  const sameDate = (a,b)=> a.getFullYear()===b.getFullYear()
+                        && a.getMonth()===b.getMonth()
+                        && a.getDate()===b.getDate();
+
+  if (sameDate(d, now)) return `${pad(d.getHours())}:${pad(d.getMinutes())}`;
+
+  const yest = new Date(now); yest.setDate(now.getDate()-1);
+  if (sameDate(d, yest)) return 'Ayer';
+
+  if (d.getFullYear() === now.getFullYear())
+    return `${pad(d.getDate())}/${pad(d.getMonth()+1)}`;
+
+  return `${pad(d.getDate())}/${pad(d.getMonth()+1)}/${String(d.getFullYear()).slice(-2)}`;
+}
+
 function renderThreads(){
   threadList.innerHTML = '';
   const q = (searchEl.value||'').toLowerCase();
   let rows = allConvos.slice();
 
-  // compute virtual flags
+  // flags virtuales
   rows = rows.map(c=>{
     const done = inferDone(c);
     return { ...c, done, finalizado: done, files: hasFiles(c) };
   });
 
-  // filtros por estado
+  // filtros por estado (usa tu variable "filter")
   if (filter==='done')    rows = rows.filter(c => c.done);
   if (filter==='active')  rows = rows.filter(c => !c.done);
   if (filter==='new')     rows = rows.filter(c => !c.done && !c.human && (c.unread>0));
@@ -207,38 +255,26 @@ function renderThreads(){
   if (filter==='unread')  rows = rows.filter(c => (c.unread||0)>0);
   if (filter==='files')   rows = rows.filter(c => c.files);
 
-  // filtro por texto
+  // búsqueda por texto
   rows = rows.filter(c => (c.name||'').toLowerCase().includes(q) || String(c.id||'').includes(q));
-
-  // filtro por rango de fechas
-  const fromStr = dateFromEl?.value || '';
-  const toStr   = dateToEl?.value   || '';
-  const fromMs = fromStr ? new Date(fromStr + 'T00:00:00').getTime() : 0;
-  const toMs   = toStr   ? new Date(toStr   + 'T23:59:59').getTime() : Infinity;
-
-  rows = rows.filter(c=>{
-    const lastMem = c.memory && c.memory.length ? c.memory[c.memory.length-1] : null;
-    const ts = c.ts || lastMem?.ts || 0;
-    if (!ts) return fromMs===0 && toMs===Infinity;
-    const t = (typeof ts === 'number') ? ts : new Date(ts).getTime();
-    return (t >= fromMs && t <= toMs);
-  });
 
   msgCount.textContent = `Mensajes (${rows.length})`;
 
   for (const c0 of rows){
-    const c = {...c0, id:normId(c0.id)};
-    const lastMem = c.memory && c.memory.length ? lastFromMemory(c.memory) : null;
+    const c = {...c0, id: String(c0.id||'')};
+    const lastMem = c.memory && c.memory.length ? c.memory[c.memory.length-1] : null;
+
+    const ts = c.ts || lastMem?.ts || 0;
+    const stamp = fmtStamp(ts);
+
     let lastTxt = String(c.last || lastMem?.content || '').replace(/\n/g,' ');
     const lastRole = lastMem?.role;
     const prefix = lastRole==='bot' || lastRole==='agent' ? 'You: ' : (c.name ? `${c.name}: ` : '');
     if (lastTxt) lastTxt = (prefix + lastTxt).slice(0,120);
 
-    const ts = c.ts || lastMem?.ts;
-    const tms = ts ? new Date(ts) : null;
-    const when = tms ? tms.toLocaleString() : '';
     const dot = c.human ? 'agent' : (c.done ? 'done' : (c.unread ? 'unread' : 'done'));
-    const avatar = c.avatar ? `<img src="${c.avatar}" alt="">` : `<span>${initial(c.name||c.id)}</span>`;
+    const avatar = c.avatar ? `<img src="${c.avatar}" alt="">`
+                            : `<span>${(c.name||c.id).trim()[0]?.toUpperCase?.()||'?'}</span>`;
 
     const row = document.createElement('div');
     row.className = 'thread';
@@ -247,9 +283,12 @@ function renderThreads(){
       <div class="t-main">
         <div class="t-row1">
           <div class="t-name">${c.name || c.id}</div>
-          <div class="t-time" title="${tms ? tms.toISOString() : ''}">${when}</div>
+          <div class="t-time" title="${ts ? new Date(ts).toLocaleString() : ''}">${stamp}</div>
         </div>
-        <div class="t-row2"><div class="t-last">${lastTxt || ''}</div></div>
+        <div class="t-row2">
+          <div class="t-last">${lastTxt || ''}</div>
+          <span class="t-stamp">${stamp}</span>
+        </div>
       </div>
       <div class="dot ${dot}" title="${dot}"></div>
     `;
@@ -268,9 +307,20 @@ function renderMsgs(mem){
     else if (m.role==='bot') cls = 'bubble bot';
     else if (m.role==='agent') cls = 'bubble agent';
     div.className = cls;
+
     const txt = m.content ?? '';
-    if (looksLikeMediaLine(txt)) div.innerHTML = `<strong>${txt.slice(0,2)}</strong> ${txt.slice(2)}`;
-    else div.textContent = txt;
+    if (looksLikeMediaLine(txt)) {
+      div.innerHTML = `<strong>${txt.slice(0,2)}</strong> ${txt.slice(2)}`;
+    } else {
+      div.textContent = txt;
+    }
+
+    // stamp en burbuja
+    const stamp = document.createElement('span');
+    stamp.className = 'stamp';
+    stamp.textContent = fmtBubbleStamp(m.ts || Date.now());
+    div.appendChild(stamp);
+
     msgsEl.appendChild(div);
   }
   msgsEl.scrollTop = msgsEl.scrollHeight;
@@ -329,7 +379,6 @@ async function doTakeHuman(){ if(!current) return; await api.handoff(current.id,
 async function doResumeBot(){ if(!current) return; await api.handoff(current.id,'bot');   statusPill.style.display='none';         refreshToggleUI(true); }
 
 // ===== Panel (móvil + desktop) =====
-function botIsOn(){ return current ? !current.human : true; }
 function refreshToggleUI(changed=false){
   if (!current) return;
   const isOn = !current.human;
@@ -338,13 +387,11 @@ function refreshToggleUI(changed=false){
   if (changed) setPanel(false);
 }
 
-let panelOpen = false;
 function setPanel(open){
   panelOpen = !!open;
   actionPanel.classList.toggle('show', panelOpen);
   actionPanel.setAttribute('aria-hidden', String(!panelOpen));
   moreBtn.setAttribute('aria-expanded', String(panelOpen));
-  // Cambia ícono del botón entre PLUS y KEYBOARD (SVG)
   const kbTpl = document.getElementById('tpl-keyboard-icon');
   moreBtn.innerHTML = panelOpen ? kbTpl.innerHTML
     : `<svg viewBox="0 0 24 24" width="22" height="22"><path d="M12 4v16M4 12h16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>`;
@@ -362,7 +409,7 @@ document.getElementById('ap-datos').onclick = async ()=>{ await doRequestInfo();
 document.getElementById('ap-cuentas').onclick = async ()=>{ await doSendAccounts(); setPanel(false); };
 document.getElementById('ap-archivos').onclick = ()=>{ fileInput.click(); };
 
-// Toggler robusto: detecta estado real antes de decidir
+// Toggler robusto
 document.getElementById('ap-toggle').onclick = async ()=>{
   if (!current) return;
   try {
@@ -397,9 +444,6 @@ dropZone.addEventListener('drop', async (e)=>{ const files = Array.from(e.dataTr
 function renderList(){ renderThreads(); }
 searchEl.oninput = renderList;
 segBtns.forEach(b=> b.onclick = ()=>{ segBtns.forEach(x=>x.classList.remove('active')); b.classList.add('active'); filter = b.dataset.filter; renderList(); });
-dateFromEl?.addEventListener('change', renderList);
-dateToEl?.addEventListener('change', renderList);
-clearDates?.addEventListener('click', ()=>{ if(dateFromEl) dateFromEl.value=''; if(dateToEl) dateToEl.value=''; renderList(); });
 
 // ===== Datos =====
 async function refresh(openFirst=false){
@@ -441,6 +485,5 @@ window.addEventListener('offline', ()=> setConn('off','sin red'));
 window.addEventListener('online',  ()=> { setConn('wait','reconectando'); startSSE(); });
 
 // iOS: cuando el panel está abierto, reduce rebote
-document.addEventListener('touchmove', (e)=>{
-  if (panelOpen) e.stopPropagation();
-}, {passive:true});
+let panelOpen=false;
+document.addEventListener('touchmove', (e)=>{ if (panelOpen) e.stopPropagation(); }, {passive:true});

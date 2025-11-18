@@ -1,93 +1,517 @@
-:root{
-  --bg:#0f1320; --panel:#141a2a; --muted:#a3adc2; --text:#eaf0ff; --accent:#1b6cff;
-  --card:#151c2f; --ring: rgba(27,108,255,.15);
+:root {
+  --bg-page: #f9fafb;
+  --bg-card: #ffffff;
+  --bg-soft: #f3f4f6;
+
+  --border-subtle: #e5e7eb;
+  --text-main: #111827;
+  --text-muted: #6b7280;
+  --text-soft: #9ca3af;
+
+  /* Colores de marca */
+  --brand-1: #57c3e1;
+  --brand-2: #618ed0;
+  --brand-3: #877ebb;
+
+  --accent: var(--brand-2);
+  --accent-soft: rgba(97, 142, 208, 0.18);
+
+  --radius-lg: 16px;
+  --radius-md: 12px;
+
+  --shadow-soft: 0 18px 40px rgba(15, 23, 42, 0.06);
+  --shadow-header: 0 10px 30px rgba(15, 23, 42, 0.04);
 }
 
-*{box-sizing:border-box}
-html,body{height:100%}
-body{
-  margin:0; background:radial-gradient(1200px 600px at 80% -10%, #1a2140 0%, transparent 50%), var(--bg);
-  color:var(--text); font-family:ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial;
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
 }
 
-.topbar{
-  display:flex; justify-content:space-between; align-items:center;
-  padding:18px 22px; background:rgba(255,255,255,.02); backdrop-filter: blur(6px); border-bottom:1px solid rgba(255,255,255,.06);
-  position:sticky; top:0; z-index:10;
+html,
+body {
+  min-height: 100%;
 }
-.brand h1{ margin:0; font-size:20px; }
-.brand small{ color:var(--muted) }
 
-/* Controles */
-.ctl{ display:flex; gap:12px; align-items:center; flex-wrap:wrap; }
-.ctl label{ color:var(--text); font-size:14px; }
-select{
-  background:var(--panel); color:var(--text); border:1px solid rgba(255,255,255,.08);
-  border-radius:10px; padding:8px 10px; outline:none;
+body {
+  margin: 0;
+  background: var(--bg-page);
+  color: var(--text-main);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
 }
-.btn{
-  background:var(--accent); color:white; border:none; border-radius:10px; padding:9px 14px; font-weight:700; cursor:pointer;
-  box-shadow:0 8px 24px var(--ring); transition:.15s transform ease, .2s box-shadow ease;
-}
-.btn:hover{ transform:translateY(-1px); box-shadow:0 12px 26px var(--ring); }
 
-.wrap{ max-width:1200px; margin:24px auto; padding:0 16px; overflow-x:hidden; }
+/* =================== ANIMACIONES =================== */
 
-/* KPIs */
-.kpis{
-  display:grid; grid-template-columns:repeat(6, 1fr); gap:12px; margin-bottom:16px;
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
-.kpi{
-  background:var(--panel); color:var(--text);
-  padding:14px; border-radius:14px; border:1px solid rgba(255,255,255,.06);
-  text-align:left; cursor:pointer; transition:transform .08s ease, box-shadow .15s ease;
-}
-.kpi:focus{ outline:none; }
-.kpi:hover{ transform:translateY(-1px); box-shadow:0 10px 28px rgba(0,0,0,.25); }
-.kpi.active{ border-color:rgba(27,108,255,.55); box-shadow:0 0 0 3px rgba(27,108,255,.15) inset; }
-.kpi-v{ font-size:22px; font-weight:800; color:var(--text); }
-.kpi-l{ color:var(--muted); margin-top:4px }
 
-/* Grilla principal */
-.grid{ display:grid; gap:16px; grid-template-columns:1fr 1fr; }
-.card{
-  background:var(--card); border:1px solid rgba(255,255,255,.06); border-radius:14px; padding:16px;
-  box-shadow:0 10px 30px rgba(0,0,0,.25); overflow:hidden;
+/* =================== TOPBAR =================== */
+
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 14px 28px;
+  background: rgba(249, 250, 251, 0.96);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(229, 231, 235, 0.9);
+  box-shadow: var(--shadow-header);
 }
-.card.wide{ grid-column:1 / -1; }
-.card h2{ margin:0 0 10px; font-size:16px; color:#dfe6ff }
+
+.topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  background: rgba(87, 195, 225, 0.12);
+  color: var(--brand-1);
+  border: 1px solid rgba(87, 195, 225, 0.35);
+}
+
+.page-title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.page-subtitle {
+  margin: 2px 0 0;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.topbar-right {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-soft);
+}
+
+/* Selects tipo pill, misma altura que botón */
+
+.field select {
+  min-width: 150px;
+  height: 36px;
+  padding: 0 34px 0 14px;
+  border-radius: 999px;
+  border: 1px solid var(--border-subtle);
+  background-color: #ffffff;
+  color: var(--text-main);
+  font-size: 13px;
+  outline: none;
+  appearance: none;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease,
+    background-color 0.15s ease, transform 0.08s ease;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath fill='%239ca3af' d='M1 1l4 4 4-4'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 10px 6px;
+}
+
+.field select:hover {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px var(--accent-soft);
+}
+
+.field select:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px var(--accent-soft);
+}
+
+/* Botón principal */
+
+.btn {
+  border-radius: 999px;
+  border: 1px solid transparent;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 0 18px;
+  height: 36px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: background 0.15s ease, box-shadow 0.15s ease,
+    transform 0.08s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.btn.primary {
+  background: linear-gradient(135deg, var(--brand-2), var(--brand-3));
+  color: #ffffff;
+  box-shadow: 0 14px 30px var(--accent-soft);
+}
+
+.btn.primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 18px 42px var(--accent-soft);
+}
+
+/* =================== LAYOUT GENERAL =================== */
+
+.wrap {
+  max-width: 1200px;
+  margin: 22px auto 72px;
+  padding: 0 16px;
+}
+
+/* =================== KPIs =================== */
+
+.kpis {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+/* grid interno para alinear todo igual */
+.kpi {
+  position: relative;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-subtle);
+  background: var(--bg-card);
+  padding: 12px 14px 12px;
+  cursor: pointer;
+  display: grid;
+  grid-template-rows: auto auto auto;
+  align-items: start;
+  gap: 6px;
+  min-height: 120px;
+  text-align: left;
+  transition: box-shadow 0.15s ease, transform 0.08s ease,
+    border-color 0.15s ease, background 0.15s ease;
+  animation: fadeUp 0.4s ease-out both;
+}
+
+.kpis .kpi:nth-child(2) {
+  animation-delay: 0.05s;
+}
+.kpis .kpi:nth-child(3) {
+  animation-delay: 0.1s;
+}
+.kpis .kpi:nth-child(4) {
+  animation-delay: 0.15s;
+}
+.kpis .kpi:nth-child(5) {
+  animation-delay: 0.2s;
+}
+.kpis .kpi:nth-child(6) {
+  animation-delay: 0.25s;
+}
+
+.kpi-top {
+  display: flex;
+  justify-content: left;
+  align-items: left ;
+  gap: 6px;
+}
+
+/* dejamos label vacío para que no duplique texto */
+.kpi-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-main);
+  display: none;
+}
+
+/* Marker / pill con el nombre de la métrica */
+.kpi-tag {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--brand-2);
+  background: rgba(97, 142, 208, 0.08);
+  border-radius: 999px;
+  padding: 2px 6px;
+  white-space: nowrap;
+  max-width: 140px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.kpi-main {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.kpi-value {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.kpi-sub {
+  margin: 0;
+  font-size: 11px;
+  color: var(--text-muted);
+  line-height: 1.35;
+}
+
+.kpi:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-soft);
+}
+
+.kpi.active {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px var(--accent-soft), var(--shadow-soft);
+  background: #f9fbff;
+}
+
+/* =================== CARDS & GRID =================== */
+
+.layout {
+  display: grid;
+  grid-template-columns: 2fr 1.3fr;
+  gap: 16px;
+}
+
+.layout-demografia {
+  margin-top: 24px;
+}
+
+.layout-detalle {
+  margin-top: 24px;
+}
+
+.card {
+  border-radius: var(--radius-lg);
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  box-shadow: var(--shadow-soft);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: fadeUp 0.45s ease-out both;
+}
+
+.card-large {
+  grid-column: 1 / -1;
+}
+
+.card-wide {
+  grid-column: 1 / -1;
+}
+
+.card-header {
+  padding: 14px 16px 10px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.card-header h2 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.card-header p {
+  margin: 4px 0 0;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.card-body {
+  padding: 12px 14px 14px;
+}
+
+.chart-body {
+  height: 280px;
+}
+
+.table-body {
+  padding-top: 8px;
+}
+
+/* ========== MAPA BOLIVIA + BARRAS ========== */
+
+.chart-body--map {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: center;
+  height: auto;
+}
+
+.map-bo {
+  width: 100%;
+  max-width: 520px;   /* tamaño máximo del mapa */
+  margin: 0 auto;
+}
+
+.map-bo__img {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  display: block;
+}
+
+.chart-bo {
+  width: 100%;
+  height: 260px;      /* alto reservado para las barras por depto */
+}
+
+/* Charts canvases */
+#chLine,
+#chBar,
+#chPieAll,
+#chDeptosBo,
+#chPais,
+#chEdadGenero,
+#chPages {
+  width: 100% !important;
+  height: 100% !important;
+  display: block;
+}
 
 /* Tabla */
-.table-wrap{ overflow:auto; max-height:420px; border-radius:10px; }
-.tbl{ width:100%; border-collapse:collapse; }
-.tbl th, .tbl td{ padding:10px 12px; border-bottom:1px solid rgba(255,255,255,.06); white-space:nowrap; }
-.tbl th{ position:sticky; top:0; background:#0f1527; }
 
-/* Tamaños dedicados */
-#chLine, #chBar{
-  width:100% !important;
-  height:300px !important;
-  display:block;
+.table-wrap {
+  max-height: 420px;
+  overflow: auto;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-subtle);
 }
 
-/* Donas en tarjeta */
-.pie-card canvas,
-#chPieSel{
-  width:100% !important;
-  height:260px !important;
-  display:block;
+.tbl {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
 }
-.hidden{ display:none; }
 
-/* Móvil */
-@media (max-width:980px){
-  .kpis{ grid-template-columns:repeat(3,1fr) }
-  .grid{ grid-template-columns:1fr; }
+.tbl th,
+.tbl td {
+  padding: 8px 10px;
+  white-space: nowrap;
+  border-bottom: 1px solid #f3f4f6;
 }
-@media (max-width:640px){
-  .ctl{ width:100%; justify-content:flex-start; gap:8px; }
-  .ctl label{ display:flex; align-items:center; gap:6px; }
-  /* mismo ancho para Mes y Semana y que no se estiren */
-  .ctl select{ width:140px; max-width:140px; }
-  .btn{ padding:8px 12px; }
+
+.tbl th {
+  position: sticky;
+  top: 0;
+  background: #f9fafb;
+  z-index: 1;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.tbl tr:nth-child(even) td {
+  background: #fcfcfd;
+}
+
+/* ========== MAPA BOLIVIA + BARRAS ========== */
+
+.chart-body--split {
+  display: flex;
+  gap: 16px;
+  align-items: stretch;
+  height: 340px;           /* MÁS ALTO PARA QUE NO SE CORTE */
+}
+.map-bo {
+  position: relative;
+  width: 55%;              /* Mapa ocupa ~la mitad */
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.map-bo__img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;      /* Que se adapte SIN cortarse */
+  display: block;
+}
+
+.chart-bo {
+  flex: 1;
+  min-width: 0;
+}
+/* =================== RESPONSIVE =================== */
+
+@media (max-width: 980px) {
+  .kpis {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .layout {
+    grid-template-columns: 1fr;
+  }
+
+  .card-large,
+  .card-wide {
+    grid-column: auto;
+  }
+
+    .chart-body--split {
+    flex-direction: column;
+    height: auto;
+  }
+  
+}
+
+@media (max-width: 720px) {
+  .topbar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .topbar-right {
+    width: 100%;
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 640px) {
+  .kpis {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .field select {
+    min-width: 130px;
+  }
+
+  .chart-body {
+    height: 240px;
+  }
 }

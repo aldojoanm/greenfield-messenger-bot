@@ -24,7 +24,7 @@ body{
   overscroll-behavior-y:none;
   -webkit-text-size-adjust:100%;
 }
-.app{min-height:100svh;display:block}  /* evita ‘salto’ del composer en móvil */
+.app{min-height:100svh;display:block}
 .only-mobile{display:none} .only-desktop{display:inline}
 .safe-top{padding-top:var(--topbar-h)}
 
@@ -41,7 +41,9 @@ body{
 .standalone .topbar{padding-top:calc(.25rem + var(--safe-top));height:calc(var(--topbar-h) + var(--safe-top))}
 
 /* Filtros/lista */
-.filters{padding:.5rem .75rem;border-bottom:1px solid rgba(0,0,0,.06);background:var(--panel)}
+.filters{
+  padding:.5rem .75rem;border-bottom:1px solid rgba(0,0,0,.06);background:var(--panel);
+}
 .filters-row{display:flex;align-items:center;gap:.75rem;flex-wrap:wrap}
 .count{color:var(--muted)}
 .segmented{display:flex;gap:.5rem;flex-wrap:wrap;min-width:min(100%,720px)}
@@ -49,13 +51,18 @@ body{
 .seg.active{background:#d9fdd3;color:#1f3c2f;border-color:#9be1b5}
 .searchbar{display:flex;align-items:center;gap:.5rem;margin-top:.5rem;flex-wrap:wrap}
 .searchbar input{background:#fff;border:1px solid rgba(0,0,0,.10);color:var(--ink);padding:.45rem .65rem;border-radius:6px;min-width:220px;flex:1 1 220px;font-size:16px}
-.datebar{display:flex;gap:.5rem;align-items:center;margin-top:.5rem;flex-wrap:wrap}
-.datebar label{display:flex;gap:.35rem;align-items:center;color:#4c5a63;font-size:13px}
 
-/* Lista */
+/* Lista (scrollea) */
 .view{height:auto}
-.threads{display:flex;flex-direction:column}
+.view-list{display:flex;flex-direction:column}
+.threads{
+  display:flex;flex-direction:column;
+  min-height:0;
+  overflow:auto; /* ahora scrollea en PC */
+  height:calc(100dvh - var(--topbar-h) - 120px); /* margen para filtros */
+}
 .thread{
+  position:relative;
   display:grid;grid-template-columns:44px 1fr auto;gap:.75rem;
   padding:.6rem .75rem;align-items:center;border-bottom:1px solid rgba(0,0,0,.06);cursor:pointer;background:transparent
 }
@@ -66,8 +73,22 @@ body{
 .t-main{min-width:0}
 .t-row1{display:flex;align-items:center;justify-content:space-between;gap:.5rem}
 .t-name{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.t-time{color:#73838f;white-space:nowrap}
-.t-last{color:var(--muted-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.t-time{color:#73838f;white-space:nowrap;font-size:12px} /* estilo WhatsApp */
+.t-row2{
+  display:grid;
+  grid-template-columns:1fr auto;
+  align-items:center;
+  gap:.5rem;
+}
+.t-last{ 
+  color:var(--muted-2);
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+.t-stamp{
+  color:#73838f;
+  font-size:12px;
+  white-space:nowrap;
+}
 .dot{width:10px;height:10px;border-radius:50%}
 .dot.unread{background:var(--accent)} .dot.done{background:#bfc9cf} .dot.agent{background:#f5a623}
 
@@ -84,13 +105,21 @@ body{
   overflow:auto;background:transparent;min-height:200px;flex:1 1 auto;
   -webkit-overflow-scrolling:touch; overscroll-behavior:contain;
 }
-.bubble{max-width:min(65ch,72%);padding:.6rem .7rem;border-radius:14px;word-break:break-word;overflow-wrap:anywhere;border:1px solid rgba(0,0,0,.06)}
+.bubble{
+  position:relative;
+  max-width:min(65ch,72%);padding:.8rem .9rem 1.5rem; /* espacio para hora */
+  border-radius:14px;word-break:break-word;overflow-wrap:anywhere;border:1px solid rgba(0,0,0,.06)
+}
 .bubble.user{align-self:flex-start;background:var(--panel-2)}
 .bubble.bot{align-self:flex-end;background:#d9fdd3;border-color:#b3e8c5}
 .bubble.agent{align-self:flex-end;background:#e6ebef;border-color:#cfd7dc}
 .bubble.sys{align-self:center;background:#e9eef2;color:#51606a;border-color:rgba(0,0,0,.06)}
+.bubble .stamp{
+  position:absolute; right:10px; bottom:6px;
+  font-size:11px; color:#6d7a84;
+}
 
-/* Composer (solo lado chat) */
+/* Composer */
 .composer{
   position:fixed; left:0; right:0; bottom:0; z-index:6;
   border-top:1px solid rgba(0,0,0,.06); background:var(--panel);
@@ -99,22 +128,23 @@ body{
   display:grid; grid-template-columns:auto 1fr auto; gap:.4rem;
   padding:.5rem .75rem calc(.5rem + var(--safe-bottom));
   align-items:center;
-  width:min(820px, 100%); margin:0 auto;   /* Limita ancho y centra */
+  width:min(820px, 100%); margin:0 auto;
 }
 .more-btn{
   appearance:none; border:none; background:transparent; color:#5f6b73;
   width:44px; height:44px; border-radius:12px; display:grid; place-items:center;
 }
 #box{
-  width:100%; resize:none; min-height:40px; max-height:160px; /* más compacto */
+  width:100%; resize:none; min-height:40px; max-height:160px;
   padding:.5rem .7rem; border-radius:20px;
-  background:#fff; color:var(--ink);
-  border:1px solid rgba(0,0,0,.10); font-size:16px; line-height:1.15;
+  background:#fff;
+  border: 1px solid rgba(0,0,0,.10); font-size:16px; line-height:1.15;
 }
 .send-btn{appearance:none; border:none; background:transparent; width:44px; height:44px; display:grid; place-items:center; padding:0}
 .send-btn img{width:22px;height:22px;display:block}
 
-/* Panel de acciones: gris en móvil, tarjeta blanca en desktop */
+
+/* Action panel (gris también en desktop) */
 .action-panel{
   position:fixed; left:0; right:0; bottom:calc(var(--composer-min-h) + var(--safe-bottom) + 6px);
   background:#2a2f34; color:#fff; z-index:5;
@@ -135,9 +165,18 @@ body{
 .ap-circle img{width:26px;height:26px;display:block}
 .ap-label{display:block;margin-top:8px;font-size:13px}
 
+/* Desktop */
 @media (min-width:1024px){
   .app{display:grid;grid-template-columns:380px 1fr;height:100dvh;overflow:hidden}
-  .view-list{display:block;height:calc(100dvh - var(--topbar-h));overflow:hidden;margin-top:var(--topbar-h)}
+  .view-list{
+    margin-top:var(--topbar-h);
+    height:calc(100dvh - var(--topbar-h));
+    display:flex;flex-direction:column;
+  }
+  .threads{
+    flex:1 1 auto;
+    overflow:auto;
+  }
   .view-chat{
     border-left:1px solid rgba(0,0,0,.10);
     margin-top:var(--topbar-h);
@@ -147,18 +186,15 @@ body{
   .view-chat .msgs{position:relative;padding:.75rem;overflow:auto;background:var(--bg)}
   .bubble{max-width:min(60ch,52%)}
 
-  /* El panel en desktop se vuelve tarjeta blanca centrada */
   .action-panel{
-    background:#fff; color:var(--ink);
-    border:1px solid rgba(0,0,0,.12);
+    background:#2a2f34; color:#fff;
+    border:1px solid rgba(255,255,255,.12);
     border-radius:16px;
     bottom:calc(var(--composer-min-h) + 12px);
     width:560px; left:50%; transform:translateX(-50%);
-    box-shadow:0 14px 46px rgba(0,0,0,.18);
+    box-shadow:0 14px 46px rgba(0,0,0,.35);
     padding:14px 16px 18px;
   }
-  .ap-label{ color:#44525c; }
-  .ap-circle{ background:#f7f9fa; border:1px solid rgba(0,0,0,.06); }
 }
 
 /* Móvil */
@@ -178,6 +214,4 @@ body{
 /* Drag&drop */
 .drag{outline:2px dashed rgba(0,0,0,.20);outline-offset:-6px}
 .seg{white-space:nowrap}
-
-/* Oculta fila de acciones legacy en desktop si existiera */
 .sheet-row{ display:none !important; }

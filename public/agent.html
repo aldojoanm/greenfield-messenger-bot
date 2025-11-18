@@ -27,12 +27,9 @@
           <span id="msgCount" class="count">Mensajes (0)</span>
           <div class="segmented">
             <button class="seg active" data-filter="all">Todos</button>
-            <button class="seg" data-filter="new">Nuevos</button>
+            <button class="seg" data-filter="unread">Sin leer</button>
             <button class="seg" data-filter="active">Activos</button>
             <button class="seg" data-filter="done">Finalizados</button>
-            <button class="seg" data-filter="agent">Asesor</button>
-            <button class="seg" data-filter="unread">Sin leer</button>
-            <button class="seg" data-filter="files">Con archivos</button>
           </div>
         </div>
 
@@ -41,13 +38,6 @@
           <button class="btn" id="importWA" title="Importar WhatsApp (Sheets)">📥</button>
           <button class="btn" id="refresh" title="Refrescar">⟳</button>
           <button class="btn" id="logout" title="Salir">Salir</button>
-        </div>
-
-        <!-- Filtro por fecha -->
-        <div class="datebar">
-          <label>Desde <input id="dateFrom" type="date"></label>
-          <label>Hasta <input id="dateTo" type="date"></label>
-          <button class="btn" id="clearDates">Limpiar</button>
         </div>
       </div>
 
@@ -67,11 +57,10 @@
 
       <main id="msgs" class="msgs"></main>
 
-      <!-- Composer fijo SOLO en el lado del chat -->
+      <!-- Composer -->
       <footer class="composer" id="dropZone">
         <div class="composer-inner">
           <button id="moreBtn" class="more-btn" aria-label="Más" title="Más" data-state="plus" aria-expanded="false">
-            <!-- Ícono PLUS (SVG) -->
             <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
               <path d="M12 4v16M4 12h16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
             </svg>
@@ -79,14 +68,13 @@
 
           <textarea id="box" placeholder="Escribe un mensaje…"></textarea>
 
-          <!-- Enviar (paper plane negro) -->
           <button id="send" class="send-btn" aria-label="Enviar" title="Enviar">
             <img src="/iconos/icono-avion-negro.png" alt="Enviar">
           </button>
         </div>
       </footer>
 
-      <!-- Panel de acciones (móvil y desktop), como teclado / tarjeta -->
+      <!-- Panel de acciones (gris en móvil y desktop) -->
       <div id="actionPanel" class="action-panel" role="menu" aria-hidden="true">
         <div class="ap-grid">
           <button class="ap-item" id="ap-location">
@@ -108,7 +96,7 @@
 
           <button class="ap-item" id="ap-datos">
             <span class="ap-circle"><img src="/iconos/icono-datos.png" alt=""></span>
-            <span class="ap-label">Solicitar datos</span>
+            <span class="ap-label">Datos</span>
           </button>
 
           <button class="ap-item" id="ap-cuentas">
@@ -122,7 +110,6 @@
           </button>
         </div>
 
-        <!-- Ícono de teclado (SVG) para el botón cuando está abierto -->
         <template id="tpl-keyboard-icon">
           <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
             <rect x="2.5" y="6" width="19" height="12" rx="2.5" fill="none" stroke="currentColor" stroke-width="2"/>
@@ -132,7 +119,6 @@
         </template>
       </div>
 
-      <!-- input file oculto (lo disparamos desde 'Archivos') -->
       <input id="fileInput" type="file" multiple style="display:none"
              accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,image/*,video/*,audio/*">
     </section>

@@ -504,7 +504,13 @@ function remember(id, role, content){
   s.meta = s.meta || {};
   s.meta.lastMsg = { role, content, ts: now };
   s.meta.lastAt  = now;
-  if (role === 'user') s.meta.unread = (s.meta.unread || 0) + 1;
+
+  if (role === 'user') {
+    s.meta.lastUserAt = now;
+    s.meta.unread = (s.meta.unread || 0) + 1;
+    cancelAutoOff(id);
+  }
+
   persistS(id);
   broadcastAgent('msg', { id, role, content, ts: now });
   try {
@@ -513,6 +519,78 @@ function remember(id, role, content){
     appendChatHistoryRow({ wa_id: id, nombre, ts_iso, role, content }).catch(() => {});
   } catch {}
 }
+
+// == Auto apagado tras 20 minutos de inactividad ==
+const AUTO_OFF_MS = 20 * 60 * 1000; // 20 minutos
+const autoOffTimers = new Map();
+
+/**
+ * Cancela cualquier auto-apagado programado para ese chat.
+ */
+function cancelAutoOff(id) {
+  const t = autoOffTimers.get(id);
+  if (t) {
+    clearTimeout(t);
+    autoOffTimers.delete(id);
+  }
+  const s = S(id);
+  if (s?.meta) {
+    delete s.meta.autoOffScheduledAt;
+    persistS(id);
+  }
+}
+
+/**
+ * Programa el apagado del bot en 20 minutos si el cliente no vuelve a escribir.
+ * - No se ejecuta si en ese tiempo el usuario manda otro mensaje (porque remember() lo cancela).
+ * - Cuando se dispara: manda el mensaje de re-activación y pasa el chat a modo humano.
+ */
+function scheduleAutoOff(id) {
+  cancelAutoOff(id); // por si había uno previo
+
+  const s = S(id);
+  if (!s) return;
+
+  const scheduledAt = Date.now();
+  s.meta = s.meta || {};
+  s.meta.autoOffScheduledAt = scheduledAt;
+  persistS(id);
+
+  const timer = setTimeout(() => {
+    (async () => {
+      try {
+        const sNow = S(id);
+        if (!sNow) return;
+
+        // Si ya está en modo humano o cerrado por otro flujo, no hacemos nada
+        if (isHuman(id)) return;
+        if (sNow.stage === 'closed') return;
+
+        const lastUserAt = Number(sNow.meta?.lastUserAt || 0);
+
+        // Si el cliente escribió después de programar el auto-off, no se apaga
+        if (lastUserAt && lastUserAt > scheduledAt) return;
+
+        // Aquí sí: 20 minutos sin nada → mandar mensaje y apagar
+        await toText(
+          id,
+          'Para volver a activar el asistente, por favor, escribe *Asistente New Chem*.'
+        );
+
+        humanOn(id, 4);
+        sNow._closedAt = Date.now();
+        sNow.stage = 'closed';
+        persistS(id);
+        broadcastAgent('convos', { id });
+      } catch (e) {
+        console.error('auto-off error', e);
+      }
+    })();
+  }, AUTO_OFF_MS);
+
+  autoOffTimers.set(id, timer);
+}
+
 
 setInterval(() => {
   try { purgeOldChatHistory(7).catch(() => {}); } catch {}
@@ -1147,109 +1225,100 @@ router.post('/wa/webhook', async (req,res)=>{
     const leadData = (msg.type === 'text') ? parseMessengerLead(textRaw) : null;
     const parsedCart = parseCartFromText(textRaw);
 
-if (parsedCart && !isAdvisor(fromId)) {
-  // Usamos la sesión ya creada arriba: const s = S(fromId);
-  s.vars.cart = parsedCart.items || [];
-  s.pending = null;
-  s.lastPrompt = null;
-  s.stage = 'checkout';
-  persistS(fromId);
-
-  await toText(
-    fromId,
-    '¡Gracias por escribirnos! Te envío la *cotización en PDF*. Si requieres mas información, estamos a tu disposición.'
-  );
-
-  let pdfInfo = null;
-  try {
-    pdfInfo = await sendAutoQuotePDF(fromId, s);
-  } catch (err) {
-    console.error('AutoQuote (desde catálogo) error:', err);
-  }
-
-  try {
-    if (!s._savedToSheet) {
-      const cotId = await appendFromSession(s, fromId, 'nuevo');
-      s.vars.cotizacion_id = cotId;
-      s._savedToSheet = true;
+    if (parsedCart && !isAdvisor(fromId)) {
+      // Usamos la sesión ya creada arriba: const s = S(fromId);
+      s.vars.cart = parsedCart.items || [];
+      s.pending = null;
+      s.lastPrompt = null;
+      s.stage = 'checkout';
       persistS(fromId);
-    }
-  } catch (err) {
-    console.error('Sheets append (desde catálogo) error:', err);
-  }
 
-  try {
-    const rec = {
-      telefono: String(fromId),
-      nombre: s.profileName || '',
-      ubicacion: [
-        s?.vars?.departamento || '',
-        s?.vars?.subzona || ''
-      ].filter(Boolean).join(' - '),
-      cultivo: (s?.vars?.cultivos && s.vars.cultivos[0]) || '',
-      hectareas: s?.vars?.hectareas || '',
-      campana: s?.vars?.campana || '',
-    };
-    await upsertClientByPhone(rec);
-  } catch (e) {
-    console.error('upsert WA_CLIENTES (desde catálogo) error:', e);
-  }
+      await toText(
+        fromId,
+        '¡Gracias por escribirnos! Te envío la *cotización en PDF*. Si requieres mas información, estamos a tu disposición.'
+      );
 
-  await toText(
-    fromId,
-    'Para volver a activar el asistente, por favor, escribe *Asistente New Chem*.'
-  );
+      let pdfInfo = null;
+      try {
+        pdfInfo = await sendAutoQuotePDF(fromId, s);
+      } catch (err) {
+        console.error('AutoQuote (desde catálogo) error:', err);
+      }
 
-  if (ADVISOR_WA_NUMBERS.length) {
-    const txt = compileAdvisorAlert(s, fromId);
-    for (const advisor of ADVISOR_WA_NUMBERS) {
-      const okTxt = await waSendQ(advisor, {
-        messaging_product: 'whatsapp',
-        to: advisor,
-        type: 'text',
-        text: { body: txt.slice(0, 4096) }
-      });
-      if (okTxt) console.log('[ADVISOR] alerta enviada (desde catálogo) a', advisor);
-      else console.warn('[ADVISOR] no se pudo enviar alerta (desde catálogo) a', advisor);
-    }
+      try {
+        if (!s._savedToSheet) {
+          const cotId = await appendFromSession(s, fromId, 'nuevo');
+          s.vars.cotizacion_id = cotId;
+          s._savedToSheet = true;
+          persistS(fromId);
+        }
+      } catch (err) {
+        console.error('Sheets append (desde catálogo) error:', err);
+      }
 
-    try {
-      const safeName = (s.profileName || String(fromId))
-        .replace(/[^\w\s\-.]/g, '')
-        .replace(/\s+/g, '_');
+      try {
+        const rec = {
+          telefono: String(fromId),
+          nombre: s.profileName || '',
+          ubicacion: [
+            s?.vars?.departamento || '',
+            s?.vars?.subzona || ''
+          ].filter(Boolean).join(' - '),
+          cultivo: (s?.vars?.cultivos && s.vars.cultivos[0]) || '',
+          hectareas: s?.vars?.hectareas || '',
+          campana: s?.vars?.campana || '',
+        };
+        await upsertClientByPhone(rec);
+      } catch (e) {
+        console.error('upsert WA_CLIENTES (desde catálogo) error:', e);
+      }
 
-      const filename = pdfInfo?.filename || `Cotizacion_${safeName}.pdf`;
-      const caption  = `Cotización — ${s.profileName || fromId}`;
-      const mediaId  = await waUploadPDFSmart(pdfInfo, filename);
+      // 🔴 YA NO enviamos aquí el mensaje de "Para volver a activar..."
+      // 🔴 Tampoco apagamos el bot inmediatamente.
 
-      if (mediaId) {
+      if (ADVISOR_WA_NUMBERS.length) {
+        const txt = compileAdvisorAlert(s, fromId);
         for (const advisor of ADVISOR_WA_NUMBERS) {
-          const okDoc = await waSendQ(advisor, {
+          const okTxt = await waSendQ(advisor, {
             messaging_product: 'whatsapp',
             to: advisor,
-            type: 'document',
-            document: { id: mediaId, filename, caption }
+            type: 'text',
+            text: { body: txt.slice(0, 4096) }
           });
-          if (!okDoc) console.warn('[ADVISOR] PDF no enviado (desde catálogo) a', advisor);
+          if (okTxt) console.log('[ADVISOR] alerta enviada (desde catálogo) a', advisor);
+          else console.warn('[ADVISOR] no se pudo enviar alerta (desde catálogo) a', advisor);
         }
-      } else {
-        console.warn('[ADVISOR] No se obtuvo mediaId ni path del PDF (desde catálogo).');
+
+        try {
+          const safeName = (s.profileName || String(fromId))
+            .replace(/[^\w\s\-.]/g, '')
+            .replace(/\s+/g, '_');
+
+          const filename = pdfInfo?.filename || `Cotizacion_${safeName}.pdf`;
+          const caption  = `Cotización — ${s.profileName || fromId}`;
+          const mediaId  = await waUploadPDFSmart(pdfInfo, filename);
+
+          if (mediaId) {
+            for (const advisor of ADVISOR_WA_NUMBERS) {
+              const okDoc = await waSendQ(advisor, {
+                messaging_product: 'whatsapp',
+                to: advisor,
+                type: 'document',
+                document: { id: mediaId, filename, caption }
+              });
+              if (!okDoc) console.warn('[ADVISOR] PDF no enviado (desde catálogo) a', advisor);
+            }
+          } else {
+            console.warn('[ADVISOR] No se obtuvo mediaId ni path del PDF (desde catálogo).');
+          }
+        } catch (err) {
+          console.error('[ADVISOR] error al reenviar PDF (desde catálogo):', err);
+        }
       }
-    } catch (err) {
-      console.error('[ADVISOR] error al reenviar PDF (desde catálogo):', err);
+      scheduleAutoOff(fromId);
+      res.sendStatus(200);
+      return;
     }
-  }
-
-  // Apagar bot / pasar a humano, igual que QR_FINALIZAR
-  humanOn(fromId, 4);
-  s._closedAt = Date.now();
-  s.stage = 'closed';
-  persistS(fromId);
-  broadcastAgent('convos', { id: fromId });
-
-  res.sendStatus(200);
-  return;
-}
 
 
     try {
