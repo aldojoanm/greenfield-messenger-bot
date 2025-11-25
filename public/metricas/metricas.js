@@ -12,6 +12,21 @@ const COLORS = {
   inter: "#22c55e",    // verde
   seg: "#f97316",      // naranja
 };
+const MONTH_NAMES = [
+  "Enero",
+  "Febrero",
+  "Marzo",
+  "Abril",
+  "Mayo",
+  "Junio",
+  "Julio",
+  "Agosto",
+  "Septiembre",
+  "Octubre",
+  "Noviembre",
+  "Diciembre",
+];
+
 
 const METRIC_COLORS = {
   Visualizaciones: COLORS.visual,
@@ -43,12 +58,20 @@ let chLine, chBar, chPieAll, chLineRel;
 let chDeptosBo, chPais, chEdadGenero, chPages;
 let demografiaSheetName = null;
 
-// ================== Carga inicial ==================
-window.addEventListener("DOMContentLoaded", async () => {
-  await cargarListadoMeses();
+let allYearRows = [];    // todas las filas del año seleccionado
+let currentYear = null; 
+let isYearView = false;
 
+window.addEventListener("DOMContentLoaded", async () => {
+  await cargarAnios();
+
+  const selAnio = $("#anioSelect");
   const selMes = $("#mesSelect");
   const selSem = $("#semanaSelect");
+
+  selAnio.addEventListener("change", async () => {
+    await cargarAnio(selAnio.value);
+  });
 
   selMes.addEventListener("change", () => cargarMes(selMes.value));
   selSem.addEventListener("change", () => aplicarSemana(selSem.value));
@@ -67,54 +90,194 @@ window.addEventListener("DOMContentLoaded", async () => {
       render(currentRows);
     });
   });
-
-  // Abre el último mes por defecto (ignorando Demografia)
-  if (selMes.options.length) {
-    selMes.selectedIndex = selMes.options.length - 1;
-    await cargarMes(selMes.value);
-  }
-
-  // Carga demografía (independiente del mes)
-  if (demografiaSheetName) {
-    await cargarDemografia(demografiaSheetName);
-  }
 });
 
-// ================== Fetch helpers ==================
-
-async function cargarListadoMeses() {
+async function cargarAnios() {
   const r = await fetch("/api/fbmetrics/sheets");
   const j = await r.json();
-  const sel = $("#mesSelect");
-  sel.innerHTML = "";
+
+  const selAnio = $("#anioSelect");
+  const selMes = $("#mesSelect");
+  selAnio.innerHTML = "";
+  selMes.innerHTML = "";
+
+  const years = [];
 
   (j.sheets || []).forEach((name) => {
-    const nameLower = String(name).toLowerCase();
+    const lower = String(name).toLowerCase();
 
-    // Guardamos Demografia, pero NO la mostramos como mes
-    if (nameLower.includes("demografia")) {
+    // guardamos Demografia pero no la mostramos como año
+    if (lower.includes("demografia")) {
       demografiaSheetName = name;
       return;
     }
 
-    const opt = document.createElement("option");
-    opt.value = name;
-    opt.textContent = name;
-    sel.appendChild(opt);
+    // solo hojas que sean exactamente 4 dígitos => años (2025, 2026, ...)
+    if (/^\d{4}$/.test(name.trim())) {
+      years.push(name.trim());
+    }
   });
+
+  years.sort(); // ascendente
+
+  years.forEach((y) => {
+    const opt = document.createElement("option");
+    opt.value = y;
+    opt.textContent = y;
+    selAnio.appendChild(opt);
+  });
+
+  if (!years.length) return;
+
+  // por defecto, último año con datos
+  currentYear = years[years.length - 1];
+  selAnio.value = currentYear;
+
+  // carga datos de ese año + meses + último mes
+  await cargarAnio(currentYear);
+
+  // demografía (independiente del año)
+  if (demografiaSheetName) {
+    await cargarDemografia(demografiaSheetName);
+  }
 }
 
-async function cargarMes(sheetName) {
-  if (!sheetName) return;
+async function cargarAnio(yearSheetName) {
+  if (!yearSheetName) return;
+
+  currentYear = String(yearSheetName);
+
   const r = await fetch(
-    `/api/fbmetrics/data?sheet=${encodeURIComponent(sheetName)}`
+    `/api/fbmetrics/data?sheet=${encodeURIComponent(yearSheetName)}`
   );
   const j = await r.json();
-  allRows = (j.rows || []).slice();
+
+  // Todas las filas del año
+  allYearRows = (j.rows || []).slice();
+
+  // Filtramos solo filas con fecha válida del año seleccionado
+  allYearRows = allYearRows.filter((r) => {
+    if (!r.Fecha) return false;
+    const fechaStr = String(r.Fecha).slice(0, 10); // "YYYY-MM-DD"
+    const [y] = fechaStr.split("-");
+    return y === String(yearSheetName);
+  });
+
+  // Ordenar por fecha para mantener consistencia
+  allYearRows.sort((a, b) => {
+    const fa = String(a.Fecha);
+    const fb = String(b.Fecha);
+    return fa.localeCompare(fb);
+  });
+
+  // Construir meses disponibles en el año
+  const meses = new Set();
+  allYearRows.forEach((r) => {
+    if (!r.Fecha) return;
+    const fechaStr = String(r.Fecha).slice(0, 10);
+    const parts = fechaStr.split("-");
+    if (parts.length >= 2) {
+      const m = parseInt(parts[1], 10);
+      if (m >= 1 && m <= 12) meses.add(m);
+    }
+  });
+
+  const selMes = $("#mesSelect");
+  selMes.innerHTML = "";
+
+  const ordenMeses = Array.from(meses).sort((a, b) => a - b);
+  if (ordenMeses.length) {
+    const optYear = document.createElement("option");
+    optYear.value = "year";
+    optYear.textContent = "Todo el año";
+    selMes.appendChild(optYear);
+  }
+
+  // Opciones de meses normales
+  ordenMeses.forEach((m) => {
+    const mm = String(m).padStart(2, "0");
+    const opt = document.createElement("option");
+    opt.value = mm; // "01", "02", ...
+    opt.textContent = `${mm} - ${MONTH_NAMES[m - 1]}`;
+    selMes.appendChild(opt);
+  });
+
+  const selSem = $("#semanaSelect");
+  selSem.innerHTML = '<option value="all">Todo el mes</option>';
+
+  if (!ordenMeses.length) {
+    // año sin datos
+    allRows = [];
+    currentRows = [];
+    weekBuckets = [];
+    render([]);
+    return;
+  }
+
+  // 👉 Por defecto seguimos mostrando el último mes con datos
+  const lastMonth = String(
+    ordenMeses[ordenMeses.length - 1]
+  ).padStart(2, "0");
+  selMes.value = lastMonth;
+  await cargarMes(lastMonth);
+
+}
+
+async function cargarMes(monthStr) {
+  if (!allYearRows.length) return;
+
+  const sel = $("#semanaSelect");
+
+  // 👉 MODO ANUAL (Todo el año)
+  if (monthStr === "year") {
+    isYearView = true;
+
+    // todas las filas del año seleccionado
+    allRows = allYearRows.slice();
+
+    // semanas del año completo (para el combo de semana, si quieres usarlo)
+    weekBuckets = buildWeekBuckets(allRows);
+
+    // primera opción = todo el año
+    sel.innerHTML = '<option value="all">Todo el año</option>';
+
+    weekBuckets.forEach((w, i) => {
+      const opt = document.createElement("option");
+      opt.value = String(i + 1);
+      opt.textContent = `Semana ${i + 1} (${fmtDate(w.ini)} a ${fmtDate(
+        w.fin
+      )})`;
+      sel.appendChild(opt);
+    });
+
+    sel.value = "all";
+    aplicarSemana("all");
+    return;
+  }
+
+  // 👉 MODO MENSUAL (como ya lo tenías)
+  isYearView = false;
+
+  if (!monthStr) return;
+
+  const monthNum = parseInt(monthStr, 10);
+  if (!(monthNum >= 1 && monthNum <= 12)) return;
+
+  // Filtramos SOLO las filas que correspondan a ese año y mes
+  allRows = allYearRows.filter((r) => {
+    if (!r.Fecha) return false;
+    const fechaStr = String(r.Fecha).slice(0, 10); // "YYYY-MM-DD"
+    const parts = fechaStr.split("-");
+    if (parts.length < 2) return false;
+
+    const y = parts[0];
+    const m = parseInt(parts[1], 10);
+
+    return y === String(currentYear) && m === monthNum;
+  });
 
   weekBuckets = buildWeekBuckets(allRows);
 
-  const sel = $("#semanaSelect");
   sel.innerHTML = '<option value="all">Todo el mes</option>';
   weekBuckets.forEach((w, i) => {
     const opt = document.createElement("option");
@@ -151,17 +314,39 @@ const endSun = (d) => {
 const fmtDate = (d) => d.toISOString().slice(0, 10);
 
 function buildWeekBuckets(rows) {
-  const map = new Map(); // mondayISO -> {ini, fin, rows:[]}
+  const map = new Map(); // mondayISO -> { rows:[] }
+
   for (const r of rows) {
-    const d = toDate(r.Fecha);
+    if (!r.Fecha) continue;
+    const d = toDate(String(r.Fecha).slice(0, 10));
     const monday = mondayOf(d);
     const key = monday.toISOString().slice(0, 10);
-    const cur = map.get(key) || { ini: monday, fin: endSun(monday), rows: [] };
+
+    const cur = map.get(key) || { rows: [] };
     cur.rows.push(r);
     map.set(key, cur);
   }
-  return [...map.values()].sort((a, b) => a.ini - b.ini);
+
+  const buckets = [...map.values()].map((bucket) => {
+    let minD = null;
+    let maxD = null;
+
+    for (const r of bucket.rows) {
+      const d = toDate(String(r.Fecha).slice(0, 10));
+      if (!minD || d < minD) minD = d;
+      if (!maxD || d > maxD) maxD = d;
+    }
+
+    return {
+      ini: minD,
+      fin: maxD,
+      rows: bucket.rows,
+    };
+  });
+
+  return buckets.sort((a, b) => a.ini - b.ini);
 }
+
 
 // ============ Totales ============
 function aggTotals(rows) {
@@ -246,20 +431,65 @@ function destroyChart(c) {
   if (c && typeof c.destroy === "function") c.destroy();
 }
 
+// ============ Agregación MENSUAL para vista anual ============
+
+function aggregateByMonth(rows) {
+  const byMonth = {};
+
+  for (const r of rows) {
+    if (!r.Fecha) continue;
+    const fechaStr = String(r.Fecha).slice(0, 10); // "YYYY-MM-DD"
+    const parts = fechaStr.split("-");
+    if (parts.length < 2) continue;
+
+    const m = parseInt(parts[1], 10);
+    if (!(m >= 1 && m <= 12)) continue;
+
+    if (!byMonth[m]) {
+      byMonth[m] = {
+        month: m,
+        label: `${String(m).padStart(2, "0")} - ${MONTH_NAMES[m - 1]}`,
+        Interacciones: 0,
+        Visualizaciones: 0,
+        Espectadores: 0,
+        Visitas: 0,
+        Clics: 0,
+        Seguidores: 0,
+      };
+    }
+
+    byMonth[m].Interacciones += +r.Interacciones || 0;
+    byMonth[m].Visualizaciones += +r.Visualizaciones || 0;
+    byMonth[m].Espectadores += +r.Espectadores || 0;
+    byMonth[m].Visitas += +r.Visitas || 0;
+    byMonth[m].Clics += +r.Clics || 0;
+    byMonth[m].Seguidores += +r.Seguidores || 0;
+  }
+
+  return Object.values(byMonth).sort((a, b) => a.month - b.month);
+}
+
 // --------- Línea diaria ----------
+// --------- Línea: diaria (mes) o mensual (año) ----------
 function drawLine(rows) {
   destroyChart(chLine);
   const ctx = $("#chLine");
   if (!ctx) return;
 
-  const labels = rows.map((r) => r.Fecha);
+  // Si estamos en vista de año, agregamos por MES
+  const baseRows = isYearView ? aggregateByMonth(rows) : rows;
+
+  const labels = isYearView
+    ? baseRows.map((r) => r.label)
+    : baseRows.map((r) => r.Fecha);
+
   const datasets = [];
   const want = (m) => !activeMetric || activeMetric === m;
 
   const add = (label, key, color, opts = {}) => {
     datasets.push({
       label,
-      data: rows.map((r) => +r[key] || 0),
+      data: baseRows.map((r) => +r[key] || 0),
       tension: 0.35,
       borderColor: color,
       backgroundColor: color,
@@ -267,7 +497,7 @@ function drawLine(rows) {
       pointHitRadius: 8,
       pointHoverRadius: 4,
       borderWidth: opts.borderWidth ?? 2,
-      yAxisID: opts.yAxisID || "y",
+      yAxisID: "y", // un solo eje
     });
   };
 
@@ -278,15 +508,9 @@ function drawLine(rows) {
   if (want("Clics")) add("Clics", "Clics", COLORS.clics);
   if (want("Visitas")) add("Visitas", "Visitas", COLORS.visitas);
   if (want("Interacciones"))
-    add("Interacciones", "Interacciones", COLORS.inter, {
-      yAxisID: "y2",
-      borderWidth: 2.2,
-    });
+    add("Interacciones", "Interacciones", COLORS.inter);
   if (want("Seguidores"))
-    add("Seguidores", "Seguidores", COLORS.seg, {
-      yAxisID: "y2",
-      borderWidth: 2.2,
-    });
+    add("Seguidores", "Seguidores", COLORS.seg);
 
   chLine = new Chart(ctx, {
     type: "line",
@@ -304,7 +528,7 @@ function drawLine(rows) {
         x: {
           ticks: {
             color: "#6b7280",
-            maxRotation: 0,
+            maxRotation: isYearView ? 0 : 0,
             autoSkip: true,
             autoSkipPadding: 8,
           },
@@ -315,64 +539,109 @@ function drawLine(rows) {
           grid: { color: "rgba(148,163,184,0.18)" },
           position: "left",
         },
-        y2: {
-          ticks: { color: "#6b7280" },
-          grid: { drawOnChartArea: false },
-          position: "right",
-        },
       },
       plugins: {
         legend: {
           position: "bottom",
           labels: {
             color: "#111827",
-            boxWidth: 6,
             usePointStyle: true,
             pointStyle: "circle",
+            boxWidth: 8,
+            boxHeight: 8,
+            padding: 18,
+            font: {
+              size: 11,
+            },
           },
         },
-        tooltip: { mode: "index", intersect: false },
+        tooltip: {
+          mode: "index",
+          intersect: false,
+          callbacks: {
+            title: (items) => {
+              if (!items.length) return "";
+              // título distinto en anual vs mensual
+              return isYearView
+                ? items[0].label // "01 - Enero"
+                : items[0].label; // fecha exacta
+            },
+          },
+        },
       },
     },
   });
 }
 
+
 // --------- Barras por semana ----------
+// --------- Barras: semanales (mes) o mensuales (año) ----------
 function drawBars(rows) {
   destroyChart(chBar);
   const ctx = $("#chBar");
   if (!ctx) return;
 
-  const buckets = buildWeekBuckets(rows);
-  const labels = buckets.map(
-    (w) => `Sem ${fmtDate(w.ini)} a ${fmtDate(w.fin)}`
-  );
-  const sum = (list, key) =>
-    list.reduce((a, b) => a + (+b[key] || 0), 0);
-
   const want = (m) => !activeMetric || activeMetric === m;
   const datasets = [];
 
-  const pushDs = (label, key, color) => {
-    datasets.push({
-      label,
-      data: buckets.map((b) => sum(b.rows, key)),
-      backgroundColor: color,
-      borderRadius: 6,
-      maxBarThickness: 32,
-    });
-  };
+  let labels;
+  let buckets;
 
-  if (want("Visualizaciones"))
-    pushDs("Visualizaciones", "Visualizaciones", COLORS.visual);
-  if (want("Clics")) pushDs("Clics", "Clics", COLORS.clics);
-  if (want("Visitas")) pushDs("Visitas", "Visitas", COLORS.visitas);
-  if (want("Espectadores"))
-    pushDs("Espectadores", "Espectadores", COLORS.espec);
-  if (want("Interacciones"))
-    pushDs("Interacciones", "Interacciones", COLORS.inter);
-  if (want("Seguidores"))
-    pushDs("Seguidores", "Seguidores", COLORS.seg);
+  if (isYearView) {
+    // 👉 vista anual: usamos los meses agregados
+    const monthly = aggregateByMonth(rows);
+    labels = monthly.map((r) => r.label); // "01 - Enero", etc.
+
+    const pushDs = (label, key, color) => {
+      datasets.push({
+        label,
+        data: monthly.map((r) => +r[key] || 0),
+        backgroundColor: color,
+        borderRadius: 8,
+        maxBarThickness: 32,
+      });
+    };
+
+    if (want("Visualizaciones"))
+      pushDs("Visualizaciones", "Visualizaciones", COLORS.visual);
+    if (want("Clics")) pushDs("Clics", "Clics", COLORS.clics);
+    if (want("Visitas")) pushDs("Visitas", "Visitas", COLORS.visitas);
+    if (want("Espectadores"))
+      pushDs("Espectadores", "Espectadores", COLORS.espec);
+    if (want("Interacciones"))
+      pushDs("Interacciones", "Interacciones", COLORS.inter);
+    if (want("Seguidores"))
+      pushDs("Seguidores", "Seguidores", COLORS.seg);
+  } else {
+    // 👉 vista mensual: tal como ya lo tenías (semanas)
+    buckets = buildWeekBuckets(rows);
+    labels = buckets.map(
+      (w) => `Sem ${fmtDate(w.ini)} a ${fmtDate(w.fin)}`
+    );
+    const sum = (list, key) =>
+      list.reduce((a, b) => a + (+b[key] || 0), 0);
+
+    const pushDs = (label, key, color) => {
+      datasets.push({
+        label,
+        data: buckets.map((b) => sum(b.rows, key)),
+        backgroundColor: color,
+        borderRadius: 6,
+        maxBarThickness: 32,
+      });
+    };
+
+    if (want("Visualizaciones"))
+      pushDs("Visualizaciones", "Visualizaciones", COLORS.visual);
+    if (want("Clics")) pushDs("Clics", "Clics", COLORS.clics);
+    if (want("Visitas")) pushDs("Visitas", "Visitas", COLORS.visitas);
+    if (want("Espectadores"))
+      pushDs("Espectadores", "Espectadores", COLORS.espec);
+    if (want("Interacciones"))
+      pushDs("Interacciones", "Interacciones", COLORS.inter);
+    if (want("Seguidores"))
+      pushDs("Seguidores", "Seguidores", COLORS.seg);
+  }
 
   chBar = new Chart(ctx, {
     type: "bar",
@@ -402,22 +671,24 @@ function drawBars(rows) {
       },
       plugins: {
         legend: {
-        position: "bottom",
-            labels: {
-              color: "#111827",
-              usePointStyle: true,
-              pointStyle: "circle",
-              boxWidth: 8,
-              boxHeight: 8,
-              padding: 18,
-              font: {
-                size: 11,},
+          position: "bottom",
+          labels: {
+            color: "#111827",
+            usePointStyle: true,
+            pointStyle: "circle",
+            boxWidth: 8,
+            boxHeight: 8,
+            padding: 18,
+            font: {
+              size: 11,
+            },
           },
         },
       },
     },
   });
 }
+
 
 // --------- Dona principal ----------
 function drawPie(tot) {
