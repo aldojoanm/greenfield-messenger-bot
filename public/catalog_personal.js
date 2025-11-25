@@ -1,6 +1,4 @@
 (function(){
-  const MIN_ORDER_USD = 3000;
-
   const WA_NUMBER = (document.documentElement.getAttribute('data-wa-number') || '59162239865')
   .replace(/\D/g,'');
 
@@ -290,11 +288,11 @@ function paintTotals(){
   const html = `Total: US$ ${fmt2(t.usd)} · Bs ${fmt2(t.bs)}<br><span class="muted">TC ${fmt2(RATE)}</span>`;
   totalsEl.innerHTML = html;
   totalsM.innerHTML  = html;
+
   const anyInvalid =
     [...document.querySelectorAll('.qcart.invalid')].length > 0 ||
     CART.some(x => !num(x.cantidad));
-  const okMin = t.usd >= MIN_ORDER_USD;
-  const canSend = okMin && CART.length > 0 && !anyInvalid;
+  const canSend = CART.length > 0 && !anyInvalid;
   sendEl.disabled = !canSend;
   sendM.disabled  = !canSend;
 }
@@ -320,28 +318,24 @@ function buildWaText() {
 
 
   function trySend(){
-    const t = totals();
-    const anyInvalid =
+  const anyInvalid =
     [...document.querySelectorAll('.qcart.invalid')].length > 0 ||
     CART.some(x => !num(x.cantidad));
-    if (t.usd < MIN_ORDER_USD){
-      toast('La compra mínima es de 3000$');
-      return;
-    }
-    if (anyInvalid){
+
+  if (anyInvalid){
     toast('Revisa las cantidades (múltiplos y valores válidos).');
     return;
-    }
-    const txt = buildWaText();
-
-    const url = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(txt)}`;
-    CART = [];
-    updateCart();
-    modal.classList.remove('show');
-
-    // redirigir a WhatsApp
-    window.location.href = url;
   }
+
+  const txt = buildWaText();
+  const url = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(txt)}`;
+
+  CART = [];
+  updateCart();
+  modal.classList.remove('show');
+  window.location.href = url;
+}
+
   sendEl.addEventListener('click', trySend);
   sendM.addEventListener('click', trySend);
 
