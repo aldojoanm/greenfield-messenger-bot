@@ -30,8 +30,8 @@ const AGENT_TOKEN     = process.env.AGENT_TOKEN || '';
 
 const DEBUG_LOGS = process.env.DEBUG_LOGS === '1';
 const dbg = (...args) => { if (DEBUG_LOGS) console.log(...args); };
-const ADVISOR_NAME = process.env.ADVISOR_NAME || 'Jonathan Arteaga';
-const ADVISOR_ROLE = process.env.ADVISOR_ROLE || 'Encargado de Negocios de New Chem Agroquímicos';
+const ADVISOR_NAME = process.env.ADVISOR_NAME || 'María del Pilar Fuertes';
+const ADVISOR_ROLE = process.env.ADVISOR_ROLE || 'Encargada de Negocios de New Chem Agroquímicos';
 
 const CAMP_VERANO_MONTHS = (process.env.CAMPANA_VERANO_MONTHS || '10,11,12,1,2,3')
   .split(',').map(n => +n.trim()).filter(Boolean);
