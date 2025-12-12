@@ -1,4 +1,4 @@
-// ====== Marca ======
+// Agent.js
 const BRAND_NAME = document.querySelector('meta[name="brand:name"]')?.content?.trim() || 'New Chem Agroquímicos';
 const BRAND_QR   = document.querySelector('meta[name="brand:qr"]')?.content?.trim()   || './qr-pagos.png';
 
@@ -398,12 +398,10 @@ function setPanel(open){
 }
 moreBtn.addEventListener('click', ()=> setPanel(!panelOpen));
 
-document.getElementById('ap-location').onclick = async () => {
-  if (!current) return;
-  await api.send(
-    current.id,
-    '📍 Ubicación New Chem:\nhttps://maps.app.goo.gl/dSstZKuCA4HBBHZ3A'
-  );
+// Acciones del panel
+document.getElementById('ap-location').onclick = async ()=>{
+  if(!current) return;
+  await api.send(current.id, `📍 Ubicación: 17°45'29.0"S 63°09'11.6"W`);
   setPanel(false);
 };
 document.getElementById('ap-qr').onclick = async ()=>{ await doSendQR(); setPanel(false); };

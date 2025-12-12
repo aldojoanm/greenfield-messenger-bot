@@ -27,7 +27,6 @@ async function getSheets() {
     console.error('[sheets] Error leyendo GOOGLE_CREDENTIALS_JSON:', e?.message || e);
     throw e;
   }
-
   const client = await auth.getClient();
   _sheets = google.sheets({ version: 'v4', auth: client });
   return _sheets;
@@ -36,15 +35,10 @@ async function getSheets() {
 const onlyDigits = (s='') => String(s).replace(/[^\d]/g, '');
 const pad2 = n => String(n).padStart(2, '0');
 const LOCAL_TZ = process.env.LOCAL_TZ || 'America/La_Paz';
-// --- NUEVO: pestaña exclusiva para catálogo personal
 const TAB3_PRECIOS_PERSONAL = process.env.SHEETS_TAB3_PERSONAL_NAME || 'PRECIOS_PERSONAL';
 const PERSONAL_VERSION_CELL  = `${TAB3_PRECIOS_PERSONAL}!J1`;
 const PERSONAL_RATE_CELL     = `${TAB3_PRECIOS_PERSONAL}!J2`;
 
-/**
- * Lee solo la hoja PRECIOS_PERSONAL (A:F).
- * Devuelve { prices, version, rate } con los mismos campos usados en server.
- */
 export async function readPricesPersonal() {
   const sheets = await getSheets();
   const spreadsheetId = process.env.SHEETS_SPREADSHEET_ID;
@@ -84,7 +78,6 @@ export async function readPricesPersonal() {
   return { prices, version, rate };
 }
 
-
 function formatDisplayDate(d){
   try{
     const parts = new Intl.DateTimeFormat('es-BO', {
@@ -107,7 +100,6 @@ function formatDisplayDate(d){
 }
 
 const TAB_CLIENTS = process.env.SHEETS_TAB_CLIENTS_NAME || 'WA_CLIENTES';
-
 const H_CLIENTS = {
   telefono: 'Teléfono',
   nombre: 'Nombre Completo',
@@ -274,7 +266,6 @@ export async function upsertClientByPhone(record = {}) {
       requestBody: { values: [rowOut] }
     });
   } else {
-    // APPEND nueva fila
     await sheets.spreadsheets.values.append({
       spreadsheetId,
       range: `${TAB_CLIENTS}!A1`,
@@ -316,7 +307,6 @@ function buildSummaryBullets(s, fechaDisplay) {
     `* Campaña: ${camp}`,
     ...linesProductos
   ];
-
   return base.join('\n');
 }
 
@@ -328,7 +318,7 @@ function buildClientMessage({ nombre, items }) {
     return `• ${it.nombre}${pres}${cant}`;
   });
   return [
-    `Hola ${quien}, soy María del Pilar Fuertes, Encargada de Negocios de New Chem Agroquímicos.`,
+    `Hola ${quien}, soy Jonathan Arteaga, Encargado de Negocios de New Chem Agroquímicos.`,
     `Te escribo por tu cotización con los siguientes productos:`,
     ...lines
   ].join('\n');
@@ -431,25 +421,6 @@ export async function appendFromSession(s, fromPhone, estado = 'NUEVO') {
   });
 
   return values[0][14]; 
-}
-
-const CAMP_VERANO_MONTHS = (process.env.CAMPANA_VERANO_MONTHS || '10,11,12,1,2,3')
-  .split(',').map(n => +n.trim()).filter(Boolean);
-const CAMP_INVIERNO_MONTHS = (process.env.CAMPANA_INVIERNO_MONTHS || '4,5,6,7,8,9')
-  .split(',').map(n => +n.trim()).filter(Boolean);
-
-function monthNowTZ(){
-  try{
-    const parts = new Intl.DateTimeFormat('en-GB', { timeZone: LOCAL_TZ, month:'2-digit' })
-      .formatToParts(new Date());
-    return +parts.find(p => p.type==='month').value;
-  }catch{
-    return (new Date()).getMonth()+1;
-  }
-}
-function campanaFromNow(){
-  const m = monthNowTZ();
-  return CAMP_VERANO_MONTHS.includes(m) ? 'Verano' : 'Invierno';
 }
 
 const TAB2_DEFAULT = process.env.SHEETS_TAB2_NAME || 'Hoja 2';
@@ -656,7 +627,6 @@ export function parseClientResponse(text = '', fallbackName = '') {
   }
 
   if (!out.ciChofer) {
-    // patrón “CI ... 123456 LP” o “carnet identidad 987654 SC”
     const mCI = String(text).match(/(?:c\.?\s*i\.?|ci|carnet(?:\s+de)?\s+identidad|cedula|c[eé]dula)[^0-9]{0,15}([0-9.\-\/\s]{5,})/i);
     if (mCI) out.ciChofer = onlyDigits(mCI[1]);
   }
@@ -720,7 +690,6 @@ export async function appendBillingPickupRow({ nombreCliente, razonSocial, nit, 
     insertDataOption: 'INSERT_ROWS',
     requestBody: { values },
   });
-
   return true;
 }
 
@@ -817,12 +786,12 @@ export async function writePrices(prices, expectedVersion) {
         presentacion = '';
       }
       return [
-        p.categoria || '',         // A: TIPO
-        producto || '',            // B: PRODUCTO
-        presentacion || '',        // C: PRESENTACION
-        p.unidad || '',            // D: UNIDAD
-        Number(p.precio_usd || 0), // E: PRECIO (USD)
-        Number(p.precio_bs || 0)   // F: PRECIO (BS)
+        p.categoria || '', 
+        producto || '',
+        presentacion || '', 
+        p.unidad || '', 
+        Number(p.precio_usd || 0),
+        Number(p.precio_bs || 0)
       ];
     }),
   };
@@ -931,7 +900,7 @@ export async function summariesLastNDays(days = 7) {
   const rows = r.data.values || [];
   const data = rows.slice(1);
 
-  const map = new Map(); // wa_id -> { id, name, last, lastTs }
+  const map = new Map();
   for (const row of data) {
     const wa_id = row[0];
     const name  = row[1] || '';
@@ -950,11 +919,6 @@ export async function summariesLastNDays(days = 7) {
   return [...map.values()];
 }
 
-/**
- * Purga por chat (Hoja 4):
- * Si un wa_id no tiene mensajes en los últimos N días, elimina TODAS sus filas.
- * Mantiene la fila de encabezados.
- */
 export async function pruneExpiredConversations(days = 7) {
   const sheets = await getSheets();
   const r = await sheets.spreadsheets.values.get({
@@ -966,8 +930,6 @@ export async function pruneExpiredConversations(days = 7) {
 
   const header = rows[0] || ['wa_id','nombre','ts_iso','role','content'];
   const data = rows.slice(1);
-
-  // agrupar por wa_id
   const byId = new Map();
   for (const row of data) {
     const wa = row[0];
@@ -989,7 +951,6 @@ export async function pruneExpiredConversations(days = 7) {
       removed += arr.length;
     }
   }
-
   const all = [header, ...keepRows];
   await sheets.spreadsheets.values.clear({
     spreadsheetId: SPREADSHEET_ID,
@@ -1013,5 +974,4 @@ export async function appendChatHistoryRow({ wa_id, nombre, ts_iso, role, conten
 export async function purgeOldChatHistory(days = 7) {
   return pruneExpiredConversations(days);
 }
-
 export { getSheets, buildRowFromSession };

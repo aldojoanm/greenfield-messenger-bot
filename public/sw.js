@@ -22,8 +22,6 @@ self.addEventListener('activate', (e) => {
 self.addEventListener('fetch', (e) => {
   const req = e.request;
   if (req.method !== 'GET') return;
-
-  // Nunca cachear SSE
   if (req.headers.get('accept')?.includes('text/event-stream')) return;
 
   const url = new URL(req.url);

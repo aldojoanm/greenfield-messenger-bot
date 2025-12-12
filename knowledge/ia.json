@@ -1,0 +1,314 @@
+{
+  "empresa": {
+    "nombre": "New Chem Agroquímicos",
+    "marca_corta": "New Chem",
+    "descripcion_corta": "Empresa boliviana especializada en agroquímicos para el productor agrícola.",
+    "descripcion_larga": "New Chem Agroquímicos es una empresa dedicada a la comercialización de insumos agrícolas (herbicidas, insecticidas, fungicidas y coadyuvantes) para cultivos extensivos como soya, maíz, trigo, arroz, sorgo y girasol. Brinda acompañamiento técnico y soporte comercial a productores y distribuidores.",
+    "eslogan": "Agroquímicos esenciales para tu cultivo, al mejor precio.",
+    "sector": ["Agroquímicos", "Protección de cultivos", "Agronegocios"],
+    "ubicaciones": [
+      {
+        "pais": "Bolivia",
+        "departamento": "Santa Cruz",
+        "ciudad": "Santa Cruz de la Sierra",
+        "tipo": "Almacén principal",
+        "direccion": "4to Anillo entre Paragua y Mutualista, Santa Cruz de la Sierra, Bolivia",
+        "lat": -17.7580406,
+        "lng": -63.1532503,
+        "maps_url": "https://www.google.com/maps?q=-17.7580406,-63.1532503"
+      }
+    ],
+    "canales_contacto": {
+      "whatsapp_empresa": "62239864",
+      "email": "mfuertes@newchem.com.bo",
+      "redes_sociales": {
+        "facebook": "https://www.facebook.com/profile.php?id=61569426845291",
+        "instagram": "https://www.instagram.com/newchem.bo/"
+      }
+    },
+    "catalogo": {
+      "url_catalogo": "https://tinyurl.com/f4euhvzk",
+      "descripcion": "Catálogo digital de productos New Chem Agroquímicos. El cliente selecciona productos, cantidades y luego envía el carrito a WhatsApp para generar la cotización.",
+      "flujo_compra_resumen": [
+        "1) Abrir el catálogo desde el enlace.",
+        "2) Buscar y añadir los productos requeridos al carrito.",
+        "3) Tocar el botón \"Enviar a WhatsApp\".",
+        "4) El asistente de New Chem recibe el pedido, genera la cotización en PDF y la envía por WhatsApp.",
+        "5) Un asesor puede contactar al cliente para ajustes o cierre de pedido."
+      ]
+    },
+    "politicas_comerciales": {
+      "compra_minima_usd": 3000,
+      "compra_minima_texto": "Compra mínima: US$ 3.000 (se pueden combinar diferentes productos para alcanzar el monto).",
+      "tipo_cliente_objetivo": [
+        "Productores agrícolas medianos y grandes",
+        "Empresas agroindustriales",
+        "Distribuidores de agroquímicos"
+      ],
+      "politica_precios": "Los precios de la cotización se basan en el catálogo digital y pueden variar según volumen, temporada y condiciones de mercado.",
+      "politica_ofertas": "Descuentos y condiciones especiales se definen caso por caso y se acuerdan con el asesor comercial."
+    },
+    "politicas_entrega": {
+      "modalidad_principal": "Entrega en almacén de New Chem en Santa Cruz.",
+      "texto_resumen": "La entrega de los pedidos se realiza en el almacén de New Chem Agroquímicos. En caso de requerir envíos, estos se coordinan directamente con un asesor comercial.",
+      "envios": {
+        "ofrecen_envios": "No se ofrecen envíos, pero se puede ayudar con la coordinación.",
+        "responsable_coordinacion": "Asesor comercial de New Chem"
+      }
+    },
+    "pagos": {
+      "metodos_generales": "Transferencia bancaria, depósito, Qr",
+      "texto_generico": "Los métodos de pago y condiciones de crédito, se acuerdan con el asesor comercial y se detallan al momento de confirmar el pedido.",
+      "monedas_aceptadas": ["Dólares estadounidenses (USD)", "Bolivianos (Bs)"]
+    },
+    "atencion": {
+      "horario_texto": "Lunes a viernes, 08:00–12:00 y 14:30–18:30.",
+      "zona_horaria": "America/La_Paz",
+      "canales_atencion": [
+        "WhatsApp empresarial",
+        "Asesores comerciales de campo",
+        "Atención en almacén"
+      ]
+    },
+    "asesores": [
+      {
+        "nombre": "Maria del Pilar Fuertes",
+        "rol": "Encargada de Negocios de New Chem Agroquímicos",
+        "canal_contacto": "WhatsApp empresarial (el bot puede derivar el lead)",
+        "tipo_clientes": ["Productores", "Empresas agrícolas", "Distribuidores"]
+      }
+    ],
+    "cliente_objetivo": {
+      "perfiles": [
+        "Productores de soya, maíz, trigo, arroz, sorgo y girasol.",
+        "Empresas agroindustriales que manejan grandes extensiones.",
+        "Distribuidores y casas comerciales del sector agropecuario."
+      ],
+      "necesidades_clave": [
+        "Control eficiente de malezas, plagas y enfermedades.",
+        "Productos confiables para campañas de verano e invierno.",
+        "Soporte técnico y recomendaciones de uso."
+      ]
+    },
+    "faq": [
+      {
+        "id": "envios",
+        "pregunta": "¿Hacen envíos?",
+        "respuesta": "La entrega de los pedidos se realiza principalmente en el almacén de New Chem Agroquímicos en Santa Cruz. Si necesitas envío a otra zona, se puede coordinar directamente con un asesor comercial según tu ubicación y el volumen del pedido."
+      },
+      {
+        "id": "compra_minima",
+        "pregunta": "¿Cuál es la compra mínima?",
+        "respuesta": "La compra mínima para pedidos directos es de US$ 3.000. Puedes combinar diferentes productos del portafolio para alcanzar ese monto."
+      },
+      {
+        "id": "como_cotizar",
+        "pregunta": "¿Cómo puedo solicitar una cotización?",
+        "respuesta": "1) Ingresa al catálogo digital de New Chem.\n2) Añade los productos y presentaciones que necesitas.\n3) Toca el botón \"Enviar a WhatsApp\".\n4) El asistente de New Chem recibirá tu pedido, generará la cotización en PDF y te la enviará por este mismo chat."
+      },
+      {
+        "id": "productos_principales",
+        "pregunta": "¿Qué tipo de productos comercializa New Chem?",
+        "respuesta": "New Chem comercializa herbicidas, insecticidas, fungicidas y otros productos para protección de cultivos, principalmente para soya, maíz, trigo, arroz, sorgo y girasol."
+      },
+      {
+        "id": "campanas",
+        "pregunta": "¿Trabajan campaña de verano o invierno?",
+        "respuesta": "New Chem acompaña a los productores tanto en campaña de verano como en campaña de invierno, adaptando las recomendaciones de productos a cada etapa y cultivo."
+      }
+    ]
+  },
+  "productos": [
+    {
+      "sku": "SEAL-20L",
+      "nombre": "SEAL",
+      "nombre_comercial": "SEAL",
+      "activo": "Atrazine",
+      "ingrediente_activo": "Atrazine 500 g/l SC",
+      "activos": ["Atrazine 500 g/l"],
+      "syns_activo": ["Atrazina"],
+      "categoria": "Herbicida",
+      "tipo": "Herbicida selectivo",
+      "cultivo": ["Maíz", "Sorgo"],
+      "plaga": ["Verdolaga", "Quinuilla", "Malva taporita", "Chiori"],
+      "dosis": "3–4 L/ha (maíz) | 3 L/ha (sorgo)",
+      "formulacion": "Herbicida selectivo de pre y postemergencia con acción sistémica y de contacto para el control de malezas de hoja ancha y algunas gramíneas en maíz y sorgo.",
+      "presentaciones": ["20 L"],
+      "precio_bs": 0,
+      "link_ficha": "https://tinyurl.com/PORTAFOLIO-NEWCHEM"
+    },
+    {
+      "sku": "SINERGY-10-20L",
+      "nombre": "SINERGY",
+      "nombre_comercial": "SINERGY",
+      "activo": "Clethodim",
+      "ingrediente_activo": "Clethodim 240 g/l EC",
+      "activos": ["Clethodim 240 g/l"],
+      "syns_activo": ["Clethodim"],
+      "categoria": "Herbicida",
+      "tipo": "Herbicida selectivo",
+      "cultivo": ["Soya"],
+      "plaga": ["Rogelia", "Orizahá", "Cadillo", "Pata de gallina", "Pata de gallo"],
+      "dosis": "0.3–0.5 L/ha",
+      "formulacion": "Herbicida selectivo post emergente de rápida absorción, usado para el control de gramíneas en soya.",
+      "presentaciones": ["10 L", "20 L"],
+      "precio_bs": 0,
+      "link_ficha": "https://tinyurl.com/PORTAFOLIO-NEWCHEM"
+    },
+    {
+      "sku": "DRIER-20-200L",
+      "nombre": "DRIER",
+      "nombre_comercial": "DRIER",
+      "activo": "Paraquat",
+      "ingrediente_activo": "Paraquat dichloride 276 g/l SL",
+      "activos": ["Paraquat dichloride 276 g/l"],
+      "syns_activo": ["Paraquat"],
+      "categoria": "Herbicida",
+      "tipo": "Herbicida de contacto / desecante",
+      "cultivo": ["Barbecho químico"],
+      "plaga": ["Chiori"],
+      "dosis": "2 L/ha",
+      "formulacion": "Herbicida de contacto y desecante de rápida acción sobre las malezas, utilizado en barbecho químico.",
+      "presentaciones": ["20 L", "200 L"],
+      "precio_bs": 0,
+      "link_ficha": "https://tinyurl.com/PORTAFOLIO-NEWCHEM"
+    },
+    {
+      "sku": "GLISATO-20-200L",
+      "nombre": "GLISATO",
+      "nombre_comercial": "GLISATO",
+      "activo": "Glifosato",
+      "ingrediente_activo": "Glifosato Sal IPA 480 g/l SL",
+      "activos": ["Glifosato Sal IPA 480 g/l"],
+      "syns_activo": ["glifosato", "glyphosate"],
+      "categoria": "Herbicida",
+      "tipo": "Herbicida no selectivo",
+      "cultivo": ["Barbecho químico"],
+      "plaga": [
+        "Rogelia",
+        "Torito",
+        "Verdolaga camba",
+        "Emilia",
+        "Leche leche",
+        "Sanana",
+        "Chiori",
+        "Malva taporita",
+        "Chupurujume",
+        "Maicillo"
+      ],
+      "dosis": "2.5–3 L/ha",
+      "formulacion": "Herbicida no selectivo de acción sistémica y por translocación, con excelente performance en el control de un amplio espectro de malezas.",
+      "presentaciones": ["20 L", "200 L"],
+      "precio_bs": 0,
+      "link_ficha": "https://tinyurl.com/PORTAFOLIO-NEWCHEM"
+    },
+    {
+      "sku": "NICOXAM-10L",
+      "nombre": "NICOXAM",
+      "nombre_comercial": "NICOXAM",
+      "activo": "Thiametoxam",
+      "ingrediente_activo": "Thiametoxan 333 g/l SC",
+      "activos": ["Thiametoxam 333 g/l"],
+      "syns_activo": ["thiametoxam", "thiametoxan"],
+      "categoria": "Insecticida-Acaricida",
+      "tipo": "Insecticida de contacto e ingestión",
+      "cultivo": ["Soya"],
+      "plaga": ["Chinche verde pequeño"],
+      "dosis": "0.2–0.25 L/ha",
+      "formulacion": "Insecticida de contacto e ingestión con excelente control de chinches en soya.",
+      "presentaciones": ["10 L"],
+      "precio_bs": 0,
+      "link_ficha": "https://tinyurl.com/PORTAFOLIO-NEWCHEM"
+    },
+    {
+      "sku": "TRENCH-10L",
+      "nombre": "TRENCH",
+      "nombre_comercial": "TRENCH",
+      "activo": "Bifenthrin",
+      "ingrediente_activo": "Bifenthrin 100 g/l EC",
+      "activos": ["Bifenthrin 100 g/l"],
+      "syns_activo": ["bifenthrin", "bifentrin"],
+      "categoria": "Insecticida-Acaricida",
+      "tipo": "Insecticida de contacto e ingestión",
+      "cultivo": ["Soya"],
+      "plaga": ["Chinche café panza verde", "Mosca barrenadora"],
+      "dosis": "0.3–0.4 L/ha",
+      "formulacion": "Insecticida que actúa por contacto e ingestión, con excelente efecto de choque y volteo sobre las plagas objetivo.",
+      "presentaciones": ["10 L"],
+      "precio_bs": 0,
+      "link_ficha": "https://tinyurl.com/PORTAFOLIO-NEWCHEM"
+    },
+    {
+      "sku": "MEXIN-5-10L",
+      "nombre": "MEXIN",
+      "nombre_comercial": "MEXIN",
+      "activo": "Abamectin",
+      "ingrediente_activo": "Abamectin 50 g/l EC",
+      "activos": ["Abamectin 50 g/l"],
+      "syns_activo": ["abamectin", "abamectina"],
+      "categoria": "Insecticida-Acaricida",
+      "tipo": "Insecticida-Acaricida",
+      "cultivo": ["Soya"],
+      "plaga": ["Ácaro"],
+      "dosis": "0.11–0.14 L/ha",
+      "formulacion": "Insecticida-acaricida de contacto e ingestión con control eficaz sobre ácaros en soya.",
+      "presentaciones": ["5 L", "10 L"],
+      "precio_bs": 0,
+      "link_ficha": "https://tinyurl.com/PORTAFOLIO-NEWCHEM"
+    },
+    {
+      "sku": "FENPRONIL-1KG",
+      "nombre": "FENPRONIL",
+      "nombre_comercial": "FENPRONIL",
+      "activo": "Fipronil",
+      "ingrediente_activo": "Fipronil 800 g/kg WG",
+      "activos": ["Fipronil 800 g/kg"],
+      "syns_activo": ["fipronil"],
+      "categoria": "Insecticida-Acaricida",
+      "tipo": "Insecticida de contacto e ingestión",
+      "cultivo": ["Soya"],
+      "plaga": ["Picudo gris pequeño", "Trips"],
+      "dosis": "45–60 g/100 kg de semilla o 80 g/ha",
+      "formulacion": "Insecticida de contacto e ingestión altamente efectivo y contundente sobre un amplio rango de plagas.",
+      "presentaciones": ["1 Kg"],
+      "precio_bs": 0,
+      "link_ficha": "https://tinyurl.com/PORTAFOLIO-NEWCHEM"
+    },
+    {
+      "sku": "NOATO-1KG",
+      "nombre": "NOATO",
+      "nombre_comercial": "NOATO",
+      "activo": "Emamectin Benzoato",
+      "ingrediente_activo": "Emamectin Benzoato 57 g/kg WG",
+      "activos": ["Emamectin Benzoato 57 g/kg"],
+      "syns_activo": ["emamectin", "emamectin benzoato"],
+      "categoria": "Insecticida-Acaricida",
+      "tipo": "Insecticida de contacto e ingestión",
+      "cultivo": ["Soya"],
+      "plaga": ["Pegador de hoja"],
+      "dosis": "0.125–0.2 Kg/ha",
+      "formulacion": "Insecticida de contacto e ingestión con formulación diferenciada que no tranca boquillas y ofrece excelente control de pegadores de hoja.",
+      "presentaciones": ["1 Kg"],
+      "precio_bs": 0,
+      "link_ficha": "https://tinyurl.com/PORTAFOLIO-NEWCHEM"
+    },
+    {
+      "sku": "LAYER-25KG",
+      "nombre": "LAYER",
+      "nombre_comercial": "LAYER",
+      "activo": "Mancozeb",
+      "ingrediente_activo": "Mancozeb 800 g/kg WP",
+      "activos": ["Mancozeb 800 g/kg"],
+      "syns_activo": ["mancozeb"],
+      "categoria": "Fungicida",
+      "tipo": "Fungicida de contacto",
+      "cultivo": ["Soya"],
+      "plaga": ["Roya Asiática"],
+      "dosis": "2–3 Kg/ha",
+      "formulacion": "Fungicida de contacto, preventivo, curativo, erradicante y protector multisitio, con buen control sobre enfermedades de fin de ciclo y Roya Asiática en soya.",
+      "presentaciones": ["25 Kg"],
+      "precio_bs": 0,
+      "link_ficha": "https://tinyurl.com/PORTAFOLIO-NEWCHEM"
+    }
+  ]
+}

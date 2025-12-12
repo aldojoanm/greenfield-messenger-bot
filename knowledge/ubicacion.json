@@ -1,0 +1,208 @@
+{
+  "departamentos": {
+    "Santa Cruz": [
+      "santa cruz",
+      "santacruz",
+      "sta cruz",
+      "sta. cruz",
+      "s c",
+      "s.c",
+      "sc",
+      "scz",
+      "s.c.z",
+      "santa cruz de la sierra",
+      "santa cruz de sierra",
+      "depto santa cruz",
+      "departamento santa cruz",
+      "santa cruz bolivia",
+      "santa cruz - bolivia"
+    ],
+    "Cochabamba": [
+      "cochabamba",
+      "cocha",
+      "cbb",
+      "cbba",
+      "cb",
+      "coch"
+    ],
+    "La Paz": [
+      "la paz",
+      "lapaz",
+      "l paz",
+      "l.paz",
+      "lp",
+      "lpz",
+      "depto la paz",
+      "departamento la paz"
+    ],
+    "Chuquisaca": [
+      "chuquisaca",
+      "sucre",
+      "chq",
+      "ch"
+    ],
+    "Tarija": [
+      "tarija",
+      "tja",
+      "tj"
+    ],
+    "Oruro": [
+      "oruro",
+      "oru",
+      "or"
+    ],
+    "Potosí": [
+      "potosi",
+      "potosí",
+      "pts",
+      "pt"
+    ],
+    "Beni": [
+      "beni",
+      "ben",
+      "trinidad",
+      "tri"
+    ],
+    "Pando": [
+      "pando",
+      "pan",
+      "cobija"
+    ]
+  },
+
+  "zonas_scz": {
+    "Norte": {
+      "aliases": [
+        "norte",
+        "zona norte",
+        "norte integrado",
+        "integrado norte",
+        "zona norte integrado",
+        "urubo",
+        "urubó",
+        "colinas del urubo",
+        "equipetrol",
+        "equipetrol norte",
+        "montero",
+        "warnes",
+        "mineros",
+        "fernandez alonso",
+        "fernández alonso",
+        "saavedra",
+        "general saavedra",
+        "portachuelo",
+        "buena vista",
+        "san carlos",
+        "colpa belgica",
+        "colpa bélgica",
+        "okinawa",
+        "okinawa 1",
+        "okinawa uno",
+        "yapacani",
+        "yapacaní"
+      ]
+    },
+    "Este": {
+      "aliases": [
+        "este",
+        "zona este",
+        "integrado este",
+        "zona este integrado",
+        "san julian",
+        "san julián",
+        "cuatro canadas",
+        "cuatro cañadas",
+        "4 canadas",
+        "4 cañadas",
+        "4c",
+        "pailon",
+        "pailón",
+        "pampa de la isla",
+        "pampa la isla",
+        "los lotes",
+        "guapilo",
+        "octavo anillo este",
+        "8vo anillo este",
+        "santos dumont",
+        "radial 13"
+      ]
+    },
+    "Sur": {
+      "aliases": [
+        "sur",
+        "zona sur",
+        "sur integrado",
+        "integrado sur",
+        "plan tres mil",
+        "plan 3000",
+        "plan 3 mil",
+        "plan-3000",
+        "plan3000",
+        "las palmas",
+        "palmas",
+        "palmas 1",
+        "palmas 2",
+        "villa primero de mayo",
+        "villa 1ro de mayo",
+        "villa 1 de mayo",
+        "la colorada",
+        "radial 10",
+        "el torno",
+        "la guardia",
+        "porongo sur"
+      ]
+    },
+    "Valles": {
+      "aliases": [
+        "valles",
+        "los valles",
+        "valle",
+        "samaipata",
+        "vallegrande",
+        "pucara",
+        "pucará",
+        "moro moro",
+        "trigal",
+        "postrervalle",
+        "quirusillas",
+        "pampa grande",
+        "comarapa",
+        "saipina",
+        "mairana"
+      ]
+    },
+    "Chiquitania": {
+      "aliases": [
+        "chiquitania",
+        "chiquitanía",
+        "chiquitos",
+        "san javier",
+        "san xavier",
+        "concepcion",
+        "concepción",
+        "san ignacio",
+        "san ignacio de velasco",
+        "san miguel",
+        "san rafael",
+        "san ramon",
+        "san ramón",
+        "san jose",
+        "san josé",
+        "robore",
+        "roboré",
+        "san matias",
+        "san matías",
+        "puerto suarez",
+        "puerto suárez",
+        "puerto quijarro",
+        "ascension de guarayo",
+        "ascensión de guarayo",
+        "ascension de guarayos",
+        "ascensión de guarayos",
+        "urubicha",
+        "urubichá",
+        "el puente"
+      ]
+    }
+  }
+}
