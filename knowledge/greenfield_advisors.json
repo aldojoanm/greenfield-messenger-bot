@@ -1,114 +1,157 @@
 {
-  "version": 1,
-  "items": [
-    {
-      "id": "KW_SALUDO",
-      "priority": 100,
-      "patterns": ["hola", "holaa", "holaaa", "buenas", "buen dia", "buen día", "buenas tardes", "buenas noches", "hey", "hello", "ola", "wenas"],
-      "reply": { "text": "👋 ¡Hola! Soy el asistente de *Greenfield*.\n¿En que puedo ayudarte? 👨‍🌾" },
-      "action": { "type": "SHOW_MAIN_MENU" }
+  "brand": {
+    "name": "Greenfield",
+    "products_url": "https://greenfield.com.bo/productos/",
+    "assets_base_url": "https://greenfield-messenger-bot-production.up.railway.app",
+    "default_country_code": "591",
+    "whatsapp_message_template": "Hola, soy {{client_name}}. Te escribo desde *{{departamento}}* (zona: *{{zona}}*). Necesito ayuda con: *{{motivo}}*. {{extra}}"
+  },
+  "advisors": {
+    "baneza_maldonado": {
+      "id": "baneza_maldonado",
+      "name": "Baneza Maldonado",
+      "role": "Asesor Comercial",
+      "whatsapp": "+59178188238",
+      "image": "/ingenieros/baneza-maldonado.png",
+      "tags": ["Tarija"],
+      "coverage_note": "Tarija y alrededores"
     },
-    {
-      "id": "KW_PRECIOS_PEDIDOS",
-      "priority": 90,
-      "patterns": ["precio", "presio", "precios", "costo", "costos", "cuanto cuesta", "cuánto cuesta", "cuanto vale", "cuánto vale", "cuanto sale", "cuánto sale", "cotizar", "cotisacion", "cotización", "proforma", "pedido", "comprar", "compra", "venta", "quiero comprar", "quiero pedir", "me interesa comprar"],
-      "reply": { "text": "Para *precios y pedidos* te atiende un ingeniero agrónomo por zona 👨‍🌾.\nToca *Hablar con un agrónomo* y te conecto al instante." },
-      "action": { "type": "OPEN_AGRONOMO" }
+    "moises_reyna": {
+      "id": "moises_reyna",
+      "name": "Moises Reyna",
+      "role": "Asesor Comercial",
+      "whatsapp": "+59178187725",
+      "image": "/ingenieros/moises-reyna.png",
+      "tags": ["Santa Cruz", "La Paz", "Cochabamba", "Chuquisaca", "Potosí"],
+      "coverage_note": "Cobertura según zona asignada"
     },
-    {
-      "id": "KW_FICHA_ETIQUETA",
-      "priority": 85,
-      "patterns": ["ficha tecnica", "ficha técnica", "ficha", "etiqueta", "dosis", "modo de uso", "ingrediente activo", "composicion", "composición", "msds", "hoja de seguridad", "seguridad", "toxicidad", "antidoto", "antídoto"],
-      "reply": { "text": "📄 Te ayudo con *ficha técnica / etiqueta*.\nDecime el *nombre del producto* (aunque sea como lo recuerdes) y tu *zona*." },
-      "action": { "type": "ASK_PRODUCT_THEN_AGRONOMO" }
+    "arturo_hinojosa": {
+      "id": "arturo_hinojosa",
+      "name": "Arturo Hinojosa",
+      "role": "Asesor Comercial",
+      "whatsapp": "+59177691187",
+      "image": "/ingenieros/arturo.png",
+      "tags": ["Santa Cruz", "Cochabamba", "Chuquisaca"],
+      "coverage_note": "Cobertura según zona asignada"
     },
-    {
-      "id": "KW_WHATSAPP_CONTACTO",
-      "priority": 80,
-      "patterns": ["wsp", "wpp", "wasap", "guasap", "whats", "whatsapp", "numero", "número", "telefono", "teléfono", "celular", "contacto", "contactarme", "me pasas tu numero", "me pasas tu número"],
-      "reply": { "text": "📲 Te conecto con un el ingeniero agrónomo de tu zona, para que te pueda dar una mejor asesoría .\nToca *Hablar con un agrónomo*." },
-      "action": { "type": "OPEN_AGRONOMO" }
+    "alvaro_mitma": {
+      "id": "alvaro_mitma",
+      "name": "Álvaro Mitma",
+      "role": "Asesor Comercial",
+      "whatsapp": "+59178188263",
+      "image": "/ingenieros/alvaro-mitma.png",
+      "tags": ["Beni", "Santa Cruz"],
+      "coverage_note": "Beni / Guarayos"
     },
-    {
-      "id": "KW_PRODUCTOS_CATALOGO",
-      "priority": 75,
-      "patterns": ["productos", "que venden", "qué venden", "que ofrecen", "qué ofrecen", "linea", "línea", "catalogo", "catálogo", "portafolio", "portafolio greenfield", "lista de productos", "que tienen"],
-      "reply": { "text": "🧪 Aquí puedes ver *nuestros productos*:\nhttps://greenfield.com.bo/productos/\n\nSi me dices el *producto* y tu *zona*, te conecto con un ingeniero agrónomo." },
-      "action": { "type": "NONE" }
+    "alejandro_llano": {
+      "id": "alejandro_llano",
+      "name": "Alejandro Llano",
+      "role": "Asesor Comercial",
+      "whatsapp": "+59178100066",
+      "image": "/ingenieros/alejandro-llano.png",
+      "tags": ["Santa Cruz"],
+      "coverage_note": "Montero, Okinawa 1–3, Yapacaní, San Juan de Yapacaní"
     },
-    {
-      "id": "KW_ENVIO_COBERTURA",
-      "priority": 70,
-      "patterns": ["envio", "envío", "envios", "envíos", "delivery", "entrega", "mandan", "mandan a", "llegan a", "cobertura", "hasta mi zona", "envian", "envían", "llega a mi zona", "me lo traen"],
-      "reply": { "text": "🚚 Sobre *entregas/cobertura*, te confirma el ingeniero agrónomo según tu zona.\nToca *Hablar con un agrónomo* y elige tu departamento." },
-      "action": { "type": "OPEN_AGRONOMO" }
+    "angel_suarez": {
+      "id": "angel_suarez",
+      "name": "Ángel Suárez",
+      "role": "Asesor Comercial",
+      "whatsapp": "+59178100158",
+      "image": "/ingenieros/angel-suarez.png",
+      "tags": ["Santa Cruz"],
+      "coverage_note": "San Julián, 4 Cañadas, Transcom, San José, Roboré"
     },
-    {
-      "id": "KW_PLAGA_MALEZA_ENFERMEDAD",
-      "priority": 70,
-      "patterns": ["plaga", "maleza", "malezas", "hongo", "hongos", "roya", "oruga", "trips", "pulgon", "pulgón", "gusano", "enfermedad", "se me enfermo", "se me enfermó", "se me lleno de", "se me llenó de", "se me pudre", "mancha", "manchas", "se me esta muriendo", "se me está muriendo"],
-      "reply": { "text": "👨‍🌾 Para recomendar bien necesito 3 datos:\n1) *Cultivo*\n2) *Problema* (plaga/maleza/enfermedad)\n3) *Zona*\nLuego te conecto con el ingeniero agrónomo de tu zona." },
-      "action": { "type": "ASK_CULTIVO_PROBLEMA_THEN_AGRONOMO" }
+    "andres_moreno": {
+      "id": "andres_moreno",
+      "name": "J. Andrés Moreno",
+      "role": "Asesor Comercial",
+      "whatsapp": "+59174166870",
+      "image": "/ingenieros/jose-moreno.png",
+      "tags": ["Santa Cruz"],
+      "coverage_note": "Montero, San Pedro, Loma Alta, Peta Grande, San Juan de Piraí, La Planchada"
     },
-    {
-      "id": "KW_STOCK",
-      "priority": 65,
-      "patterns": ["hay stock", "tienen stock", "disponible", "disponibilidad", "agotado", "cuando llega", "cuándo llega", "para cuando", "para cuándo", "llega hoy", "llega mañana"],
-      "reply": { "text": "📦 La *disponibilidad/stock* la confirma el ingeniero agrónomo según tu zona.\nToca *Hablar con un agrónomo*." },
-      "action": { "type": "OPEN_AGRONOMO" }
+    "armin_hurtado": {
+      "id": "armin_hurtado",
+      "name": "Armin Hurtado",
+      "role": "Asesor Comercial",
+      "whatsapp": "+59178187629",
+      "image": "/ingenieros/armin.png",
+      "tags": ["Santa Cruz"],
+      "coverage_note": "Concepción, San Ignacio de Velasco, San Javier, San Rafael, San Miguel, y otros"
     },
-    {
-      "id": "KW_CREDITO_PLAZO",
-      "priority": 60,
-      "patterns": ["credito", "crédito", "a credito", "a crédito", "plazo", "financiamiento", "al credito", "al crédito", "fiado", "pago a plazo", "pago después", "pago despues"],
-      "reply": { "text": "💳 Crédito/plazo lo confirma el ingeniero agrónomo según tu zona y tipo de pedido.\nToca *Hablar con un agrónomo*." },
-      "action": { "type": "OPEN_AGRONOMO" }
-    },
-    {
-      "id": "KW_FACTURA_NIT",
-      "priority": 60,
-      "patterns": ["factura", "nit", "razon social", "razón social", "nombre de factura", "para facturar", "credito fiscal", "crédito fiscal"],
-      "reply": { "text": "🧾 Para factura/NIT se coordina al momento del pedido con el ingeniero agrónomo.\nToca *Hablar con un agrónomo*." },
-      "action": { "type": "OPEN_AGRONOMO" }
-    },
-
-    {
-      "id": "KW_UBICACION",
-      "priority": 55,
-      "patterns": ["ubicacion", "ubicación", "direccion", "dirección", "mapa", "donde quedan", "donde estan", "dónde quedan", "dónde están", "como llego", "cómo llego"],
-      "reply": { "text": "📍 Para ubicación, dime tu ciudad y te paso la dirección/link.\nSi buscas asesor por zona, toca *Hablar con un agrónomo*." },
-      "action": { "type": "NONE" }
-    },
-
-    {
-      "id": "KW_GRACIAS",
-      "priority": 40,
-      "patterns": ["gracias", "grasias", "ok gracias", "listo gracias", "de nada", "muchas gracias", "mil gracias"],
-      "reply": { "text": "¡Con gusto! 😊 Si necesitas algo más, aquí estaré." },
-      "action": { "type": "SHOW_MAIN_MENU" }
-    },
-    {
-      "id": "KW_CIERRE",
-      "priority": 40,
-      "patterns": ["chau", "chao", "hasta luego", "adios", "adiós", "nada mas", "nada más", "eso es todo", "finalizar", "salir", "bye"],
-      "reply": { "text": "¡Gracias por escribirnos! 👋" },
-      "action": { "type": "END_SESSION" }
-    },
-
-    {
-      "id": "KW_ZONAS_SANTA_CRUZ",
-      "priority": 30,
-      "patterns": ["montero", "warnes", "mineros", "yapacani", "yapacaní", "san julian", "san julián", "4 canadas", "4 cañadas", "robore", "roboré", "san ignacio", "concepcion", "concepción", "samaipata", "mairana", "porongo", "okina", "okinawa", "san jose", "san josé"],
-      "reply": { "text": "Perfecto ✅ Con esa zona ya puedo asignarte un agrónomo.\nAhora dime si es para *precio/pedido* o *ficha técnica*." },
-      "action": { "type": "ASK_MOTIVO_AND_OPEN_AGRONOMO" }
-    },
-
-    {
-      "id": "KW_PREGUNTAS_SIN_LEER",
-      "priority": 20,
-      "patterns": ["no entiendo", "no entendi", "no entiendoo", "q", "qe", "k", "ke", "??", "???", "ayuda", "help", "como hago", "cómo hago", "explica", "explique"],
-      "reply": { "text": "Te guío rápido ✅\n1) Si buscas *precio/pedido* → toca *Hablar con un agrónomo*\n2) Si buscas *ficha técnica* → dime el *producto*\n3) Si es *consulta técnica* → dime *cultivo + problema + zona*" },
-      "action": { "type": "SHOW_MAIN_MENU" }
+    "diego_escobar": {
+      "id": "diego_escobar",
+      "name": "Diego Escobar",
+      "role": "Asesor Comercial",
+      "whatsapp": "+59178187685",
+      "image": "/ingenieros/diego-escobar.png",
+      "tags": ["Santa Cruz"],
+      "coverage_note": "Mineros, Canandoa, Puesto Fernández, San Pedro, Los Andes, Warnes"
     }
-  ]
+  },
+  "departments": [
+    {
+      "id": "santa_cruz",
+      "name": "Santa Cruz",
+      "type": "zoned",
+      "zones": [
+        {
+          "id": "scz_norte_integrado",
+          "name": "Norte Integrado",
+          "advisorIds": ["alejandro_llano", "diego_escobar", "andres_moreno", "moises_reyna"],
+          "keywords": ["montero", "warnes", "mineros", "yapacani", "yapacaní", "san pedro", "los andes", "okina", "okinawa"]
+        },
+        {
+          "id": "scz_este",
+          "name": "Este",
+          "advisorIds": ["angel_suarez"],
+          "keywords": ["san julian", "san julián", "4 canadas", "4 cañadas", "cuatro canadas", "cuatro cañadas", "transcom"]
+        },
+        {
+          "id": "scz_chiquitania",
+          "name": "Chiquitania",
+          "advisorIds": ["angel_suarez", "armin_hurtado"],
+          "keywords": ["san jose", "san josé", "roboré", "robore", "concepcion", "concepción"]
+        },
+        {
+          "id": "scz_velasco_san_ignacio",
+          "name": "San Ignacio / Velasco",
+          "advisorIds": ["armin_hurtado"],
+          "keywords": ["san ignacio", "velasco", "san javier", "san rafael", "san miguel"]
+        },
+        {
+          "id": "scz_valles",
+          "name": "Valles",
+          "advisorIds": ["arturo_hinojosa", "moises_reyna"],
+          "keywords": ["valles", "valle", "samaipata", "mairana", "porongo"]
+        },
+        {
+          "id": "scz_ciudad",
+          "name": "Ciudad Santa Cruz",
+          "advisorIds": ["moises_reyna"],
+          "keywords": ["santa cruz de la sierra", "scz ciudad", "urbano", "equipetrol", "plan 3000"]
+        }
+      ]
+    },
+    { "id": "la_paz", "name": "La Paz", "type": "simple", "advisorIds": ["moises_reyna"] },
+    { "id": "cochabamba", "name": "Cochabamba", "type": "simple", "advisorIds": ["moises_reyna", "arturo_hinojosa"] },
+    { "id": "beni", "name": "Beni", "type": "simple", "advisorIds": ["alvaro_mitma"] },
+    { "id": "tarija", "name": "Tarija", "type": "simple", "advisorIds": ["baneza_maldonado"] },
+    { "id": "chuquisaca", "name": "Chuquisaca", "type": "simple", "advisorIds": ["arturo_hinojosa", "moises_reyna"] },
+    { "id": "potosi", "name": "Potosí", "type": "simple", "advisorIds": ["moises_reyna"] }
+  ],
+  "handoff": {
+    "motivos": [
+      { "id": "precio_pedido", "label": "Precio / Pedido" },
+      { "id": "ficha_tecnica", "label": "Ficha técnica / Etiqueta" },
+      { "id": "consulta_tecnica", "label": "Consulta técnica (cultivo/plaga)" },
+      { "id": "disponibilidad", "label": "Disponibilidad" }
+    ],
+    "extra_questions": {
+      "consulta_tecnica": [
+        { "key": "cultivo", "question": "¿Qué cultivo manejas? (ej: soya/maíz/arroz)" },
+        { "key": "problema", "question": "¿Qué problema tienes? (plaga, maleza, enfermedad)" }
+      ]
+    }
+  }
 }
