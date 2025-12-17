@@ -33,7 +33,6 @@ function pickExistingFile(candidates = []) {
   return null;
 }
 
-// Default candidates (IMPORTANTE: primero ENV, luego __dirname, luego cwd)
 const CFG_PATH = pickExistingFile([
   process.env.GREENFIELD_ADVISORS_JSON,
   path.join(__dirname, 'knowledge', 'greenfield_advisors.json'),
@@ -274,6 +273,7 @@ async function sendButtons(psid, text, buttons = []) {
   if (!r.ok) console.error('sendButtons', await r.text());
 }
 
+// ✅ Cambio 1: Generic template con imagen MÁS GRANDE (square)
 async function sendGenericCards(psid, elements = []) {
   const url = `https://graph.facebook.com/v20.0/me/messages?access_token=${encodeURIComponent(PAGE_ACCESS_TOKEN)}`;
   const payload = {
@@ -281,7 +281,11 @@ async function sendGenericCards(psid, elements = []) {
     message: {
       attachment: {
         type: 'template',
-        payload: { template_type: 'generic', elements: (elements || []).slice(0, 10) },
+        payload: {
+          template_type: 'generic',
+          image_aspect_ratio: 'square', // 👈 hace la imagen más grande
+          elements: (elements || []).slice(0, 10),
+        },
       },
     },
   };
@@ -291,6 +295,39 @@ async function sendGenericCards(psid, elements = []) {
     body: JSON.stringify(payload),
   });
   if (!r.ok) console.error('sendGenericCards', await r.text());
+}
+
+// ✅ Cambio 2: Media template (1 asesor) = imagen MUCHO más grande
+async function sendMediaCard(psid, imageUrl, buttonUrl, buttonTitle = 'Contactar por WhatsApp') {
+  const url = `https://graph.facebook.com/v20.0/me/messages?access_token=${encodeURIComponent(PAGE_ACCESS_TOKEN)}`;
+
+  const payload = {
+    recipient: { id: psid },
+    message: {
+      attachment: {
+        type: 'template',
+        payload: {
+          template_type: 'media',
+          elements: [
+            {
+              media_type: 'image',
+              url: imageUrl,
+              buttons: [
+                { type: 'web_url', url: buttonUrl, title: clamp(buttonTitle, 20) },
+              ],
+            },
+          ],
+        },
+      },
+    },
+  };
+
+  const r = await httpFetchAny(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  });
+  if (!r.ok) console.error('sendMediaCard', await r.text());
 }
 
 // =======================
@@ -429,7 +466,6 @@ async function startAdvisorFlow(psid) {
   s.vars.zona = null;
 
   if (!hasGFData()) {
-    // Log fuerte para que lo veas en Railway
     console.error('[Greenfield] NO hay data válida en GF. Revisá /debug/config y /debug/files');
 
     const a = pickFallbackAdvisor();
@@ -480,8 +516,9 @@ async function showAdvisorCards(psid, advisorIds = [], headerText = 'Selecciona 
   }
 
   const msg = buildDefaultWhatsAppMessage(s);
-  const elements = [];
 
+  // Armamos elementos válidos
+  const elements = [];
   for (const id of unique) {
     const a = getAdvisorById(id);
     if (!a?.whatsapp) continue;
@@ -506,7 +543,23 @@ async function showAdvisorCards(psid, advisorIds = [], headerText = 'Selecciona 
   }
 
   await sendText(psid, `${headerText} 👇`);
-  await sendGenericCards(psid, elements);
+
+  // ✅ Si es 1 asesor, usar Media Template para que se vea gigante
+  if (elements.length === 1) {
+    const el = elements[0];
+    const img = el.image_url;
+    const btn = el.buttons?.[0];
+    if (img && btn?.url) {
+      await sendMediaCard(psid, img, btn.url, btn.title || 'Contactar por WhatsApp');
+    } else {
+      // fallback
+      await sendGenericCards(psid, elements);
+    }
+  } else {
+    // ✅ Múltiples: Generic + square (más grande)
+    await sendGenericCards(psid, elements);
+  }
+
   await sendText(psid, 'Si necesitas algo más, puedes volver al menú 😊');
   await showMainMenu(psid);
 }
