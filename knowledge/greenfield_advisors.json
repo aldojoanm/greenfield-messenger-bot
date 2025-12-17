@@ -43,15 +43,6 @@
       "tags": ["Beni", "Santa Cruz"],
       "coverage_note": "Beni / Guarayos"
     },
-    "alejandro_llano": {
-      "id": "alejandro_llano",
-      "name": "Alejandro Llano",
-      "role": "Asesor Comercial",
-      "whatsapp": "+59178100066",
-      "image": "/ingenieros/alejandro-llano.png",
-      "tags": ["Santa Cruz"],
-      "coverage_note": "Montero, Okinawa 1–3, Yapacaní, San Juan de Yapacaní"
-    },
     "angel_suarez": {
       "id": "angel_suarez",
       "name": "Ángel Suárez",
