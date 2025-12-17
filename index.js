@@ -17,7 +17,7 @@ function loadJSON(p) {
   try {
     const raw = fs.readFileSync(p, 'utf8');
     return JSON.parse(raw);
-  } catch (e) {
+  } catch {
     return null;
   }
 }
@@ -63,14 +63,10 @@ const sessions = new Map();
 function newSession() {
   const now = Date.now();
   return {
-    pending: null,
+    pending: null, // 'advisor_dept' | 'advisor_scz_zone'
     vars: {
       departamento: null,
       zona: null,
-      motivo: null,
-      producto: null,
-      cultivo: null,
-      problema: null,
     },
     profileName: null,
     flags: { greeted: false, justOpenedAt: 0, helpShownAt: 0 },
@@ -141,14 +137,6 @@ function shouldPrompt(s, key, ttlMs = 7000) {
   return true;
 }
 
-function resetFlowKeepZone(s) {
-  s.pending = null;
-  s.vars.motivo = null;
-  s.vars.producto = null;
-  s.vars.cultivo = null;
-  s.vars.problema = null;
-}
-
 // =======================
 // FB Send API helpers
 // =======================
@@ -168,6 +156,7 @@ async function sendText(psid, text) {
   if (!r.ok) console.error('sendText', await r.text());
 }
 
+// Quick Replies (hasta 11)
 async function sendQR(psid, text, options = []) {
   const quick_replies = (options || [])
     .slice(0, 11)
@@ -277,16 +266,13 @@ async function ensureProfileName(psid) {
 }
 
 // =======================
-// Config helpers + fallback
+// Config helpers
 // =======================
 function hasGFData() {
   return !!(GF && Array.isArray(GF.departments) && GF.departments.length > 0 && GF.advisors && Object.keys(GF.advisors).length > 0);
 }
 
 function getDepartments() { return (GF?.departments || []); }
-function getAdvisorsMap() { return GF?.advisors || {}; }
-function getAdvisorById(id) { return getAdvisorsMap()?.[id] || null; }
-
 function getDeptZones(deptId) {
   const d = getDepartments().find(x => x.id === deptId);
   return d?.zones || [];
@@ -294,16 +280,8 @@ function getDeptZones(deptId) {
 function findDeptById(id) { return getDepartments().find(d => d.id === id) || null; }
 function findZoneById(deptId, zoneId) { return getDeptZones(deptId).find(z => z.id === zoneId) || null; }
 
-function detectSczZoneByKeywords(text) {
-  const t = norm(text);
-  const scz = getDepartments().find(d => d.id === 'santa_cruz');
-  if (!scz?.zones) return null;
-  for (const z of scz.zones) {
-    const kws = z.keywords || [];
-    if (kws.some(k => t.includes(norm(k)))) return z;
-  }
-  return null;
-}
+function getAdvisorsMap() { return GF?.advisors || {}; }
+function getAdvisorById(id) { return getAdvisorsMap()?.[id] || null; }
 
 function resolveImageUrl(p) {
   const raw = String(p || '').trim();
@@ -316,55 +294,39 @@ function resolveImageUrl(p) {
 }
 
 // =======================
-// WhatsApp link + mensaje armado
+// WhatsApp link
 // =======================
 function waLink(phone, msg) {
   const digits = String(phone || '').replace(/[^\d+]/g, '');
   if (!digits) return null;
-  return `https://wa.me/${digits.replace(/^\+/, '')}?text=${encodeURIComponent(msg)}`;
+  return `https://wa.me/${digits.replace(/^\+/, '')}?text=${encodeURIComponent(msg || '')}`;
 }
 
-function motivosList() {
-  return GF?.handoff?.motivos || [
-    { id: 'precio_pedido', label: 'Precio / Pedido' },
-    { id: 'ficha_tecnica', label: 'Ficha técnica / Etiqueta' },
-    { id: 'consulta_tecnica', label: 'Consulta técnica (cultivo/plaga)' },
-    { id: 'disponibilidad', label: 'Disponibilidad / Stock' },
-  ];
-}
-
-function renderWhatsAppMessage(s, motivoLabel = '') {
+function buildDefaultWhatsAppMessage(s) {
   const tpl = GF?.brand?.whatsapp_message_template
-    || 'Hola, soy {{client_name}}. Te escribo desde *{{departamento}}* (zona: *{{zona}}*). Necesito ayuda con: *{{motivo}}*. {{extra}}';
-
-  const extraParts = [];
-  if (s.vars.producto) extraParts.push(`Producto: *${s.vars.producto}*.`);
-  if (s.vars.cultivo) extraParts.push(`Cultivo: *${s.vars.cultivo}*.`);
-  if (s.vars.problema) extraParts.push(`Problema: *${s.vars.problema}*.`);
-  const extra = extraParts.join(' ');
+    || 'Hola, soy {{client_name}}. Te escribo desde *{{departamento}}* (zona: *{{zona}}*). Necesito ayuda con: *{{motivo}}*.';
 
   return tpl
     .replaceAll('{{client_name}}', s.profileName || 'Cliente')
     .replaceAll('{{departamento}}', s.vars.departamento || 'ND')
     .replaceAll('{{zona}}', s.vars.zona || 'ND')
-    .replaceAll('{{motivo}}', motivoLabel || s.vars.motivo || 'Consulta')
-    .replaceAll('{{extra}}', extra || '');
+    .replaceAll('{{motivo}}', 'Consulta')
+    .replaceAll('{{extra}}', '');
 }
 
 // =======================
-// MENÚ PRINCIPAL (BOTONES)
+// MENÚ PRINCIPAL
 // =======================
 async function showMainMenu(psid) {
   await sendButtons(psid, '¿En qué te puedo ayudar hoy? 👇', [
-    // ✅ quitamos 🧪
     { type: 'postback', title: 'Nuestros productos', payload: 'GF_PRODUCTS' },
-    { type: 'postback', title: '👨‍🌾 Hablar con un agrónomo', payload: 'GF_AGRO' },
+    { type: 'postback', title: '👨‍🌾 Hablar con un asesor', payload: 'GF_AGRO' },
     { type: 'postback', title: '📌 Ayuda rápida', payload: 'GF_HELP' },
   ]);
 }
 
 // =======================
-// AYUDA RÁPIDA (10)
+// AYUDA RÁPIDA
 // =======================
 const QUICK_HELP = [
   { title: '💰 Precio / pedido', payload: 'GF_HELP_PRECIO' },
@@ -374,9 +336,9 @@ const QUICK_HELP = [
   { title: '💳 Crédito / plazo', payload: 'GF_HELP_CREDITO' },
   { title: '📍 Ubicación', payload: 'GF_HELP_UBICACION' },
   { title: '🕒 Horarios', payload: 'GF_HELP_HORARIOS' },
-  { title: '🧪 Recomendar producto', payload: 'GF_HELP_RECOMENDAR' },
+  { title: 'Recomendar producto', payload: 'GF_HELP_RECOMENDAR' },
   { title: '🐛 Plaga / maleza / hongo', payload: 'GF_HELP_PLAGA' },
-  { title: '👨‍🌾 Hablar con un agrónomo', payload: 'GF_AGRO' },
+  { title: '👨‍🌾 Hablar con un asesor', payload: 'GF_AGRO' },
 ];
 
 async function showHelp(psid) {
@@ -388,194 +350,109 @@ async function showHelp(psid) {
 }
 
 // =======================
-// Flujo Agrónomo
+// NUEVO FLUJO ASESOR (SIN PREGUNTAS)
+// Departamento -> (SCZ Zona) -> Elegir asesor (cards con imagen + WhatsApp)
 // =======================
-async function askMotivo(psid) {
-  const s = getSession(psid);
-  s.pending = 'motivo';
-  if (!shouldPrompt(s, 'askMotivo')) return;
-
-  await sendQR(psid, 'Primero dime qué necesitas 👇', motivosList().map(m => ({
-    title: m.label,
-    payload: `GF_MOTIVO_${m.id}`
-  })));
-}
-
-async function askDepartamento(psid) {
-  const s = getSession(psid);
-
-  if (!hasGFData()) {
-    s.pending = 'dept_free';
-    await sendText(psid, 'Para asignarte al ingeniero correcto, escribe tu *departamento* y *zona/ciudad*.\nEj: "Santa Cruz, Montero"');
-    await showMainMenu(psid);
-    return;
-  }
-
-  s.pending = 'dept';
-  if (!shouldPrompt(s, 'askDepartamento')) return;
-
-  const deps = getDepartments();
-  if (!deps.length) {
-    s.pending = 'dept_free';
-    await sendText(psid, 'Escribe tu *departamento* (ej: Santa Cruz / Cochabamba / La Paz).');
-    await showMainMenu(psid);
-    return;
-  }
-
-  await sendQR(psid, '¿De qué *departamento* nos escribes?', deps.map(d => ({
-    title: d.name,
-    payload: `GF_DEPT_${d.id}`
-  })));
-}
-
-async function askSczZone(psid) {
-  const s = getSession(psid);
-
-  if (!hasGFData()) {
-    s.pending = 'scz_zone_free';
-    await sendText(psid, 'En Santa Cruz, ¿de qué *zona* eres?\nEj: Montero / Warnes / San Julián / 4 Cañadas / Roboré / Samaipata');
-    await showMainMenu(psid);
-    return;
-  }
-
-  s.pending = 'scz_zone';
-  if (!shouldPrompt(s, 'askSczZone')) return;
-
-  const zones = getDeptZones('santa_cruz');
-  if (!zones.length) {
-    s.pending = 'scz_zone_free';
-    await sendText(psid, 'Escribe tu *zona de Santa Cruz* (ej: Montero / Warnes / San Julián / Roboré).');
-    await showMainMenu(psid);
-    return;
-  }
-
-  await sendQR(psid, 'En Santa Cruz, ¿en qué *zona* estás?', zones.map(z => ({
-    title: z.name,
-    payload: `GF_SCZ_ZONE_${z.id}`
-  })));
-}
-
-async function askProduct(psid) {
-  const s = getSession(psid);
-  s.pending = 'ask_product';
-  if (!shouldPrompt(s, 'askProduct')) return;
-  await sendText(psid, '¿Qué *producto* te interesa? (Escribe el nombre como lo recuerdes)');
-}
-
-async function askCultivo(psid) {
-  const s = getSession(psid);
-  s.pending = 'ask_cultivo';
-  if (!shouldPrompt(s, 'askCultivo')) return;
-  await sendText(psid, '1) ¿Qué *cultivo* manejas? (ej: soya/maíz/arroz/caña)');
-}
-
-async function askProblema(psid) {
-  const s = getSession(psid);
-  s.pending = 'ask_problema';
-  if (!shouldPrompt(s, 'askProblema')) return;
-  await sendText(psid, '2) ¿Qué *problema* tienes? (plaga/maleza/enfermedad/síntoma)');
-}
-
-function advisorIdsForCurrentZone(s) {
-  if (!s.vars.departamento) return [];
-
-  const dept = getDepartments().find(d => d.name === s.vars.departamento) || null;
-  if (!dept) return [];
-
-  if (dept.id !== 'santa_cruz') return dept.advisorIds || [];
-
-  if (!s.vars.zona) return [];
-  const z = (dept.zones || []).find(x => x.name === s.vars.zona) || null;
-  return z?.advisorIds || [];
-}
-
 function pickFallbackAdvisor() {
-  if (GF?.advisors) {
-    const arr = Object.values(GF.advisors);
-    if (arr.length) return arr[0];
-  }
-  return null;
+  const map = getAdvisorsMap();
+  const arr = Object.values(map || {});
+  return arr.length ? arr[0] : null;
 }
 
-async function showAdvisorsForCurrentZone(psid) {
-  const s = getSession(psid);
-
-  if (!hasGFData()) {
-    const a = pickFallbackAdvisor();
-    await ensureProfileName(psid);
-    const motivoLabel = motivosList().find(x => x.id === s.vars.motivo)?.label || 'Consulta';
-    const msg = renderWhatsAppMessage(s, motivoLabel);
-
-    if (a?.whatsapp) {
-      const url = waLink(a.whatsapp, msg);
-      await sendButtons(psid, '✅ Te dejo un contacto directo:', [
-        { type: 'web_url', url, title: '📲 WhatsApp' }
-      ]);
-      resetFlowKeepZone(s);
-      await showMainMenu(psid);
-      return;
-    }
-
-    await sendText(psid, '✅ Listo. Un asesor te contactará a la brevedad.');
-    resetFlowKeepZone(s);
-    await showMainMenu(psid);
-    return;
-  }
-
-  const ids = advisorIdsForCurrentZone(s);
-
-  if (!ids.length) {
-    await sendText(psid, 'No encontré un agrónomo asignado a esa zona aún. Probemos de nuevo 👇');
-    s.vars.departamento = null;
-    s.vars.zona = null;
-    await askDepartamento(psid);
-    return;
-  }
-
-  const motivoLabel = motivosList().find(x => x.id === s.vars.motivo)?.label || 'Consulta';
-  const msg = renderWhatsAppMessage(s, motivoLabel);
-
-  const elements = [];
-  for (const id of ids.slice(0, 10)) {
-    const a = getAdvisorById(id);
-    if (!a) continue;
-
-    const url = waLink(a.whatsapp, msg);
-    const subtitle = [a.role || null, a.coverage_note || null].filter(Boolean).join(' • ').slice(0, 80);
-    const img = resolveImageUrl(a.image);
-
-    elements.push({
-      title: String(a.name || 'Ingeniero Agrónomo').slice(0, 80),
-      subtitle: subtitle || 'Atención por zona',
-      image_url: img || undefined,
-      buttons: url ? [{ type: 'web_url', url, title: '📲 Contactar por WhatsApp' }] : [],
-    });
-  }
-
-  await sendText(psid, `Listo${s.profileName ? ` ${s.profileName}` : ''} ✅\nTe dejo el *contacto directo* del ingeniero agrónomo de tu zona:`);
-  await sendGenericCards(psid, elements);
-
-  await sendText(psid, 'Si necesitas algo más, usa el menú 😊');
-  resetFlowKeepZone(s);
-  await showMainMenu(psid);
-}
-
-async function startAgronomoFlow(psid) {
+async function startAdvisorFlow(psid) {
   const s = getSession(psid);
   if (!s.profileName) await ensureProfileName(psid);
 
-  if (!s.vars.motivo) return askMotivo(psid);
+  s.pending = 'advisor_dept';
+  s.vars.departamento = null;
+  s.vars.zona = null;
 
-  if (s.vars.motivo === 'ficha_tecnica' && !s.vars.producto) return askProduct(psid);
-  if (s.vars.motivo === 'consulta_tecnica') {
-    if (!s.vars.cultivo) return askCultivo(psid);
-    if (!s.vars.problema) return askProblema(psid);
+  if (!hasGFData()) {
+    const a = pickFallbackAdvisor();
+    if (a?.whatsapp) {
+      const msg = buildDefaultWhatsAppMessage(s);
+      const url = waLink(a.whatsapp, msg);
+      await sendText(psid, 'Con gusto 😊\nTe dejo un contacto directo para que te atiendan por WhatsApp:');
+      await sendButtons(psid, 'Abrir WhatsApp:', [{ type: 'web_url', url, title: 'Contactar por WhatsApp' }]);
+      await showMainMenu(psid);
+      return;
+    }
+    await sendText(psid, 'Por el momento no tengo la lista de asesores cargada. Por favor intenta más tarde.');
+    await showMainMenu(psid);
+    return;
   }
 
-  if (!s.vars.departamento) return askDepartamento(psid);
-  if (s.vars.departamento === 'Santa Cruz' && !s.vars.zona) return askSczZone(psid);
+  const deps = getDepartments();
+  await sendText(psid, 'Perfecto ✅\nPara mostrarte los asesores disponibles, elige tu *departamento*:');
+  await sendQR(psid, 'Selecciona un departamento:', deps.map(d => ({
+    title: d.name,
+    payload: `GF_A_DEPT_${d.id}`,
+  })));
+}
 
-  return showAdvisorsForCurrentZone(psid);
+async function showAdvisorZonesSCZ(psid) {
+  const s = getSession(psid);
+  s.pending = 'advisor_scz_zone';
+
+  const zones = getDeptZones('santa_cruz') || [];
+  if (!zones.length) {
+    // si no hay zonas, mostramos lista combinada de advisors del depto
+    await sendText(psid, 'No tengo zonas configuradas para Santa Cruz. Te muestro los asesores disponibles:');
+    const dept = findDeptById('santa_cruz');
+    const ids = dept?.advisorIds || [];
+    return showAdvisorCards(psid, ids, 'Asesores disponibles');
+  }
+
+  await sendText(psid, 'Gracias ✅\nAhora elige tu *zona* en Santa Cruz:');
+  await sendQR(psid, 'Selecciona una zona:', zones.map(z => ({
+    title: z.name,
+    payload: `GF_A_SCZ_ZONE_${z.id}`,
+  })));
+}
+
+async function showAdvisorCards(psid, advisorIds = [], headerText = 'Selecciona tu asesor') {
+  const s = getSession(psid);
+
+  const unique = [...new Set((advisorIds || []).filter(Boolean))].slice(0, 10);
+  if (!unique.length) {
+    await sendText(psid, 'No encontré asesores para esa selección. Intenta con otra opción 👇');
+    await startAdvisorFlow(psid);
+    return;
+  }
+
+  const msg = buildDefaultWhatsAppMessage(s);
+
+  const elements = [];
+  for (const id of unique) {
+    const a = getAdvisorById(id);
+    if (!a?.whatsapp) continue;
+
+    const img = resolveImageUrl(a.image);
+    const url = waLink(a.whatsapp, msg);
+
+    const subtitle = [
+      a.role || 'Asesor',
+      a.coverage_note || null,
+    ].filter(Boolean).join(' • ').slice(0, 80);
+
+    elements.push({
+      title: String(a.name || 'Asesor').slice(0, 80),
+      subtitle: subtitle || 'Atención por zona',
+      image_url: img || undefined,
+      buttons: [{ type: 'web_url', url, title: 'Contactar por WhatsApp' }],
+    });
+  }
+
+  if (!elements.length) {
+    await sendText(psid, 'No encontré asesores con WhatsApp disponible en esta selección. Intenta con otra opción 👇');
+    await startAdvisorFlow(psid);
+    return;
+  }
+
+  await sendText(psid, `${headerText} 👇`);
+  await sendGenericCards(psid, elements);
+  await sendText(psid, 'Si necesitas algo más, puedes volver al menú 😊');
+  await showMainMenu(psid);
 }
 
 // =======================
@@ -593,11 +470,12 @@ function detectIntent(text) {
 
   if (/(productos|catalogo|catálogo|portafolio|lista de productos|que venden|que ofrecen)/.test(t)) return { type: 'PRODUCTS' };
   if (/(asesor|agronomo|agrónomo|ingeniero|hablar con|contacto|whatsapp|wsp|numero|tel(e|é)fono)/.test(t)) return { type: 'AGRO' };
-  if (/(precio|presio|cotizar|proforma|pedido|comprar|venta|cuanto cuesta|cuanto vale)/.test(t)) return { type: 'MOTIVO', motivo: 'precio_pedido' };
-  if (/(ficha|etiqueta|msds|hoja de seguridad|ingrediente|dosis|toxicidad|antidoto|antídoto)/.test(t)) return { type: 'MOTIVO', motivo: 'ficha_tecnica' };
-  if (/(stock|disponible|disponibilidad|agotado|cuando llega|cu(a|á)ndo llega)/.test(t)) return { type: 'MOTIVO', motivo: 'disponibilidad' };
-  if (/(plaga|maleza|hongo|roya|oruga|trips|pulgon|pulgón|gusano|enfermedad|mancha|se me muere|se me esta muriendo|se me está muriendo)/.test(t)) return { type: 'MOTIVO', motivo: 'consulta_tecnica' };
   if (/(ayuda|help|no entiendo|explica|como hago|cómo hago)/.test(t)) return { type: 'HELP' };
+
+  // Si escriben precio/stock/etc -> llevamos directo al flujo de asesor (sin preguntas)
+  if (/(precio|presio|cotizar|proforma|pedido|comprar|venta|cuanto cuesta|cuanto vale|stock|disponible|disponibilidad|agotado|ficha|etiqueta|msds|hoja de seguridad|dosis|toxicidad|plaga|maleza|hongo|roya|oruga|trips|pulgon|pulgón|gusano|enfermedad)/.test(t)) {
+    return { type: 'AGRO' };
+  }
 
   return null;
 }
@@ -609,6 +487,7 @@ function getKeywordItems() {
   const items = KEYWORDS?.items;
   return Array.isArray(items) ? items : [];
 }
+
 function detectKeywordHit(text) {
   const t = norm(text);
   if (!t) return null;
@@ -628,7 +507,6 @@ function detectKeywordHit(text) {
 }
 
 async function runKeywordAction(psid, kwItem) {
-  const s = getSession(psid);
   const replyText = kwItem?.reply?.text ? String(kwItem.reply.text) : null;
   const actionType = kwItem?.action?.type || 'NONE';
 
@@ -636,15 +514,13 @@ async function runKeywordAction(psid, kwItem) {
 
   if (actionType === 'SHOW_MAIN_MENU') { await showMainMenu(psid); return true; }
   if (actionType === 'END_SESSION') { await sendText(psid, '¡Gracias por escribirnos! 👋'); clearSession(psid); return true; }
-  if (actionType === 'OPEN_AGRONOMO') { await startAgronomoFlow(psid); return true; }
-  if (actionType === 'ASK_PRODUCT_THEN_AGRONOMO') { s.vars.motivo = 'ficha_tecnica'; await askProduct(psid); return true; }
-  if (actionType === 'ASK_CULTIVO_PROBLEMA_THEN_AGRONOMO') { s.vars.motivo = 'consulta_tecnica'; await askCultivo(psid); return true; }
+  if (actionType === 'OPEN_AGRONOMO') { await startAdvisorFlow(psid); return true; }
 
   return false;
 }
 
 // =======================
-// Saludo profesional
+// Saludo
 // =======================
 async function greetAndMenu(psid) {
   const s = getSession(psid);
@@ -655,8 +531,7 @@ async function greetAndMenu(psid) {
   await sendText(
     psid,
     `👋 ¡Hola${s.profileName ? ` ${s.profileName}` : ''}! Bienvenido a *Greenfield*.\n` +
-    `Puedo ayudarte a *llegar al ingeniero agrónomo* de tu zona y dejar el *WhatsApp listo* con tu consulta.\n` +
-    `✅ No enviamos precios, cotizaciones ni fichas por este chat.`
+    `Puedo ayudarte a ver nuestros productos y también a contactar a un asesor por WhatsApp.`
   );
 
   await showMainMenu(psid);
@@ -706,76 +581,13 @@ router.post('/webhook', async (req, res) => {
         const incoming = qrPayload || payload || textMsg || '';
 
         // =======================
-        // PENDINGS de texto libre (fallback config)
-        // =======================
-        if (s.pending === 'dept_free') {
-          const t = String(textMsg || '').trim();
-          if (t.length >= 2) {
-            s.vars.departamento = title(t).slice(0, 40);
-            s.pending = null;
-
-            if (/santa cruz|scz/i.test(t)) {
-              s.vars.departamento = 'Santa Cruz';
-              if (hasGFData()) {
-                const z = detectSczZoneByKeywords(t);
-                if (z) s.vars.zona = z.name;
-              }
-              if (!s.vars.zona) return askSczZone(psid);
-            }
-
-            await startAgronomoFlow(psid);
-            continue;
-          }
-        }
-
-        if (s.pending === 'scz_zone_free') {
-          const t = String(textMsg || '').trim();
-          if (t.length >= 2) {
-            s.vars.zona = title(t).slice(0, 60);
-            s.pending = null;
-            await startAgronomoFlow(psid);
-            continue;
-          }
-        }
-
-        if (s.pending === 'ask_product') {
-          const t = String(textMsg || '').trim();
-          if (t.length >= 2) {
-            s.vars.producto = title(t).slice(0, 60);
-            s.pending = null;
-            await startAgronomoFlow(psid);
-            continue;
-          }
-        }
-
-        if (s.pending === 'ask_cultivo') {
-          const t = String(textMsg || '').trim();
-          if (t.length >= 2) {
-            s.vars.cultivo = title(t).slice(0, 40);
-            s.pending = null;
-            await askProblema(psid);
-            continue;
-          }
-        }
-
-        if (s.pending === 'ask_problema') {
-          const t = String(textMsg || '').trim();
-          if (t.length >= 2) {
-            s.vars.problema = t.slice(0, 120);
-            s.pending = null;
-            await startAgronomoFlow(psid);
-            continue;
-          }
-        }
-
-        // =======================
         // PAYLOADS GF_
         // =======================
         if (typeof incoming === 'string' && incoming.startsWith('GF_')) {
 
           if (incoming === 'GF_HELP') { await showHelp(psid); continue; }
 
-          // ✅ PRODUCTOS: mensaje amable antes del botón + sin emoji
+          // PRODUCTOS (amable + sin emoji)
           if (incoming === 'GF_PRODUCTS') {
             const url = GF?.brand?.products_url || 'https://greenfield.com.bo/productos/';
             await sendText(psid, 'Con gusto 😊\nAquí puedes ver nuestro catálogo y conocer las opciones disponibles:');
@@ -784,72 +596,48 @@ router.post('/webhook', async (req, res) => {
             continue;
           }
 
+          // NUEVO: ASESOR
           if (incoming === 'GF_AGRO') {
-            await startAgronomoFlow(psid);
+            await startAdvisorFlow(psid);
             continue;
           }
 
-          if (incoming === 'GF_HELP_PRECIO') { s.vars.motivo = 'precio_pedido'; await startAgronomoFlow(psid); continue; }
-          if (incoming === 'GF_HELP_STOCK') { s.vars.motivo = 'disponibilidad'; await startAgronomoFlow(psid); continue; }
-          if (incoming === 'GF_HELP_ENVIO') { s.vars.motivo = 'precio_pedido'; await startAgronomoFlow(psid); continue; }
-          if (incoming === 'GF_HELP_FACTURA') { s.vars.motivo = 'precio_pedido'; await startAgronomoFlow(psid); continue; }
-          if (incoming === 'GF_HELP_CREDITO') { s.vars.motivo = 'precio_pedido'; await startAgronomoFlow(psid); continue; }
-
-          if (incoming === 'GF_HELP_UBICACION') {
-            await sendText(psid, GF?.brand?.location_text || '📍 Para ubicación, escribe tu ciudad y te conecto con el ingeniero de tu zona.');
-            s.vars.motivo = 'precio_pedido';
-            await startAgronomoFlow(psid);
-            continue;
-          }
-          if (incoming === 'GF_HELP_HORARIOS') {
-            await sendText(psid, GF?.brand?.hours_text || '🕒 Los horarios te los confirma el ingeniero agrónomo de tu zona.');
-            s.vars.motivo = 'precio_pedido';
-            await startAgronomoFlow(psid);
-            continue;
-          }
-          if (incoming === 'GF_HELP_RECOMENDAR') {
-            s.vars.motivo = 'consulta_tecnica';
-            await askCultivo(psid);
-            continue;
-          }
-          if (incoming === 'GF_HELP_PLAGA') {
-            s.vars.motivo = 'consulta_tecnica';
-            await askCultivo(psid);
+          // Ayuda rápida -> manda al flujo asesor (sin preguntas)
+          if (incoming.startsWith('GF_HELP_')) {
+            await startAdvisorFlow(psid);
             continue;
           }
 
-          if (incoming.startsWith('GF_MOTIVO_')) {
-            const id = incoming.replace('GF_MOTIVO_', '');
-            s.vars.motivo = id;
-            await startAgronomoFlow(psid);
-            continue;
-          }
-
-          if (incoming.startsWith('GF_DEPT_')) {
-            const id = incoming.replace('GF_DEPT_', '');
+          // Departamento elegido
+          if (incoming.startsWith('GF_A_DEPT_')) {
+            const id = incoming.replace('GF_A_DEPT_', '');
             const dept = findDeptById(id);
-            if (!dept) { await askDepartamento(psid); continue; }
+            if (!dept) { await startAdvisorFlow(psid); continue; }
 
             s.vars.departamento = dept.name;
             s.vars.zona = null;
-            s.pending = null;
 
-            if (dept.id === 'santa_cruz') await askSczZone(psid);
-            else await startAgronomoFlow(psid);
+            if (dept.id === 'santa_cruz') {
+              await showAdvisorZonesSCZ(psid);
+              continue;
+            }
 
+            const ids = dept.advisorIds || [];
+            await showAdvisorCards(psid, ids, `Asesores en ${dept.name}`);
             continue;
           }
 
-          if (incoming.startsWith('GF_SCZ_ZONE_')) {
-            const zoneId = incoming.replace('GF_SCZ_ZONE_', '');
+          // Zona SCZ elegida
+          if (incoming.startsWith('GF_A_SCZ_ZONE_')) {
+            const zoneId = incoming.replace('GF_A_SCZ_ZONE_', '');
             const zone = findZoneById('santa_cruz', zoneId);
-            if (!zone) { await askSczZone(psid); continue; }
+            if (!zone) { await showAdvisorZonesSCZ(psid); continue; }
 
             s.vars.departamento = 'Santa Cruz';
             s.vars.zona = zone.name;
-            s.pending = null;
 
-            await startAgronomoFlow(psid);
+            const ids = zone.advisorIds || [];
+            await showAdvisorCards(psid, ids, `Asesores — ${zone.name}`);
             continue;
           }
         }
@@ -871,7 +659,6 @@ router.post('/webhook', async (req, res) => {
           continue;
         }
 
-        // ✅ PRODUCTOS por texto: mensaje amable + sin emoji
         if (intent?.type === 'PRODUCTS') {
           const url = GF?.brand?.products_url || 'https://greenfield.com.bo/productos/';
           await sendText(psid, 'Con gusto 😊\nAquí puedes ver nuestro catálogo y conocer las opciones disponibles:');
@@ -886,36 +673,24 @@ router.post('/webhook', async (req, res) => {
         }
 
         if (intent?.type === 'AGRO') {
-          await startAgronomoFlow(psid);
+          await startAdvisorFlow(psid);
           continue;
         }
 
-        if (intent?.type === 'MOTIVO') {
-          s.vars.motivo = intent.motivo;
-          await startAgronomoFlow(psid);
-          continue;
-        }
-
+        // Keywords fallback
         const kwHit = detectKeywordHit(textMsg);
         if (kwHit) {
           const handled = await runKeywordAction(psid, kwHit);
           if (handled) continue;
         }
 
+        // Default
         if (!s.flags.greeted) {
           await greetAndMenu(psid);
           continue;
         }
 
-        await sendText(
-          psid,
-          'Te entiendo 😊\n' +
-          'Usa el menú o dime si tu consulta es por:\n' +
-          '• *Precio/Pedido*\n' +
-          '• *Stock/Disponibilidad*\n' +
-          '• *Consulta técnica* (cultivo + problema)\n' +
-          'y te dejo el contacto del *ingeniero agrónomo* de tu zona.'
-        );
+        await sendText(psid, 'Para ayudarte más rápido, usa el menú 👇');
         await showMainMenu(psid);
       }
     }
