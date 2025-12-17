@@ -1,4 +1,4 @@
-// server.js 
+// server.js
 import 'dotenv/config';
 import express from 'express';
 import fs from 'fs';
@@ -20,7 +20,9 @@ app.get('/healthz', (_req, res) => res.json({ ok: true }));
 app.get('/privacidad', (_req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'privacidad.html'));
 });
+
 app.use(express.static(path.join(__dirname, 'public')));
+
 app.get('/debug/files', (_req, res) => {
   const kd = path.join(__dirname, 'knowledge');
   const pub = path.join(__dirname, 'public');
@@ -53,10 +55,13 @@ app.get('/debug/files', (_req, res) => {
     },
   });
 });
+
 app.get('/debug/config', (_req, res) => {
   res.json(runtimeDebug());
 });
+
 app.use(messengerRouter);
+
 app.use((_req, res) => res.status(404).send('Not Found'));
 app.use((err, _req, res, _next) => {
   console.error('❌ Server error:', err?.stack || err?.message || err);
