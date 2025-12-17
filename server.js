@@ -1,10 +1,12 @@
-// server.js (Greenfield - SOLO Messenger + estáticos básicos)
+// server.js 
 import 'dotenv/config';
 import express from 'express';
+import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
-import messengerRouter from './index.js'; 
+import messengerRouter, { runtimeDebug } from './index.js';
+
 const app = express();
 app.disable('x-powered-by');
 app.set('trust proxy', 1);
@@ -18,33 +20,46 @@ app.get('/healthz', (_req, res) => res.json({ ok: true }));
 app.get('/privacidad', (_req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'privacidad.html'));
 });
-
 app.use(express.static(path.join(__dirname, 'public')));
-app.use('/image', express.static(path.join(__dirname, 'image')));
 app.get('/debug/files', (_req, res) => {
-  const byDir_cfg = path.join(__dirname, 'knowledge', 'greenfield_advisors.json');
-  const byCwd_cfg = path.join(process.cwd(), 'knowledge', 'greenfield_advisors.json');
+  const kd = path.join(__dirname, 'knowledge');
+  const pub = path.join(__dirname, 'public');
+  const ing = path.join(__dirname, 'public', 'ingenieros');
+
+  const safeList = (dir) => {
+    try {
+      if (!fs.existsSync(dir)) return null;
+      return fs.readdirSync(dir);
+    } catch (e) {
+      return { error: e?.message || String(e) };
+    }
+  };
 
   res.json({
     cwd: process.cwd(),
     __dirname,
-    byDir_cfg,
-    byDir_cfg_exists: fs.existsSync(byDir_cfg),
-    byCwd_cfg,
-    byCwd_cfg_exists: fs.existsSync(byCwd_cfg),
-    list_knowledge_byDir: fs.existsSync(path.join(__dirname, 'knowledge'))
-      ? fs.readdirSync(path.join(__dirname, 'knowledge'))
-      : null,
-    list_knowledge_byCwd: fs.existsSync(path.join(process.cwd(), 'knowledge'))
-      ? fs.readdirSync(path.join(process.cwd(), 'knowledge'))
-      : null,
+    paths: {
+      knowledge_dir: kd,
+      knowledge_exists: fs.existsSync(kd),
+      public_dir: pub,
+      public_exists: fs.existsSync(pub),
+      ingenieros_dir: ing,
+      ingenieros_exists: fs.existsSync(ing),
+    },
+    list: {
+      knowledge: safeList(kd),
+      public: safeList(pub),
+      ingenieros: safeList(ing),
+    },
   });
+});
+app.get('/debug/config', (_req, res) => {
+  res.json(runtimeDebug());
 });
 app.use(messengerRouter);
 app.use((_req, res) => res.status(404).send('Not Found'));
-
 app.use((err, _req, res, _next) => {
-  console.error('❌ Server error:', err?.message || err);
+  console.error('❌ Server error:', err?.stack || err?.message || err);
   res.status(500).json({ error: 'internal_error' });
 });
 
@@ -53,5 +68,5 @@ app.listen(PORT, () => {
   console.log(`🚀 Greenfield Server en :${PORT}`);
   console.log('   • Messenger: GET/POST /webhook');
   console.log('   • Privacy:   GET      /privacidad');
-  console.log('   • Health:    GET      /healthz');
+  console.log('   • Debug:     GET      /debug/files  y  /debug/config');
 });

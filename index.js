@@ -1,16 +1,55 @@
-// index.js
+// index.js (Messenger webhook + menú Greenfield)
 import 'dotenv/config';
 import express from 'express';
 import fs from 'fs';
 import path from 'path';
+import { fileURLToPath } from 'url';
 
 const router = express.Router();
 router.use(express.json());
 
-const VERIFY_TOKEN = process.env.VERIFY_TOKEN;
-const PAGE_ACCESS_TOKEN = process.env.PAGE_ACCESS_TOKEN;
+const VERIFY_TOKEN = process.env.VERIFY_TOKEN || '';
+const PAGE_ACCESS_TOKEN = process.env.PAGE_ACCESS_TOKEN || '';
+
+// ======================================
+// Paths robustos (Railway/Node ESM)
+// ======================================
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+function normalizePath(p) {
+  if (!p) return null;
+  if (path.isAbsolute(p)) return p;
+  return path.resolve(process.cwd(), p);
+}
+
+function pickExistingFile(candidates = []) {
+  for (const c of candidates.filter(Boolean)) {
+    const abs = normalizePath(c);
+    try {
+      if (abs && fs.existsSync(abs)) return abs;
+    } catch {}
+  }
+  return null;
+}
+
+// Default candidates (IMPORTANTE: primero ENV, luego __dirname, luego cwd)
+const CFG_PATH = pickExistingFile([
+  process.env.GREENFIELD_ADVISORS_JSON,
+  path.join(__dirname, 'knowledge', 'greenfield_advisors.json'),
+  path.join(process.cwd(), 'knowledge', 'greenfield_advisors.json'),
+  path.join(__dirname, 'knowledge', 'advisors.json'),
+  path.join(process.cwd(), 'knowledge', 'advisors.json'),
+]);
+
+const KEYWORDS_PATH = pickExistingFile([
+  process.env.GREENFIELD_KEYWORDS_JSON,
+  path.join(__dirname, 'knowledge', 'keywords.json'),
+  path.join(process.cwd(), 'knowledge', 'keywords.json'),
+]);
 
 function loadJSON(p) {
+  if (!p) return null;
   try {
     const raw = fs.readFileSync(p, 'utf8');
     return JSON.parse(raw);
@@ -20,16 +59,34 @@ function loadJSON(p) {
   }
 }
 
-function resolvePath(p) {
-  if (!p) return null;
-  return path.isAbsolute(p) ? p : path.resolve(process.cwd(), p);
+function isValidGF(obj) {
+  const okDeps = Array.isArray(obj?.departments) && obj.departments.length > 0;
+  const okAdv = obj?.advisors && typeof obj.advisors === 'object' && Object.keys(obj.advisors).length > 0;
+  return okDeps && okAdv;
 }
-
-const CFG_PATH = resolvePath(process.env.GREENFIELD_ADVISORS_JSON || './knowledge/greenfield_advisors.json');
-const KEYWORDS_PATH = resolvePath(process.env.GREENFIELD_KEYWORDS_JSON || './knowledge/keywords.json');
 
 let GF = loadJSON(CFG_PATH);
 let KEYWORDS = loadJSON(KEYWORDS_PATH);
+
+let gfStatus = {
+  cfgPath: CFG_PATH,
+  keywordsPath: KEYWORDS_PATH,
+  loadedAt: Date.now(),
+  gfOk: !!GF && isValidGF(GF),
+  gfDepartments: Array.isArray(GF?.departments) ? GF.departments.length : 0,
+  gfAdvisors: GF?.advisors ? Object.keys(GF.advisors).length : 0,
+};
+
+function refreshStatus() {
+  gfStatus = {
+    cfgPath: CFG_PATH,
+    keywordsPath: KEYWORDS_PATH,
+    loadedAt: Date.now(),
+    gfOk: !!GF && isValidGF(GF),
+    gfDepartments: Array.isArray(GF?.departments) ? GF.departments.length : 0,
+    gfAdvisors: GF?.advisors ? Object.keys(GF.advisors).length : 0,
+  };
+}
 
 function reloadConfig() {
   const nextGF = loadJSON(CFG_PATH);
@@ -37,19 +94,37 @@ function reloadConfig() {
 
   const nextK = loadJSON(KEYWORDS_PATH);
   if (nextK) KEYWORDS = nextK;
+
+  refreshStatus();
+
+  if (GF && !gfStatus.gfOk) {
+    console.error(
+      '[Greenfield] CFG cargó pero es inválido (faltan departments/advisors). Revisá que sea el JSON correcto:',
+      gfStatus.cfgPath
+    );
+  }
 }
+
+reloadConfig();
 setInterval(reloadConfig, 2 * 60 * 1000);
 
-console.log('[Greenfield] CFG_PATH:', CFG_PATH);
-console.log('[Greenfield] KEYWORDS_PATH:', KEYWORDS_PATH);
-console.log(
-  '[Greenfield] GF loaded:',
-  !!GF,
-  'departments:',
-  GF?.departments?.length || 0,
-  'advisors:',
-  GF?.advisors ? Object.keys(GF.advisors).length : 0
-);
+console.log('[Greenfield] CFG_PATH:', CFG_PATH || '(NO ENCONTRADO)');
+console.log('[Greenfield] KEYWORDS_PATH:', KEYWORDS_PATH || '(NO ENCONTRADO)');
+console.log('[Greenfield] GF ok:', gfStatus.gfOk, 'departments:', gfStatus.gfDepartments, 'advisors:', gfStatus.gfAdvisors);
+
+// Export para /debug/config
+export function runtimeDebug() {
+  return {
+    cwd: process.cwd(),
+    __dirname,
+    cfgPath: gfStatus.cfgPath,
+    keywordsPath: gfStatus.keywordsPath,
+    gfOk: gfStatus.gfOk,
+    departments: gfStatus.gfDepartments,
+    advisors: gfStatus.gfAdvisors,
+    loadedAt: new Date(gfStatus.loadedAt).toISOString(),
+  };
+}
 
 // =======================
 // Sesiones
@@ -61,11 +136,8 @@ const sessions = new Map();
 function newSession() {
   const now = Date.now();
   return {
-    pending: null, // 'advisor_dept' | 'advisor_scz_zone'
-    vars: {
-      departamento: null,
-      zona: null,
-    },
+    pending: null,
+    vars: { departamento: null, zona: null },
     profileName: null,
     flags: { greeted: false, justOpenedAt: 0, helpShownAt: 0 },
     lastPrompt: null,
@@ -117,7 +189,7 @@ function alreadyProcessed(mid) {
 }
 
 // =======================
-// Utils texto / normalización
+// Utils texto
 // =======================
 const norm = (t = '') => String(t || '')
   .toLowerCase()
@@ -129,14 +201,8 @@ const norm = (t = '') => String(t || '')
 const title = s => String(s || '').replace(/\w\S*/g, w => w[0].toUpperCase() + w.slice(1).toLowerCase());
 const clamp = (t, n = 20) => (t.length <= n ? t : t.slice(0, n - 1) + '…');
 
-function shouldPrompt(s, key, ttlMs = 7000) {
-  if (s.lastPrompt && s.lastPrompt.key === key && Date.now() - s.lastPrompt.at < ttlMs) return false;
-  s.lastPrompt = { key, at: Date.now() };
-  return true;
-}
-
 // =======================
-// FB Send API helpers
+// FB Send API
 // =======================
 async function httpFetchAny(...args) {
   const f = globalThis.fetch || (await import('node-fetch')).default;
@@ -154,7 +220,6 @@ async function sendText(psid, text) {
   if (!r.ok) console.error('sendText', await r.text());
 }
 
-// Quick Replies (hasta 11)
 async function sendQR(psid, text, options = []) {
   const quick_replies = (options || [])
     .slice(0, 11)
@@ -170,10 +235,7 @@ async function sendQR(psid, text, options = []) {
     })
     .filter(Boolean);
 
-  if (quick_replies.length === 0) {
-    await sendText(psid, String(text).slice(0, 2000));
-    return;
-  }
+  if (quick_replies.length === 0) return sendText(psid, String(text).slice(0, 2000));
 
   const url = `https://graph.facebook.com/v20.0/me/messages?access_token=${encodeURIComponent(PAGE_ACCESS_TOKEN)}`;
   const payload = { recipient: { id: psid }, message: { text, quick_replies } };
@@ -267,7 +329,7 @@ async function ensureProfileName(psid) {
 // Config helpers
 // =======================
 function hasGFData() {
-  return !!(GF && Array.isArray(GF.departments) && GF.departments.length > 0 && GF.advisors && Object.keys(GF.advisors).length > 0);
+  return !!(GF && isValidGF(GF));
 }
 
 function getDepartments() { return (GF?.departments || []); }
@@ -281,12 +343,15 @@ function findZoneById(deptId, zoneId) { return getDeptZones(deptId).find(z => z.
 function getAdvisorsMap() { return GF?.advisors || {}; }
 function getAdvisorById(id) { return getAdvisorsMap()?.[id] || null; }
 
+// IMPORTANTE: assets_base_url debe ser TU dominio Railway
 function resolveImageUrl(p) {
   const raw = String(p || '').trim();
   if (!raw) return null;
   if (/^https?:\/\//i.test(raw)) return raw;
+
   const base = (GF?.brand?.assets_base_url || '').trim().replace(/\/+$/, '');
   if (!base) return null;
+
   const pth = raw.startsWith('/') ? raw : `/${raw}`;
   return `${base}${pth}`;
 }
@@ -348,12 +413,10 @@ async function showHelp(psid) {
 }
 
 // =======================
-// NUEVO FLUJO ASESOR (SIN PREGUNTAS)
-// Departamento -> (SCZ Zona) -> Elegir asesor (cards con imagen + WhatsApp)
+// Flujo asesor
 // =======================
 function pickFallbackAdvisor() {
-  const map = getAdvisorsMap();
-  const arr = Object.values(map || {});
+  const arr = Object.values(getAdvisorsMap() || {});
   return arr.length ? arr[0] : null;
 }
 
@@ -366,6 +429,9 @@ async function startAdvisorFlow(psid) {
   s.vars.zona = null;
 
   if (!hasGFData()) {
+    // Log fuerte para que lo veas en Railway
+    console.error('[Greenfield] NO hay data válida en GF. Revisá /debug/config y /debug/files');
+
     const a = pickFallbackAdvisor();
     if (a?.whatsapp) {
       const msg = buildDefaultWhatsAppMessage(s);
@@ -375,6 +441,7 @@ async function startAdvisorFlow(psid) {
       await showMainMenu(psid);
       return;
     }
+
     await sendText(psid, 'Por el momento no tengo la lista de asesores cargada. Por favor intenta más tarde.');
     await showMainMenu(psid);
     return;
@@ -389,16 +456,10 @@ async function startAdvisorFlow(psid) {
 }
 
 async function showAdvisorZonesSCZ(psid) {
-  const s = getSession(psid);
-  s.pending = 'advisor_scz_zone';
-
   const zones = getDeptZones('santa_cruz') || [];
   if (!zones.length) {
-    // si no hay zonas, mostramos lista combinada de advisors del depto
     await sendText(psid, 'No tengo zonas configuradas para Santa Cruz. Te muestro los asesores disponibles:');
-    const dept = findDeptById('santa_cruz');
-    const ids = dept?.advisorIds || [];
-    return showAdvisorCards(psid, ids, 'Asesores disponibles');
+    return showAdvisorCards(psid, findDeptById('santa_cruz')?.advisorIds || [], 'Asesores disponibles');
   }
 
   await sendText(psid, 'Gracias ✅\nAhora elige tu *zona* en Santa Cruz:');
@@ -419,8 +480,8 @@ async function showAdvisorCards(psid, advisorIds = [], headerText = 'Selecciona 
   }
 
   const msg = buildDefaultWhatsAppMessage(s);
-
   const elements = [];
+
   for (const id of unique) {
     const a = getAdvisorById(id);
     if (!a?.whatsapp) continue;
@@ -428,10 +489,7 @@ async function showAdvisorCards(psid, advisorIds = [], headerText = 'Selecciona 
     const img = resolveImageUrl(a.image);
     const url = waLink(a.whatsapp, msg);
 
-    const subtitle = [
-      a.role || 'Asesor',
-      a.coverage_note || null,
-    ].filter(Boolean).join(' • ').slice(0, 80);
+    const subtitle = [a.role || 'Asesor', a.coverage_note || null].filter(Boolean).join(' • ').slice(0, 80);
 
     elements.push({
       title: String(a.name || 'Asesor').slice(0, 80),
@@ -454,7 +512,7 @@ async function showAdvisorCards(psid, advisorIds = [], headerText = 'Selecciona 
 }
 
 // =======================
-// Router global (intenciones)
+// Intenciones
 // =======================
 const isGreeting = (t = '') => /\b(hola|holi|buenas|buenos dias|buen dia|buenas tardes|buenas noches|hello|hey|hi)\b/.test(norm(t));
 const isEnd = (t = '') => /\b(chau|chao|adios|adiós|bye|finalizar|salir|eso es todo|nada mas|nada más)\b/.test(norm(t));
@@ -470,7 +528,6 @@ function detectIntent(text) {
   if (/(asesor|agronomo|agrónomo|ingeniero|hablar con|contacto|whatsapp|wsp|numero|tel(e|é)fono)/.test(t)) return { type: 'AGRO' };
   if (/(ayuda|help|no entiendo|explica|como hago|cómo hago)/.test(t)) return { type: 'HELP' };
 
-  // Si escriben precio/stock/etc -> llevamos directo al flujo de asesor (sin preguntas)
   if (/(precio|presio|cotizar|proforma|pedido|comprar|venta|cuanto cuesta|cuanto vale|stock|disponible|disponibilidad|agotado|ficha|etiqueta|msds|hoja de seguridad|dosis|toxicidad|plaga|maleza|hongo|roya|oruga|trips|pulgon|pulgón|gusano|enfermedad)/.test(t)) {
     return { type: 'AGRO' };
   }
@@ -478,9 +535,7 @@ function detectIntent(text) {
   return null;
 }
 
-// =======================
-// Keywords.json fallback (opcional)
-// =======================
+// Keywords fallback
 function getKeywordItems() {
   const items = KEYWORDS?.items;
   return Array.isArray(items) ? items : [];
@@ -517,9 +572,7 @@ async function runKeywordAction(psid, kwItem) {
   return false;
 }
 
-// =======================
 // Saludo
-// =======================
 async function greetAndMenu(psid) {
   const s = getSession(psid);
   s.flags.greeted = true;
@@ -535,18 +588,14 @@ async function greetAndMenu(psid) {
   await showMainMenu(psid);
 }
 
-// =======================
 // WEBHOOK verify
-// =======================
 router.get('/webhook', (req, res) => {
   const { ['hub.mode']: mode, ['hub.verify_token']: token, ['hub.challenge']: challenge } = req.query;
   if (mode === 'subscribe' && token === VERIFY_TOKEN) return res.status(200).send(challenge);
   res.sendStatus(403);
 });
 
-// =======================
 // WEBHOOK main
-// =======================
 router.post('/webhook', async (req, res) => {
   try {
     if (req.body.object !== 'page') return res.sendStatus(404);
@@ -578,14 +627,10 @@ router.post('/webhook', async (req, res) => {
 
         const incoming = qrPayload || payload || textMsg || '';
 
-        // =======================
         // PAYLOADS GF_
-        // =======================
         if (typeof incoming === 'string' && incoming.startsWith('GF_')) {
-
           if (incoming === 'GF_HELP') { await showHelp(psid); continue; }
 
-          // PRODUCTOS (amable + sin emoji)
           if (incoming === 'GF_PRODUCTS') {
             const url = GF?.brand?.products_url || 'https://greenfield.com.bo/productos/';
             await sendText(psid, 'Con gusto 😊\nAquí puedes ver nuestro catálogo y conocer las opciones disponibles:');
@@ -594,19 +639,10 @@ router.post('/webhook', async (req, res) => {
             continue;
           }
 
-          // NUEVO: ASESOR
-          if (incoming === 'GF_AGRO') {
-            await startAdvisorFlow(psid);
-            continue;
-          }
+          if (incoming === 'GF_AGRO') { await startAdvisorFlow(psid); continue; }
 
-          // Ayuda rápida -> manda al flujo asesor (sin preguntas)
-          if (incoming.startsWith('GF_HELP_')) {
-            await startAdvisorFlow(psid);
-            continue;
-          }
+          if (incoming.startsWith('GF_HELP_')) { await startAdvisorFlow(psid); continue; }
 
-          // Departamento elegido
           if (incoming.startsWith('GF_A_DEPT_')) {
             const id = incoming.replace('GF_A_DEPT_', '');
             const dept = findDeptById(id);
@@ -615,17 +651,12 @@ router.post('/webhook', async (req, res) => {
             s.vars.departamento = dept.name;
             s.vars.zona = null;
 
-            if (dept.id === 'santa_cruz') {
-              await showAdvisorZonesSCZ(psid);
-              continue;
-            }
+            if (dept.id === 'santa_cruz') { await showAdvisorZonesSCZ(psid); continue; }
 
-            const ids = dept.advisorIds || [];
-            await showAdvisorCards(psid, ids, `Asesores en ${dept.name}`);
+            await showAdvisorCards(psid, dept.advisorIds || [], `Asesores en ${dept.name}`);
             continue;
           }
 
-          // Zona SCZ elegida
           if (incoming.startsWith('GF_A_SCZ_ZONE_')) {
             const zoneId = incoming.replace('GF_A_SCZ_ZONE_', '');
             const zone = findZoneById('santa_cruz', zoneId);
@@ -634,15 +665,12 @@ router.post('/webhook', async (req, res) => {
             s.vars.departamento = 'Santa Cruz';
             s.vars.zona = zone.name;
 
-            const ids = zone.advisorIds || [];
-            await showAdvisorCards(psid, ids, `Asesores — ${zone.name}`);
+            await showAdvisorCards(psid, zone.advisorIds || [], `Asesores — ${zone.name}`);
             continue;
           }
         }
 
-        // =======================
-        // Router global por texto
-        // =======================
+        // Router por texto
         const intent = detectIntent(textMsg);
 
         if (intent?.type === 'GREET') {
@@ -665,28 +693,16 @@ router.post('/webhook', async (req, res) => {
           continue;
         }
 
-        if (intent?.type === 'HELP') {
-          await showHelp(psid);
-          continue;
-        }
+        if (intent?.type === 'HELP') { await showHelp(psid); continue; }
+        if (intent?.type === 'AGRO') { await startAdvisorFlow(psid); continue; }
 
-        if (intent?.type === 'AGRO') {
-          await startAdvisorFlow(psid);
-          continue;
-        }
-
-        // Keywords fallback
         const kwHit = detectKeywordHit(textMsg);
         if (kwHit) {
           const handled = await runKeywordAction(psid, kwHit);
           if (handled) continue;
         }
 
-        // Default
-        if (!s.flags.greeted) {
-          await greetAndMenu(psid);
-          continue;
-        }
+        if (!s.flags.greeted) { await greetAndMenu(psid); continue; }
 
         await sendText(psid, 'Para ayudarte más rápido, usa el menú 👇');
         await showMainMenu(psid);
@@ -695,7 +711,7 @@ router.post('/webhook', async (req, res) => {
 
     res.sendStatus(200);
   } catch (e) {
-    console.error('❌ /webhook messenger', e);
+    console.error('❌ /webhook messenger', e?.stack || e);
     res.sendStatus(500);
   }
 });
