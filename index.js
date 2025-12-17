@@ -1,4 +1,4 @@
-// index.js (Messenger webhook + menú Greenfield)
+// index.js (Messenger webhook + menú Greenfield) — FIX COMPLETO (Media Template con attachment_id + fallback + sin duplicados)
 import 'dotenv/config';
 import express from 'express';
 import fs from 'fs';
@@ -304,7 +304,12 @@ async function sendGenericCards(psid, elements = []) {
   if (!r.ok) console.error('sendGenericCards', await r.text());
 }
 
-// Cache simple de attachment_id por URL (para no re-subir siempre)
+// =======================
+// Media Template (SOLUCIÓN)
+// - NO usar "url" en template media
+// - subir imagen a /me/message_attachments y usar attachment_id
+// - si falla, lanzar error para fallback a generic
+// =======================
 const ATTACH_CACHE = new Map(); // imageUrl -> { id, at }
 const ATTACH_TTL_MS = 24 * 60 * 60 * 1000;
 
@@ -355,8 +360,9 @@ async function uploadReusableImage(imageUrl) {
 }
 
 async function sendMediaCard(psid, imageUrl, buttonUrl, buttonTitle = 'Contactar por WhatsApp') {
-  const url = `https://graph.facebook.com/v20.0/me/messages?access_token=${encodeURIComponent(PAGE_ACCESS_TOKEN)}`;
+  const attachment_id = await uploadReusableImage(imageUrl);
 
+  const url = `https://graph.facebook.com/v20.0/me/messages?access_token=${encodeURIComponent(PAGE_ACCESS_TOKEN)}`;
   const payload = {
     recipient: { id: psid },
     message: {
@@ -367,10 +373,8 @@ async function sendMediaCard(psid, imageUrl, buttonUrl, buttonTitle = 'Contactar
           elements: [
             {
               media_type: 'image',
-              url: imageUrl,
-              buttons: [
-                { type: 'web_url', url: buttonUrl, title: clamp(buttonTitle, 20) },
-              ],
+              attachment_id,
+              buttons: [{ type: 'web_url', url: buttonUrl, title: clamp(buttonTitle, 20) }],
             },
           ],
         },
@@ -383,7 +387,12 @@ async function sendMediaCard(psid, imageUrl, buttonUrl, buttonTitle = 'Contactar
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(payload),
   });
-  if (!r.ok) console.error('sendMediaCard', await r.text());
+
+  if (!r.ok) {
+    const err = await r.text();
+    console.error('sendMediaCard', err);
+    throw new Error(err); // clave: forzar fallback
+  }
 }
 
 // =======================
@@ -436,7 +445,7 @@ function findZoneById(deptId, zoneId) { return getDeptZones(deptId).find(z => z.
 function getAdvisorsMap() { return GF?.advisors || {}; }
 function getAdvisorById(id) { return getAdvisorsMap()?.[id] || null; }
 
-// IMPORTANTE: assets_base_url debe ser TU dominio Railway
+// IMPORTANTE: assets_base_url debe ser HTTPS y público
 function resolveImageUrl(p) {
   const raw = String(p || '').trim();
   if (!raw) return null;
@@ -580,10 +589,11 @@ async function showAdvisorCards(psid, advisorIds = [], headerText = 'Selecciona 
 
     const img = resolveImageUrl(a.image);
     const url = waLink(a.whatsapp, msg);
+
     elements.push({
       title: String(a.name || 'Asesor').slice(0, 80),
       image_url: img || undefined,
-      buttons: [{ type: 'web_url', url, title: String(a.name || 'Contactar').slice(0, 20) }], // botón con nombre
+      buttons: [{ type: 'web_url', url, title: String(a.name || 'Contactar').slice(0, 20) }],
     });
   }
 
@@ -594,6 +604,8 @@ async function showAdvisorCards(psid, advisorIds = [], headerText = 'Selecciona 
   }
 
   await sendText(psid, `${headerText} 👇`);
+
+  // Si hay 1 asesor, intentamos Media (imagen grande) y si falla, Generic.
   if (elements.length === 1) {
     const el = elements[0];
     const img = el.image_url;
