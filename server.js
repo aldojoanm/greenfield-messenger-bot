@@ -21,6 +21,25 @@ app.get('/privacidad', (_req, res) => {
 
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/image', express.static(path.join(__dirname, 'image')));
+app.get('/debug/files', (_req, res) => {
+  const byDir_cfg = path.join(__dirname, 'knowledge', 'greenfield_advisors.json');
+  const byCwd_cfg = path.join(process.cwd(), 'knowledge', 'greenfield_advisors.json');
+
+  res.json({
+    cwd: process.cwd(),
+    __dirname,
+    byDir_cfg,
+    byDir_cfg_exists: fs.existsSync(byDir_cfg),
+    byCwd_cfg,
+    byCwd_cfg_exists: fs.existsSync(byCwd_cfg),
+    list_knowledge_byDir: fs.existsSync(path.join(__dirname, 'knowledge'))
+      ? fs.readdirSync(path.join(__dirname, 'knowledge'))
+      : null,
+    list_knowledge_byCwd: fs.existsSync(path.join(process.cwd(), 'knowledge'))
+      ? fs.readdirSync(path.join(process.cwd(), 'knowledge'))
+      : null,
+  });
+});
 app.use(messengerRouter);
 app.use((_req, res) => res.status(404).send('Not Found'));
 

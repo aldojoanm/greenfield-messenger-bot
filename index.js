@@ -15,11 +15,10 @@ function loadJSON(p) {
     const raw = fs.readFileSync(p, 'utf8');
     return JSON.parse(raw);
   } catch (e) {
-    console.error('[Greenfield] loadJSON ERROR:', p, e?.message || e);
+    console.error('[Greenfield] loadJSON ERROR:', p, e?.code || '', e?.message || e);
     return null;
   }
 }
-
 
 function resolvePath(p) {
   if (!p) return null;
