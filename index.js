@@ -355,38 +355,6 @@ async function uploadReusableImage(imageUrl) {
 }
 
 async function sendMediaCard(psid, imageUrl, buttonUrl, buttonTitle = 'Contactar por WhatsApp') {
-  const attachment_id = await uploadReusableImage(imageUrl);
-
-  const url = `https://graph.facebook.com/v20.0/me/messages?access_token=${encodeURIComponent(PAGE_ACCESS_TOKEN)}`;
-  const payload = {
-    recipient: { id: psid },
-    message: {
-      attachment: {
-        type: 'template',
-        payload: {
-          template_type: 'media',
-          elements: [
-            {
-              media_type: 'image',
-              attachment_id,
-              buttons: [{ type: 'web_url', url: buttonUrl, title: clamp(buttonTitle, 20) }],
-            },
-          ],
-        },
-      },
-    },
-  };
-
-  const r = await httpFetchAny(url, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload),
-  });
-
-  if (!r.ok) console.error('sendMediaCard', await r.text());
-}
-
-async function sendMediaCard(psid, imageUrl, buttonUrl, buttonTitle = 'Contactar por WhatsApp') {
   const url = `https://graph.facebook.com/v20.0/me/messages?access_token=${encodeURIComponent(PAGE_ACCESS_TOKEN)}`;
 
   const payload = {
