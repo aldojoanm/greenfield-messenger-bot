@@ -24,7 +24,6 @@ function loadJSON(p) {
 
 function resolvePath(p) {
   if (!p) return null;
-  // Si es absoluto, úsalo. Si no, resuélvelo desde el cwd real donde corre node.
   return path.isAbsolute(p) ? p : path.resolve(process.cwd(), p);
 }
 
@@ -43,7 +42,6 @@ function reloadConfig() {
 }
 setInterval(reloadConfig, 2 * 60 * 1000);
 
-// Logs de diagnóstico (una vez)
 console.log('[Greenfield] CFG_PATH:', CFG_PATH);
 console.log('[Greenfield] KEYWORDS_PATH:', KEYWORDS_PATH);
 console.log(
@@ -65,7 +63,7 @@ const sessions = new Map();
 function newSession() {
   const now = Date.now();
   return {
-    pending: null, // 'motivo' | 'dept' | 'dept_free' | 'scz_zone' | 'scz_zone_free' | 'ask_product' | 'ask_cultivo' | 'ask_problema'
+    pending: null,
     vars: {
       departamento: null,
       zona: null,
@@ -170,7 +168,6 @@ async function sendText(psid, text) {
   if (!r.ok) console.error('sendText', await r.text());
 }
 
-// ✅ NUNCA manda quick_replies vacío → evita (#194)
 async function sendQR(psid, text, options = []) {
   const quick_replies = (options || [])
     .slice(0, 11)
@@ -308,7 +305,6 @@ function detectSczZoneByKeywords(text) {
   return null;
 }
 
-// Resolver images (Messenger necesita URL absoluta)
 function resolveImageUrl(p) {
   const raw = String(p || '').trim();
   if (!raw) return null;
@@ -360,7 +356,8 @@ function renderWhatsAppMessage(s, motivoLabel = '') {
 // =======================
 async function showMainMenu(psid) {
   await sendButtons(psid, '¿En qué te puedo ayudar hoy? 👇', [
-    { type: 'postback', title: '🧪 Nuestros productos', payload: 'GF_PRODUCTS' },
+    // ✅ quitamos 🧪
+    { type: 'postback', title: 'Nuestros productos', payload: 'GF_PRODUCTS' },
     { type: 'postback', title: '👨‍🌾 Hablar con un agrónomo', payload: 'GF_AGRO' },
     { type: 'postback', title: '📌 Ayuda rápida', payload: 'GF_HELP' },
   ]);
@@ -407,7 +404,6 @@ async function askMotivo(psid) {
 async function askDepartamento(psid) {
   const s = getSession(psid);
 
-  // ✅ Si no hay config, pedir texto libre (no trabar)
   if (!hasGFData()) {
     s.pending = 'dept_free';
     await sendText(psid, 'Para asignarte al ingeniero correcto, escribe tu *departamento* y *zona/ciudad*.\nEj: "Santa Cruz, Montero"');
@@ -504,7 +500,6 @@ function pickFallbackAdvisor() {
 async function showAdvisorsForCurrentZone(psid) {
   const s = getSession(psid);
 
-  // Si no hay config, contacto genérico si existe
   if (!hasGFData()) {
     const a = pickFallbackAdvisor();
     await ensureProfileName(psid);
@@ -571,7 +566,6 @@ async function startAgronomoFlow(psid) {
 
   if (!s.vars.motivo) return askMotivo(psid);
 
-  // extras SOLO para armar el mensaje (no responder fichas/precios)
   if (s.vars.motivo === 'ficha_tecnica' && !s.vars.producto) return askProduct(psid);
   if (s.vars.motivo === 'consulta_tecnica') {
     if (!s.vars.cultivo) return askCultivo(psid);
@@ -720,7 +714,6 @@ router.post('/webhook', async (req, res) => {
             s.vars.departamento = title(t).slice(0, 40);
             s.pending = null;
 
-            // Si menciona SCZ, intentar detectar zona por keywords si config existe
             if (/santa cruz|scz/i.test(t)) {
               s.vars.departamento = 'Santa Cruz';
               if (hasGFData()) {
@@ -782,9 +775,11 @@ router.post('/webhook', async (req, res) => {
 
           if (incoming === 'GF_HELP') { await showHelp(psid); continue; }
 
+          // ✅ PRODUCTOS: mensaje amable antes del botón + sin emoji
           if (incoming === 'GF_PRODUCTS') {
             const url = GF?.brand?.products_url || 'https://greenfield.com.bo/productos/';
-            await sendButtons(psid, '🧪 Nuestros productos 👇', [{ type: 'web_url', url, title: 'Ver productos' }]);
+            await sendText(psid, 'Con gusto 😊\nAquí puedes ver nuestro catálogo y conocer las opciones disponibles:');
+            await sendButtons(psid, 'Abrir catálogo:', [{ type: 'web_url', url, title: 'Ver productos' }]);
             await showMainMenu(psid);
             continue;
           }
@@ -794,7 +789,6 @@ router.post('/webhook', async (req, res) => {
             continue;
           }
 
-          // Ayuda rápida
           if (incoming === 'GF_HELP_PRECIO') { s.vars.motivo = 'precio_pedido'; await startAgronomoFlow(psid); continue; }
           if (incoming === 'GF_HELP_STOCK') { s.vars.motivo = 'disponibilidad'; await startAgronomoFlow(psid); continue; }
           if (incoming === 'GF_HELP_ENVIO') { s.vars.motivo = 'precio_pedido'; await startAgronomoFlow(psid); continue; }
@@ -824,7 +818,6 @@ router.post('/webhook', async (req, res) => {
             continue;
           }
 
-          // Motivo
           if (incoming.startsWith('GF_MOTIVO_')) {
             const id = incoming.replace('GF_MOTIVO_', '');
             s.vars.motivo = id;
@@ -832,7 +825,6 @@ router.post('/webhook', async (req, res) => {
             continue;
           }
 
-          // Depto
           if (incoming.startsWith('GF_DEPT_')) {
             const id = incoming.replace('GF_DEPT_', '');
             const dept = findDeptById(id);
@@ -848,7 +840,6 @@ router.post('/webhook', async (req, res) => {
             continue;
           }
 
-          // Zona SCZ
           if (incoming.startsWith('GF_SCZ_ZONE_')) {
             const zoneId = incoming.replace('GF_SCZ_ZONE_', '');
             const zone = findZoneById('santa_cruz', zoneId);
@@ -880,9 +871,11 @@ router.post('/webhook', async (req, res) => {
           continue;
         }
 
+        // ✅ PRODUCTOS por texto: mensaje amable + sin emoji
         if (intent?.type === 'PRODUCTS') {
           const url = GF?.brand?.products_url || 'https://greenfield.com.bo/productos/';
-          await sendButtons(psid, '🧪 Nuestros productos 👇', [{ type: 'web_url', url, title: 'Ver productos' }]);
+          await sendText(psid, 'Con gusto 😊\nAquí puedes ver nuestro catálogo y conocer las opciones disponibles:');
+          await sendButtons(psid, 'Abrir catálogo:', [{ type: 'web_url', url, title: 'Ver productos' }]);
           await showMainMenu(psid);
           continue;
         }
@@ -903,18 +896,12 @@ router.post('/webhook', async (req, res) => {
           continue;
         }
 
-        // =======================
-        // Keywords fallback (opcional)
-        // =======================
         const kwHit = detectKeywordHit(textMsg);
         if (kwHit) {
           const handled = await runKeywordAction(psid, kwHit);
           if (handled) continue;
         }
 
-        // =======================
-        // Default
-        // =======================
         if (!s.flags.greeted) {
           await greetAndMenu(psid);
           continue;
