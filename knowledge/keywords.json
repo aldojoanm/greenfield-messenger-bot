@@ -1,0 +1,114 @@
+{
+  "version": 1,
+  "items": [
+    {
+      "id": "KW_SALUDO",
+      "priority": 100,
+      "patterns": ["hola", "holaa", "holaaa", "buenas", "buen dia", "buen día", "buenas tardes", "buenas noches", "hey", "hello", "ola", "wenas"],
+      "reply": { "text": "👋 ¡Hola! Soy el asistente de *Greenfield*.\n¿En que puedo ayudarte? 👨‍🌾" },
+      "action": { "type": "SHOW_MAIN_MENU" }
+    },
+    {
+      "id": "KW_PRECIOS_PEDIDOS",
+      "priority": 90,
+      "patterns": ["precio", "presio", "precios", "costo", "costos", "cuanto cuesta", "cuánto cuesta", "cuanto vale", "cuánto vale", "cuanto sale", "cuánto sale", "cotizar", "cotisacion", "cotización", "proforma", "pedido", "comprar", "compra", "venta", "quiero comprar", "quiero pedir", "me interesa comprar"],
+      "reply": { "text": "Para *precios y pedidos* te atiende un ingeniero agrónomo por zona 👨‍🌾.\nToca *Hablar con un agrónomo* y te conecto al instante." },
+      "action": { "type": "OPEN_AGRONOMO" }
+    },
+    {
+      "id": "KW_FICHA_ETIQUETA",
+      "priority": 85,
+      "patterns": ["ficha tecnica", "ficha técnica", "ficha", "etiqueta", "dosis", "modo de uso", "ingrediente activo", "composicion", "composición", "msds", "hoja de seguridad", "seguridad", "toxicidad", "antidoto", "antídoto"],
+      "reply": { "text": "📄 Te ayudo con *ficha técnica / etiqueta*.\nDecime el *nombre del producto* (aunque sea como lo recuerdes) y tu *zona*." },
+      "action": { "type": "ASK_PRODUCT_THEN_AGRONOMO" }
+    },
+    {
+      "id": "KW_WHATSAPP_CONTACTO",
+      "priority": 80,
+      "patterns": ["wsp", "wpp", "wasap", "guasap", "whats", "whatsapp", "numero", "número", "telefono", "teléfono", "celular", "contacto", "contactarme", "me pasas tu numero", "me pasas tu número"],
+      "reply": { "text": "📲 Te conecto con un el ingeniero agrónomo de tu zona, para que te pueda dar una mejor asesoría .\nToca *Hablar con un agrónomo*." },
+      "action": { "type": "OPEN_AGRONOMO" }
+    },
+    {
+      "id": "KW_PRODUCTOS_CATALOGO",
+      "priority": 75,
+      "patterns": ["productos", "que venden", "qué venden", "que ofrecen", "qué ofrecen", "linea", "línea", "catalogo", "catálogo", "portafolio", "portafolio greenfield", "lista de productos", "que tienen"],
+      "reply": { "text": "🧪 Aquí puedes ver *nuestros productos*:\nhttps://greenfield.com.bo/productos/\n\nSi me dices el *producto* y tu *zona*, te conecto con un ingeniero agrónomo." },
+      "action": { "type": "NONE" }
+    },
+    {
+      "id": "KW_ENVIO_COBERTURA",
+      "priority": 70,
+      "patterns": ["envio", "envío", "envios", "envíos", "delivery", "entrega", "mandan", "mandan a", "llegan a", "cobertura", "hasta mi zona", "envian", "envían", "llega a mi zona", "me lo traen"],
+      "reply": { "text": "🚚 Sobre *entregas/cobertura*, te confirma el ingeniero agrónomo según tu zona.\nToca *Hablar con un agrónomo* y elige tu departamento." },
+      "action": { "type": "OPEN_AGRONOMO" }
+    },
+    {
+      "id": "KW_PLAGA_MALEZA_ENFERMEDAD",
+      "priority": 70,
+      "patterns": ["plaga", "maleza", "malezas", "hongo", "hongos", "roya", "oruga", "trips", "pulgon", "pulgón", "gusano", "enfermedad", "se me enfermo", "se me enfermó", "se me lleno de", "se me llenó de", "se me pudre", "mancha", "manchas", "se me esta muriendo", "se me está muriendo"],
+      "reply": { "text": "👨‍🌾 Para recomendar bien necesito 3 datos:\n1) *Cultivo*\n2) *Problema* (plaga/maleza/enfermedad)\n3) *Zona*\nLuego te conecto con el ingeniero agrónomo de tu zona." },
+      "action": { "type": "ASK_CULTIVO_PROBLEMA_THEN_AGRONOMO" }
+    },
+    {
+      "id": "KW_STOCK",
+      "priority": 65,
+      "patterns": ["hay stock", "tienen stock", "disponible", "disponibilidad", "agotado", "cuando llega", "cuándo llega", "para cuando", "para cuándo", "llega hoy", "llega mañana"],
+      "reply": { "text": "📦 La *disponibilidad/stock* la confirma el ingeniero agrónomo según tu zona.\nToca *Hablar con un agrónomo*." },
+      "action": { "type": "OPEN_AGRONOMO" }
+    },
+    {
+      "id": "KW_CREDITO_PLAZO",
+      "priority": 60,
+      "patterns": ["credito", "crédito", "a credito", "a crédito", "plazo", "financiamiento", "al credito", "al crédito", "fiado", "pago a plazo", "pago después", "pago despues"],
+      "reply": { "text": "💳 Crédito/plazo lo confirma el ingeniero agrónomo según tu zona y tipo de pedido.\nToca *Hablar con un agrónomo*." },
+      "action": { "type": "OPEN_AGRONOMO" }
+    },
+    {
+      "id": "KW_FACTURA_NIT",
+      "priority": 60,
+      "patterns": ["factura", "nit", "razon social", "razón social", "nombre de factura", "para facturar", "credito fiscal", "crédito fiscal"],
+      "reply": { "text": "🧾 Para factura/NIT se coordina al momento del pedido con el ingeniero agrónomo.\nToca *Hablar con un agrónomo*." },
+      "action": { "type": "OPEN_AGRONOMO" }
+    },
+
+    {
+      "id": "KW_UBICACION",
+      "priority": 55,
+      "patterns": ["ubicacion", "ubicación", "direccion", "dirección", "mapa", "donde quedan", "donde estan", "dónde quedan", "dónde están", "como llego", "cómo llego"],
+      "reply": { "text": "📍 Para ubicación, dime tu ciudad y te paso la dirección/link.\nSi buscas asesor por zona, toca *Hablar con un agrónomo*." },
+      "action": { "type": "NONE" }
+    },
+
+    {
+      "id": "KW_GRACIAS",
+      "priority": 40,
+      "patterns": ["gracias", "grasias", "ok gracias", "listo gracias", "de nada", "muchas gracias", "mil gracias"],
+      "reply": { "text": "¡Con gusto! 😊 Si necesitas algo más, aquí estaré." },
+      "action": { "type": "SHOW_MAIN_MENU" }
+    },
+    {
+      "id": "KW_CIERRE",
+      "priority": 40,
+      "patterns": ["chau", "chao", "hasta luego", "adios", "adiós", "nada mas", "nada más", "eso es todo", "finalizar", "salir", "bye"],
+      "reply": { "text": "¡Gracias por escribirnos! 👋" },
+      "action": { "type": "END_SESSION" }
+    },
+
+    {
+      "id": "KW_ZONAS_SANTA_CRUZ",
+      "priority": 30,
+      "patterns": ["montero", "warnes", "mineros", "yapacani", "yapacaní", "san julian", "san julián", "4 canadas", "4 cañadas", "robore", "roboré", "san ignacio", "concepcion", "concepción", "samaipata", "mairana", "porongo", "okina", "okinawa", "san jose", "san josé"],
+      "reply": { "text": "Perfecto ✅ Con esa zona ya puedo asignarte un agrónomo.\nAhora dime si es para *precio/pedido* o *ficha técnica*." },
+      "action": { "type": "ASK_MOTIVO_AND_OPEN_AGRONOMO" }
+    },
+
+    {
+      "id": "KW_PREGUNTAS_SIN_LEER",
+      "priority": 20,
+      "patterns": ["no entiendo", "no entendi", "no entiendoo", "q", "qe", "k", "ke", "??", "???", "ayuda", "help", "como hago", "cómo hago", "explica", "explique"],
+      "reply": { "text": "Te guío rápido ✅\n1) Si buscas *precio/pedido* → toca *Hablar con un agrónomo*\n2) Si buscas *ficha técnica* → dime el *producto*\n3) Si es *consulta técnica* → dime *cultivo + problema + zona*" },
+      "action": { "type": "SHOW_MAIN_MENU" }
+    }
+  ]
+}

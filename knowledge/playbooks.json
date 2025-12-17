@@ -1,7 +1,0 @@
-{
-  "greeting": "¡Hola! Soy el asistente virtual de New Chem Agroquímicos.",
-  "ask_zone": {
-    "text": "Para adaptar la recomendación, ¿en qué departamento produces?",
-    "options": ["Santa Cruz", "Cochabamba", "La Paz"]
-  }
-}

@@ -1,0 +1,156 @@
+{
+  "brand": {
+    "name": "Greenfield",
+    "products_url": "https://greenfield.com.bo/productos/",
+    "default_country_code": "591",
+    "whatsapp_message_template": "Hola, soy {{client_name}}. Te escribo desde *{{departamento}}* (zona: *{{zona}}*). Necesito ayuda con: *{{motivo}}*. {{extra}}"
+  },
+  "advisors": {
+    "baneza_maldonado": {
+      "id": "baneza_maldonado",
+      "name": "Baneza Maldonado",
+      "role": "Asesor Comercial",
+      "whatsapp": "+59178188238",
+      "image": "/ingenieros/baneza-maldonado.png",
+      "tags": ["Tarija"],
+      "coverage_note": "Tarija y alrededores"
+    },
+    "moises_reyna": {
+      "id": "moises_reyna",
+      "name": "Moises Reyna",
+      "role": "Asesor Comercial",
+      "whatsapp": "+59178187725",
+      "image": "/ingenieros/moises-reyna.png",
+      "tags": ["Santa Cruz", "La Paz", "Cochabamba", "Chuquisaca", "Potosí"],
+      "coverage_note": "Cobertura según zona asignada"
+    },
+    "arturo_hinojosa": {
+      "id": "arturo_hinojosa",
+      "name": "Arturo Hinojosa",
+      "role": "Asesor Comercial",
+      "whatsapp": "+59177691187",
+      "image": "/ingenieros/arturo.png",
+      "tags": ["Santa Cruz", "Cochabamba", "Chuquisaca"],
+      "coverage_note": "Cobertura según zona asignada"
+    },
+    "alvaro_mitma": {
+      "id": "alvaro_mitma",
+      "name": "Álvaro Mitma",
+      "role": "Asesor Comercial",
+      "whatsapp": "+59178188263",
+      "image": "/ingenieros/alvaro-mitma.png",
+      "tags": ["Beni", "Santa Cruz"],
+      "coverage_note": "Beni / Guarayos"
+    },
+    "alejandro_llano": {
+      "id": "alejandro_llano",
+      "name": "Alejandro Llano",
+      "role": "Asesor Comercial",
+      "whatsapp": "+59178100066",
+      "image": "/ingenieros/alejandro-llano.png",
+      "tags": ["Santa Cruz"],
+      "coverage_note": "Montero, Okinawa 1–3, Yapacaní, San Juan de Yapacaní"
+    },
+    "angel_suarez": {
+      "id": "angel_suarez",
+      "name": "Ángel Suárez",
+      "role": "Asesor Comercial",
+      "whatsapp": "+59178100158",
+      "image": "/ingenieros/angel-suarez.png",
+      "tags": ["Santa Cruz"],
+      "coverage_note": "San Julián, 4 Cañadas, Transcom, San José, Roboré"
+    },
+    "andres_moreno": {
+      "id": "andres_moreno",
+      "name": "J. Andrés Moreno",
+      "role": "Asesor Comercial",
+      "whatsapp": "+59174166870",
+      "image": "/ingenieros/jose-moreno.png",
+      "tags": ["Santa Cruz"],
+      "coverage_note": "Montero, San Pedro, Loma Alta, Peta Grande, San Juan de Piraí, La Planchada"
+    },
+    "armin_hurtado": {
+      "id": "armin_hurtado",
+      "name": "Armin Hurtado",
+      "role": "Asesor Comercial",
+      "whatsapp": "+59178187629",
+      "image": "/ingenieros/armin.png",
+      "tags": ["Santa Cruz"],
+      "coverage_note": "Concepción, San Ignacio de Velasco, San Javier, San Rafael, San Miguel, y otros"
+    },
+    "diego_escobar": {
+      "id": "diego_escobar",
+      "name": "Diego Escobar",
+      "role": "Asesor Comercial",
+      "whatsapp": "+59178187685",
+      "image": "/ingenieros/diego-escobar.png",
+      "tags": ["Santa Cruz"],
+      "coverage_note": "Mineros, Canandoa, Puesto Fernández, San Pedro, Los Andes, Warnes"
+    }
+  },
+  "departments": [
+    {
+      "id": "santa_cruz",
+      "name": "Santa Cruz",
+      "type": "zoned",
+      "zones": [
+        {
+          "id": "scz_norte_integrado",
+          "name": "Norte Integrado",
+          "advisorIds": ["alejandro_llano", "diego_escobar", "andres_moreno", "moises_reyna"],
+          "keywords": ["montero", "warnes", "mineros", "yapacani", "yapacaní", "san pedro", "los andes", "okina", "okinawa"]
+        },
+        {
+          "id": "scz_este",
+          "name": "Este",
+          "advisorIds": ["angel_suarez"],
+          "keywords": ["san julian", "san julián", "4 canadas", "4 cañadas", "cuatro canadas", "cuatro cañadas", "transcom"]
+        },
+        {
+          "id": "scz_chiquitania",
+          "name": "Chiquitania",
+          "advisorIds": ["angel_suarez", "armin_hurtado"],
+          "keywords": ["san jose", "san josé", "roboré", "robore", "concepcion", "concepción"]
+        },
+        {
+          "id": "scz_velasco_san_ignacio",
+          "name": "San Ignacio / Velasco",
+          "advisorIds": ["armin_hurtado"],
+          "keywords": ["san ignacio", "velasco", "san javier", "san rafael", "san miguel"]
+        },
+        {
+          "id": "scz_valles",
+          "name": "Valles",
+          "advisorIds": ["arturo_hinojosa", "moises_reyna"],
+          "keywords": ["valles", "valle", "samaipata", "mairana", "porongo"]
+        },
+        {
+          "id": "scz_ciudad",
+          "name": "Ciudad Santa Cruz",
+          "advisorIds": ["moises_reyna"],
+          "keywords": ["santa cruz de la sierra", "scz ciudad", "urbano", "equipetrol", "plan 3000"]
+        }
+      ]
+    },
+    { "id": "la_paz", "name": "La Paz", "type": "simple", "advisorIds": ["moises_reyna"] },
+    { "id": "cochabamba", "name": "Cochabamba", "type": "simple", "advisorIds": ["moises_reyna", "arturo_hinojosa"] },
+    { "id": "beni", "name": "Beni", "type": "simple", "advisorIds": ["alvaro_mitma"] },
+    { "id": "tarija", "name": "Tarija", "type": "simple", "advisorIds": ["baneza_maldonado"] },
+    { "id": "chuquisaca", "name": "Chuquisaca", "type": "simple", "advisorIds": ["arturo_hinojosa", "moises_reyna"] },
+    { "id": "potosi", "name": "Potosí", "type": "simple", "advisorIds": ["moises_reyna"] }
+  ],
+  "handoff": {
+    "motivos": [
+      { "id": "precio_pedido", "label": "Precio / Pedido" },
+      { "id": "ficha_tecnica", "label": "Ficha técnica / Etiqueta" },
+      { "id": "consulta_tecnica", "label": "Consulta técnica (cultivo/plaga)" },
+      { "id": "disponibilidad", "label": "Disponibilidad" }
+    ],
+    "extra_questions": {
+      "consulta_tecnica": [
+        { "key": "cultivo", "question": "¿Qué cultivo manejas? (ej: soya/maíz/arroz)" },
+        { "key": "problema", "question": "¿Qué problema tienes? (plaga, maleza, enfermedad)" }
+      ]
+    }
+  }
+}
