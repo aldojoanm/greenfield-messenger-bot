@@ -1,4 +1,4 @@
-// messenger/greenfield.js
+// index.js
 import 'dotenv/config';
 import express from 'express';
 import fs from 'fs';
@@ -10,17 +10,16 @@ router.use(express.json());
 const VERIFY_TOKEN = process.env.VERIFY_TOKEN;
 const PAGE_ACCESS_TOKEN = process.env.PAGE_ACCESS_TOKEN;
 
-// =======================
-// Load JSON (robusto)
-// =======================
 function loadJSON(p) {
   try {
     const raw = fs.readFileSync(p, 'utf8');
     return JSON.parse(raw);
-  } catch {
+  } catch (e) {
+    console.error('[Greenfield] loadJSON ERROR:', p, e?.message || e);
     return null;
   }
 }
+
 
 function resolvePath(p) {
   if (!p) return null;
