@@ -273,9 +273,14 @@ async function sendButtons(psid, text, buttons = []) {
   if (!r.ok) console.error('sendButtons', await r.text());
 }
 
-// ✅ Cambio 1: Generic template con imagen MÁS GRANDE (square)
 async function sendGenericCards(psid, elements = []) {
   const url = `https://graph.facebook.com/v20.0/me/messages?access_token=${encodeURIComponent(PAGE_ACCESS_TOKEN)}`;
+  const clean = (elements || []).slice(0, 10).map(el => {
+    const x = { ...el };
+    delete x.subtitle;
+    return x;
+  });
+
   const payload = {
     recipient: { id: psid },
     message: {
@@ -283,21 +288,104 @@ async function sendGenericCards(psid, elements = []) {
         type: 'template',
         payload: {
           template_type: 'generic',
-          image_aspect_ratio: 'square', // 👈 hace la imagen más grande
-          elements: (elements || []).slice(0, 10),
+          image_aspect_ratio: 'square',
+          elements: clean,
         },
       },
     },
   };
+
   const r = await httpFetchAny(url, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(payload),
   });
+
   if (!r.ok) console.error('sendGenericCards', await r.text());
 }
 
-// ✅ Cambio 2: Media template (1 asesor) = imagen MUCHO más grande
+// Cache simple de attachment_id por URL (para no re-subir siempre)
+const ATTACH_CACHE = new Map(); // imageUrl -> { id, at }
+const ATTACH_TTL_MS = 24 * 60 * 60 * 1000;
+
+function getCachedAttachment(imageUrl) {
+  const it = ATTACH_CACHE.get(imageUrl);
+  if (!it) return null;
+  if (Date.now() - it.at > ATTACH_TTL_MS) {
+    ATTACH_CACHE.delete(imageUrl);
+    return null;
+  }
+  return it.id || null;
+}
+
+function setCachedAttachment(imageUrl, id) {
+  if (!imageUrl || !id) return;
+  ATTACH_CACHE.set(imageUrl, { id, at: Date.now() });
+}
+
+async function uploadReusableImage(imageUrl) {
+  const cached = getCachedAttachment(imageUrl);
+  if (cached) return cached;
+
+  const url = `https://graph.facebook.com/v20.0/me/message_attachments?access_token=${encodeURIComponent(PAGE_ACCESS_TOKEN)}`;
+  const payload = {
+    message: {
+      attachment: {
+        type: 'image',
+        payload: { url: imageUrl, is_reusable: true },
+      },
+    },
+  };
+
+  const r = await httpFetchAny(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  });
+
+  const txt = await r.text();
+  if (!r.ok) throw new Error(`uploadReusableImage failed: ${txt}`);
+
+  const j = JSON.parse(txt);
+  const attachmentId = j?.attachment_id;
+  if (!attachmentId) throw new Error(`uploadReusableImage no attachment_id: ${txt}`);
+
+  setCachedAttachment(imageUrl, attachmentId);
+  return attachmentId;
+}
+
+async function sendMediaCard(psid, imageUrl, buttonUrl, buttonTitle = 'Contactar por WhatsApp') {
+  const attachment_id = await uploadReusableImage(imageUrl);
+
+  const url = `https://graph.facebook.com/v20.0/me/messages?access_token=${encodeURIComponent(PAGE_ACCESS_TOKEN)}`;
+  const payload = {
+    recipient: { id: psid },
+    message: {
+      attachment: {
+        type: 'template',
+        payload: {
+          template_type: 'media',
+          elements: [
+            {
+              media_type: 'image',
+              attachment_id,
+              buttons: [{ type: 'web_url', url: buttonUrl, title: clamp(buttonTitle, 20) }],
+            },
+          ],
+        },
+      },
+    },
+  };
+
+  const r = await httpFetchAny(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  });
+
+  if (!r.ok) console.error('sendMediaCard', await r.text());
+}
+
 async function sendMediaCard(psid, imageUrl, buttonUrl, buttonTitle = 'Contactar por WhatsApp') {
   const url = `https://graph.facebook.com/v20.0/me/messages?access_token=${encodeURIComponent(PAGE_ACCESS_TOKEN)}`;
 
@@ -517,7 +605,6 @@ async function showAdvisorCards(psid, advisorIds = [], headerText = 'Selecciona 
 
   const msg = buildDefaultWhatsAppMessage(s);
 
-  // Armamos elementos válidos
   const elements = [];
   for (const id of unique) {
     const a = getAdvisorById(id);
@@ -525,14 +612,10 @@ async function showAdvisorCards(psid, advisorIds = [], headerText = 'Selecciona 
 
     const img = resolveImageUrl(a.image);
     const url = waLink(a.whatsapp, msg);
-
-    const subtitle = [a.role || 'Asesor', a.coverage_note || null].filter(Boolean).join(' • ').slice(0, 80);
-
     elements.push({
       title: String(a.name || 'Asesor').slice(0, 80),
-      subtitle: subtitle || 'Atención por zona',
       image_url: img || undefined,
-      buttons: [{ type: 'web_url', url, title: 'Contactar por WhatsApp' }],
+      buttons: [{ type: 'web_url', url, title: String(a.name || 'Contactar').slice(0, 20) }], // botón con nombre
     });
   }
 
@@ -543,20 +626,22 @@ async function showAdvisorCards(psid, advisorIds = [], headerText = 'Selecciona 
   }
 
   await sendText(psid, `${headerText} 👇`);
-
-  // ✅ Si es 1 asesor, usar Media Template para que se vea gigante
   if (elements.length === 1) {
     const el = elements[0];
     const img = el.image_url;
     const btn = el.buttons?.[0];
+
     if (img && btn?.url) {
-      await sendMediaCard(psid, img, btn.url, btn.title || 'Contactar por WhatsApp');
+      try {
+        await sendMediaCard(psid, img, btn.url, btn.title || 'Contactar por WhatsApp');
+      } catch (e) {
+        console.error('[Greenfield] media failed, fallback generic:', e?.message || e);
+        await sendGenericCards(psid, elements);
+      }
     } else {
-      // fallback
       await sendGenericCards(psid, elements);
     }
   } else {
-    // ✅ Múltiples: Generic + square (más grande)
     await sendGenericCards(psid, elements);
   }
 
@@ -564,9 +649,6 @@ async function showAdvisorCards(psid, advisorIds = [], headerText = 'Selecciona 
   await showMainMenu(psid);
 }
 
-// =======================
-// Intenciones
-// =======================
 const isGreeting = (t = '') => /\b(hola|holi|buenas|buenos dias|buen dia|buenas tardes|buenas noches|hello|hey|hi)\b/.test(norm(t));
 const isEnd = (t = '') => /\b(chau|chao|adios|adiós|bye|finalizar|salir|eso es todo|nada mas|nada más)\b/.test(norm(t));
 
