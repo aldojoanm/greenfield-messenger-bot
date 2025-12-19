@@ -96,6 +96,34 @@ function refreshStatus() {
   };
 }
 
+/** =========================================================
+ * FIX: helpers ANTES de buildProductsIndex / reloadConfig
+ * (para que `norm` exista cuando se llama reloadConfig())
+ * ========================================================= */
+const norm = (t = '') =>
+  String(t || '')
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/\p{Diacritic}/gu, '')
+    .replace(/[^\p{L}\p{N}\s\-\+]/gu, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+const title = (s) => String(s || '').replace(/\w\S*/g, (w) => w[0].toUpperCase() + w.slice(1).toLowerCase());
+const clamp = (t, n = 20) => (String(t || '').length <= n ? String(t || '') : String(t || '').slice(0, n - 1) + '…');
+
+const boolEnv = (v, def = false) => {
+  const s = String(v ?? '').trim().toLowerCase();
+  if (!s) return def;
+  return ['1', 'true', 'yes', 'y', 'on', 'si', 'sí'].includes(s);
+};
+
+async function httpFetchAny(...args) {
+  const f = globalThis.fetch || (await import('node-fetch')).default;
+  return f(...args);
+}
+/** ========================= END FIX ========================= */
+
 let PRODUCT_INDEX = null;
 
 function getProducts() {
@@ -231,29 +259,6 @@ function alreadyProcessed(mid) {
     seenSet.delete(old);
   }
   return false;
-}
-
-const norm = (t = '') =>
-  String(t || '')
-    .toLowerCase()
-    .normalize('NFD')
-    .replace(/\p{Diacritic}/gu, '')
-    .replace(/[^\p{L}\p{N}\s\-\+]/gu, ' ')
-    .replace(/\s+/g, ' ')
-    .trim();
-
-const title = (s) => String(s || '').replace(/\w\S*/g, (w) => w[0].toUpperCase() + w.slice(1).toLowerCase());
-const clamp = (t, n = 20) => (t.length <= n ? t : t.slice(0, n - 1) + '…');
-
-const boolEnv = (v, def = false) => {
-  const s = String(v ?? '').trim().toLowerCase();
-  if (!s) return def;
-  return ['1', 'true', 'yes', 'y', 'on', 'si', 'sí'].includes(s);
-};
-
-async function httpFetchAny(...args) {
-  const f = globalThis.fetch || (await import('node-fetch')).default;
-  return f(...args);
 }
 
 async function sendText(psid, text) {
@@ -574,7 +579,7 @@ const HR_TEXT = {
       '💼 Vacantes / trabajo:\n' +
       'Cuéntame: área de interés, ciudad y experiencia.\n' +
       'Si tienes CV, adjúntalo (PDF) o envía link (Drive).',
-    off: '💼 Por el momento *no hay vacantes activas* para este canal.',
+    off: '💼 Por el momento *no hay vacantes activas* por este canal.',
   },
 };
 
@@ -734,7 +739,8 @@ async function showAdvisorCards(psid, advisorIds = [], headerText = 'Selecciona 
   await showMainMenu(psid);
 }
 
-const isGreeting = (t = '') => /\b(hola|holi|buenas|buenos dias|buen dia|buenas tardes|buenas noches|hello|hey|hi)\b/.test(norm(t));
+const isGreeting = (t = '') =>
+  /\b(hola|holi|buenas|buenos dias|buen dia|buenas tardes|buenas noches|hello|hey|hi)\b/.test(norm(t));
 const isEnd = (t = '') => /\b(chau|chao|adios|adiós|bye|finalizar|salir|eso es todo|nada mas|nada más)\b/.test(norm(t));
 
 function detectIntent(text) {
