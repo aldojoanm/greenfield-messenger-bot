@@ -558,7 +558,7 @@ function buildDefaultWhatsAppMessage(s) {
 }
 
 async function showMainMenu(psid) {
-  await sendButtons(psid, '¿En qué te puedo ayudarte?', [
+  await sendButtons(psid, '¿En qué te puedo ayudar?', [
     { type: 'postback', title: 'Nuestros productos', payload: 'GF_PRODUCTS' },
     { type: 'postback', title: 'Asesores Comerciales', payload: 'GF_AGRO' },
     { type: 'postback', title: 'Ayuda rápida', payload: 'GF_HELP' },
@@ -1132,7 +1132,7 @@ router.post('/webhook', async (req, res) => {
             s.vars.departamento = 'Santa Cruz';
             s.vars.zona = zone.name;
 
-            await showAdvisorCards(psid, zone.advisorIds || [], `Nuestros Asesores disponibles — ${zone.name}`);
+            await showAdvisorCards(psid, zone.advisorIds || [], `Nuestros Asesores Disponibles — ${zone.name}`);
             continue;
           }
         }
@@ -1199,7 +1199,10 @@ router.post('/webhook', async (req, res) => {
           continue;
         }
 
-        await sendText(psid, 'Para ayudarte más rápido, usa el menú 👇');
+        await sendText(
+          psid,
+          'Lo siento, no tengo una respuesta para esa consulta en este momento. Para una atención más precisa, te sugiero contactar a un asesor comercial desde el menú (Asesores Comerciales).'
+        );
         await showMainMenu(psid);
       }
     }

@@ -2,109 +2,226 @@
   "version": 1,
   "items": [
     {
-      "id": "KW_CV",
-      "priority": 95,
-      "patterns": ["cv", "curriculum", "currículum", "hoja de vida", "dejar mi cv", "enviar cv", "postular", "postulacion", "postulación"],
-      "reply": { "text": "🧑‍💼 Claro." },
-      "action": { "type": "SEND_PAYLOAD", "payload": "GF_HELP_CV" }
+      "id": "KW_SALUDO",
+      "priority": 100,
+      "patterns": ["hola", "holaa", "holaaa", "buenas", "buen dia", "buen día", "buenas tardes", "buenas noches", "hey", "hello", "ola", "wenas", "buenas!", "buenas.", "holi"],
+      "reply": { "text": "Hola. Soy el asistente virtual de *Greenfield*. ¿En qué puedo ayudarle?" },
+      "action": { "type": "SHOW_MAIN_MENU" }
     },
+
     {
-      "id": "KW_PASANTIAS",
-      "priority": 95,
-      "patterns": ["pasantia", "pasantías", "pasantias", "pasante", "practicas", "prácticas", "practica", "práctica", "internship"],
-      "reply": { "text": "🎓 Claro." },
-      "action": { "type": "SEND_PAYLOAD", "payload": "GF_HELP_PASANTIAS" }
+      "id": "KW_MENU",
+      "priority": 98,
+      "patterns": ["menu", "menú", "volver", "volver al menu", "volver al menú", "inicio", "principal", "home", "empezar", "comenzar", "arrancar", "reiniciar"],
+      "reply": { "text": "Con gusto. Le muestro el menú principal." },
+      "action": { "type": "SHOW_MAIN_MENU" }
     },
+
     {
-      "id": "KW_TRABAJO",
+      "id": "KW_PRODUCTOS_CATALOGO",
       "priority": 95,
-      "patterns": ["trabajo", "vacante", "vacantes", "empleo", "oferta laboral", "contratan", "hay trabajo", "buscan personal", "bolsa de trabajo", "rrhh", "recursos humanos"],
-      "reply": { "text": "💼 Claro." },
-      "action": { "type": "SEND_PAYLOAD", "payload": "GF_HELP_TRABAJO" }
+      "patterns": ["productos", "producto", "catalogo", "catálogo", "portafolio", "portafolio greenfield", "lista de productos", "que venden", "qué venden", "que ofrecen", "qué ofrecen", "linea", "línea", "portafolio de productos", "ver productos", "catalog", "catlogo", "catálago"],
+      "reply": { "text": "Puede revisar el catálogo de productos de *Greenfield* desde el siguiente enlace." },
+      "action": { "type": "SEND_PAYLOAD", "payload": "GF_PRODUCTS" }
     },
+
     {
-      "id": "KW_PARA_QUE_SIRVE",
+      "id": "KW_CONTACTO_ASESOR",
+      "priority": 95,
+      "patterns": ["asesor", "asesores", "comercial", "asesor comercial", "agronomo", "agrónomo", "ingeniero", "ingeniero agronomo", "ingeniero agrónomo", "hablar con", "contacto", "contactarme", "whatsapp", "wasap", "watsap", "watssap", "wsp", "wpp", "guasap", "numero", "número", "telefono", "teléfono", "celular", "me pasas tu numero", "me pasas tu número", "quiero hablar", "quiero asesor", "quiero un asesor"],
+      "reply": { "text": "De acuerdo. Le ayudaré a contactar a un asesor comercial por WhatsApp según su zona." },
+      "action": { "type": "OPEN_AGRONOMO" }
+    },
+
+    {
+      "id": "KW_AYUDA_RAPIDA",
       "priority": 92,
-      "patterns": ["para que sirve", "para qué sirve", "sirve para", "uso", "usos", "funciona para", "qué hace", "que hace", "aplicacion", "aplicación"],
-      "reply": { "text": "🧪 Perfecto." },
-      "action": { "type": "SEND_PAYLOAD", "payload": "GF_HELP_PROD_USE" }
+      "patterns": ["ayuda", "help", "no entiendo", "no entendi", "no entendí", "explica", "explique", "como hago", "cómo hago", "orientame", "oriéntame", "guia", "guía", "opciones"],
+      "reply": { "text": "Con gusto. Seleccione una opción de ayuda para continuar." },
+      "action": { "type": "SEND_PAYLOAD", "payload": "GF_HELP" }
     },
+
+    {
+      "id": "KW_INFO_HORARIOS_UBICACION",
+      "priority": 92,
+      "patterns": ["horario", "horarios", "orarios", "horarrios", "atencion", "atención", "atencion al cliente", "atención al cliente", "ubicacion", "ubicación", "ubicasion", "dirección", "direccion", "direcion", "donde quedan", "dónde quedan", "como llegar", "cómo llegar", "maps", "mapa", "google maps", "ubicacion greenfield", "ubicación greenfield"],
+      "reply": { "text": "A continuación le comparto horarios y ubicación." },
+      "action": { "type": "SEND_PAYLOAD", "payload": "GF_HELP_INFO" }
+    },
+
+    {
+      "id": "KW_MAPS",
+      "priority": 90,
+      "patterns": ["maps", "google maps", "mapa", "ubicacion en maps", "ubicación en maps", "link maps", "enlace maps", "ubicacion google", "ubicación google"],
+      "reply": { "text": "Le comparto la ubicación para abrir en Google Maps." },
+      "action": { "type": "SEND_PAYLOAD", "payload": "GF_HELP_INFO" }
+    },
+
     {
       "id": "KW_PRECIO_DISPONIBILIDAD",
-      "priority": 92,
-      "patterns": ["precio", "presio", "precios", "costo", "costos", "cuanto cuesta", "cuánto cuesta", "cuanto vale", "cuánto vale", "cuanto sale", "cuánto sale", "stock", "hay stock", "tienen stock", "disponible", "disponibilidad", "agotado", "cuando llega", "cuándo llega", "cotizar", "cotisacion", "cotización", "proforma", "pedido", "comprar", "compra", "venta", "quiero comprar", "quiero pedir", "me interesa comprar"],
-      "reply": { "text": "💰 Perfecto." },
+      "priority": 90,
+      "patterns": ["precio", "presio", "precios", "costo", "costos", "cuanto cuesta", "cuánto cuesta", "cuanto vale", "cuánto vale", "cuanto sale", "cuánto sale", "stock", "hay stock", "tienen stock", "disponible", "disponibilidad", "agotado", "cuando llega", "cuándo llega", "cotizar", "cotisacion", "cotización", "cotizacion", "proforma", "pedido", "comprar", "compra", "venta", "quiero comprar", "quiero pedir", "me interesa comprar", "me interesa", "cotizacion precio", "precio y stock", "precio stock"],
+      "reply": { "text": "Para revisar precio y disponibilidad, indíqueme el producto de su interés." },
       "action": { "type": "SEND_PAYLOAD", "payload": "GF_HELP_PRICE_AVAIL" }
     },
 
     {
-      "id": "KW_SALUDO",
-      "priority": 100,
-      "patterns": ["hola", "holaa", "holaaa", "buenas", "buen dia", "buen día", "buenas tardes", "buenas noches", "hey", "hello", "ola", "wenas"],
-      "reply": { "text": "👋 ¡Hola! Soy el asistente de *Greenfield*.\n¿En que puedo ayudarte? 👨‍🌾" },
-      "action": { "type": "SHOW_MAIN_MENU" }
+      "id": "KW_USO_PRODUCTO",
+      "priority": 90,
+      "patterns": ["para que sirve", "para qué sirve", "para q sirve", "para k sirve", "sirve para", "uso", "usos", "uso del producto", "como se usa", "cómo se usa", "funciona para", "qué hace", "que hace", "aplicacion", "aplicación", "modo de uso", "indicaciones"],
+      "reply": { "text": "Con gusto. Indíqueme el nombre del producto para brindarle información de uso." },
+      "action": { "type": "SEND_PAYLOAD", "payload": "GF_HELP_PROD_USE" }
     },
+
     {
-      "id": "KW_FICHA_ETIQUETA",
-      "priority": 85,
-      "patterns": ["ficha tecnica", "ficha técnica", "ficha", "etiqueta", "dosis", "modo de uso", "ingrediente activo", "composicion", "composición", "msds", "hoja de seguridad", "seguridad", "toxicidad", "antidoto", "antídoto"],
-      "reply": { "text": "📄 Te ayudo con *ficha técnica / etiqueta*.\nDecime el *nombre del producto* (aunque sea como lo recuerdes) y tu *zona*." },
+      "id": "KW_FICHA_ETIQUETA_SEGURIDAD",
+      "priority": 88,
+      "patterns": ["ficha tecnica", "ficha técnica", "ficha", "etiqueta", "dosis", "dosificacion", "dosificación", "modo de uso", "ingrediente activo", "composicion", "composición", "msds", "hoja de seguridad", "seguridad", "toxicidad", "antidoto", "antídoto", "periodo de carencia", "reingreso", "equipo de proteccion", "equipo de protección", "proteccion", "protección"],
+      "reply": { "text": "Para ficha técnica/etiqueta y recomendaciones de uso, indíqueme el producto y su zona. Le derivaré con el asesor correspondiente." },
       "action": { "type": "ASK_PRODUCT_THEN_AGRONOMO" }
     },
-    {
-      "id": "KW_WHATSAPP_CONTACTO",
-      "priority": 80,
-      "patterns": ["wsp", "wpp", "wasap", "guasap", "whats", "whatsapp", "numero", "número", "telefono", "teléfono", "celular", "contacto", "contactarme", "me pasas tu numero", "me pasas tu número"],
-      "reply": { "text": "📲 Te conecto con un el ingeniero agrónomo de tu zona, para que te pueda dar una mejor asesoría .\nToca *Hablar con un agrónomo*." },
-      "action": { "type": "OPEN_AGRONOMO" }
-    },
-    {
-      "id": "KW_PRODUCTOS_CATALOGO",
-      "priority": 75,
-      "patterns": ["productos", "que venden", "qué venden", "que ofrecen", "qué ofrecen", "linea", "línea", "catalogo", "catálogo", "portafolio", "portafolio greenfield", "lista de productos", "que tienen"],
-      "reply": { "text": "🧪 Aquí puedes ver *nuestros productos*:\nhttps://greenfield.com.bo/productos/\n\nSi me dices el *producto* y tu *zona*, te conecto con un ingeniero agrónomo." },
-      "action": { "type": "NONE" }
-    },
-    {
-      "id": "KW_ENVIO_COBERTURA",
-      "priority": 70,
-      "patterns": ["envio", "envío", "envios", "envíos", "delivery", "entrega", "mandan", "mandan a", "llegan a", "cobertura", "hasta mi zona", "envian", "envían", "llega a mi zona", "me lo traen"],
-      "reply": { "text": "🚚 Sobre *entregas/cobertura*, te confirma el ingeniero agrónomo según tu zona.\nToca *Hablar con un agrónomo* y elige tu departamento." },
-      "action": { "type": "OPEN_AGRONOMO" }
-    },
+
     {
       "id": "KW_PLAGA_MALEZA_ENFERMEDAD",
-      "priority": 70,
-      "patterns": ["plaga", "maleza", "malezas", "hongo", "hongos", "roya", "oruga", "trips", "pulgon", "pulgón", "gusano", "enfermedad", "se me enfermo", "se me enfermó", "se me lleno de", "se me llenó de", "se me pudre", "mancha", "manchas", "se me esta muriendo", "se me está muriendo"],
-      "reply": { "text": "👨‍🌾 Para recomendar bien necesito 3 datos:\n1) *Cultivo*\n2) *Problema* (plaga/maleza/enfermedad)\n3) *Zona*\nLuego te conecto con el ingeniero agrónomo de tu zona." },
+      "priority": 88,
+      "patterns": ["plaga", "maleza", "malezas", "hongo", "hongos", "roya", "oruga", "trips", "pulgon", "pulgón", "gusano", "enfermedad", "se me enfermo", "se me enfermó", "se me lleno de", "se me llenó de", "se me pudre", "mancha", "manchas", "se me esta muriendo", "se me está muriendo", "bicho", "insecto", "larva", "malezon", "maleza fuerte"],
+      "reply": { "text": "Para ayudarle de forma correcta, envíe en un solo mensaje: *cultivo + problema + zona*." },
       "action": { "type": "ASK_CULTIVO_PROBLEMA_THEN_AGRONOMO" }
     },
+
+    {
+      "id": "KW_ENVIO_COBERTURA",
+      "priority": 85,
+      "patterns": ["envio", "envío", "envios", "envíos", "delivery", "entrega", "mandan", "mandan a", "llegan a", "cobertura", "hasta mi zona", "envian", "envían", "llega a mi zona", "me lo traen", "envio a provincia", "envio a interior", "entrega a provincia", "entrega interior"],
+      "reply": { "text": "La cobertura y condiciones de entrega dependen de su zona y del producto. Le derivaré con un asesor comercial para confirmación." },
+      "action": { "type": "OPEN_AGRONOMO" }
+    },
+
+    {
+      "id": "KW_FORMAS_DE_PAGO",
+      "priority": 83,
+      "patterns": ["pago", "pagos", "formas de pago", "metodos de pago", "métodos de pago", "como pago", "cómo pago", "transferencia", "deposito", "depósito", "qr", "tigo money", "banco", "efectivo", "tarjeta", "credito", "crédito", "debito", "débito"],
+      "reply": { "text": "Sobre formas de pago, un asesor comercial puede confirmarle las opciones disponibles según su pedido. ¿Desea que le conecte con un asesor?" },
+      "action": { "type": "OPEN_AGRONOMO" }
+    },
+
+    {
+      "id": "KW_FACTURA_NIT",
+      "priority": 83,
+      "patterns": ["factura", "facturacion", "facturación", "nit", "razon social", "razón social", "credito fiscal", "crédito fiscal", "datos de factura", "emitir factura", "con factura", "sin factura"],
+      "reply": { "text": "Para facturación (NIT/razón social), le sugiero contactarse con un asesor comercial para indicarle el procedimiento." },
+      "action": { "type": "OPEN_AGRONOMO" }
+    },
+
+    {
+      "id": "KW_DESCUENTOS_PROMOCIONES",
+      "priority": 82,
+      "patterns": ["descuento", "descuentos", "promocion", "promoción", "promo", "oferta", "ofertas", "precio especial", "mayorista", "por mayor", "volumen", "lista de precios", "precio mayorista"],
+      "reply": { "text": "Los descuentos y condiciones comerciales dependen del producto y volumen. Le derivaré con un asesor comercial para cotización." },
+      "action": { "type": "OPEN_AGRONOMO" }
+    },
+
+    {
+      "id": "KW_DISTRIBUIDOR_REVENDEDOR",
+      "priority": 82,
+      "patterns": ["distribuidor", "distribuidores", "revender", "revendedor", "reventa", "quiero vender", "quiero distribuir", "punto de venta", "distribucion", "distribución", "representante", "mayorista"],
+      "reply": { "text": "Para distribución o reventa, un asesor comercial puede brindarle los requisitos y condiciones. Le conecto con un asesor." },
+      "action": { "type": "OPEN_AGRONOMO" }
+    },
+
+    {
+      "id": "KW_DISPONIBILIDAD_SUCURSAL",
+      "priority": 80,
+      "patterns": ["tienen en tienda", "tienen en sucursal", "hay en santa cruz", "hay en scz", "hay en cochabamba", "hay en cbba", "hay en la paz", "hay en lpz", "stock en", "disponible en", "disponibilidad en"],
+      "reply": { "text": "Para confirmar disponibilidad por ciudad/zona, le conecto con un asesor comercial." },
+      "action": { "type": "OPEN_AGRONOMO" }
+    },
+
+    {
+      "id": "KW_COMPATIBILIDAD_MEZCLA",
+      "priority": 80,
+      "patterns": ["mezclar", "mezcla", "compatibilidad", "puedo mezclar", "se puede mezclar", "mezclar con", "compatibles", "incompatibles", "puedo combinar", "mezcla en tanque", "caldo", "tank mix"],
+      "reply": { "text": "La compatibilidad de mezclas depende del producto y objetivo. Para evitar riesgos, le derivaré con un asesor técnico." },
+      "action": { "type": "ASK_PRODUCT_THEN_AGRONOMO" }
+    },
+
+    {
+      "id": "KW_ALMACENAMIENTO_VENCIMIENTO",
+      "priority": 78,
+      "patterns": ["vencimiento", "vence", "caduca", "caducidad", "vida util", "vida útil", "almacenamiento", "guardar", "como guardar", "cómo guardar", "bodega", "temperatura", "sol", "fecha de vencimiento"],
+      "reply": { "text": "Para recomendaciones de almacenamiento y vida útil, indíqueme el producto. Le derivaré con un asesor para confirmación." },
+      "action": { "type": "ASK_PRODUCT_THEN_AGRONOMO" }
+    },
+
+    {
+      "id": "KW_TAMANO_PRESENTACION",
+      "priority": 78,
+      "patterns": ["presentacion", "presentación", "tamaño", "tamano", "envase", "litros", "kilos", "kg", "g", "ml", "bidon", "bidón", "bolsa", "saco", "frasco"],
+      "reply": { "text": "Para confirmarle presentaciones disponibles, indíqueme el producto y le ayudo a gestionarlo con un asesor comercial." },
+      "action": { "type": "SEND_PAYLOAD", "payload": "GF_HELP_PRICE_AVAIL" }
+    },
+
+    {
+      "id": "KW_QUIENES_SON",
+      "priority": 75,
+      "patterns": ["quienes son", "quiénes son", "que es greenfield", "qué es greenfield", "sobre greenfield", "empresa", "informacion", "información", "a que se dedican", "a qué se dedican", "servicios", "que hacen", "qué hacen"],
+      "reply": { "text": "Greenfield brinda soluciones para el agro. Si desea, puedo derivarle con un asesor comercial para información y atención personalizada." },
+      "action": { "type": "OPEN_AGRONOMO" }
+    },
+
+    {
+      "id": "KW_RRHH_CV",
+      "priority": 74,
+      "patterns": ["cv", "curriculum", "currículum", "hoja de vida", "enviar cv", "postular", "postulacion", "postulación", "dejar mi cv", "trabajar", "rrhh", "recursos humanos"],
+      "reply": { "text": "De acuerdo. Le indico el procedimiento para postulación." },
+      "action": { "type": "SEND_PAYLOAD", "payload": "GF_HELP_CV" }
+    },
+
+    {
+      "id": "KW_RRHH_PASANTIAS",
+      "priority": 74,
+      "patterns": ["pasantia", "pasantías", "pasantias", "pasante", "practicas", "prácticas", "internship", "practica", "práctica"],
+      "reply": { "text": "De acuerdo. Le indico la información sobre pasantías." },
+      "action": { "type": "SEND_PAYLOAD", "payload": "GF_HELP_PASANTIAS" }
+    },
+
+    {
+      "id": "KW_RRHH_TRABAJO",
+      "priority": 74,
+      "patterns": ["vacante", "vacantes", "empleo", "oferta laboral", "contratan", "hay trabajo", "buscan personal", "bolsa de trabajo", "trabajo", "reclutamiento"],
+      "reply": { "text": "De acuerdo. Le indico la información sobre vacantes." },
+      "action": { "type": "SEND_PAYLOAD", "payload": "GF_HELP_TRABAJO" }
+    },
+
     {
       "id": "KW_GRACIAS",
       "priority": 40,
-      "patterns": ["gracias", "grasias", "ok gracias", "listo gracias", "de nada", "muchas gracias", "mil gracias"],
-      "reply": { "text": "¡Con gusto! 😊 Si necesitas algo más, aquí estaré." },
+      "patterns": ["gracias", "grasias", "grax", "ok gracias", "listo gracias", "muchas gracias", "mil gracias", "thank you", "thx", "se agradece"],
+      "reply": { "text": "Con gusto. Si necesita algo adicional, puede utilizar el menú principal." },
       "action": { "type": "SHOW_MAIN_MENU" }
     },
+
     {
       "id": "KW_CIERRE",
       "priority": 40,
-      "patterns": ["chau", "chao", "hasta luego", "adios", "adiós", "nada mas", "nada más", "eso es todo", "finalizar", "salir", "bye"],
-      "reply": { "text": "¡Gracias por escribirnos! 👋" },
+      "patterns": ["chau", "chao", "hasta luego", "adios", "adiós", "nada mas", "nada más", "eso es todo", "finalizar", "salir", "bye", "cerrar", "terminar"],
+      "reply": { "text": "Gracias por contactarse con *Greenfield*. Quedamos atentos a su consulta." },
       "action": { "type": "END_SESSION" }
     },
+
     {
       "id": "KW_ZONAS_SANTA_CRUZ",
       "priority": 30,
       "patterns": ["montero", "warnes", "mineros", "yapacani", "yapacaní", "san julian", "san julián", "4 canadas", "4 cañadas", "robore", "roboré", "san ignacio", "concepcion", "concepción", "samaipata", "mairana", "porongo", "okina", "okinawa", "san jose", "san josé"],
-      "reply": { "text": "Perfecto ✅ Con esa zona ya puedo asignarte un agrónomo.\nAhora dime si es para *precio/pedido* o *ficha técnica*." },
+      "reply": { "text": "Gracias. Para asignarle el asesor adecuado, indique si su consulta es por *precio/disponibilidad* o por *uso/ficha técnica*." },
       "action": { "type": "ASK_MOTIVO_AND_OPEN_AGRONOMO" }
     },
+
     {
-      "id": "KW_PREGUNTAS_SIN_LEER",
+      "id": "KW_CONFUSO_SIN_LEER",
       "priority": 20,
-      "patterns": ["no entiendo", "no entendi", "no entiendoo", "q", "qe", "k", "ke", "??", "???", "ayuda", "help", "como hago", "cómo hago", "explica", "explique"],
-      "reply": { "text": "Te guío rápido ✅\n1) Si buscas *precio/pedido* → toca *Hablar con un agrónomo*\n2) Si buscas *ficha técnica* → dime el *producto*\n3) Si es *consulta técnica* → dime *cultivo + problema + zona*" },
+      "patterns": ["no entiendo", "no entendi", "no entendí", "q", "qe", "k", "ke", "??", "???", "ayudaa", "helpme", "como", "cómo", "explica", "explique", "no se", "nose", "no sé"],
+      "reply": { "text": "Para atenderle más rápido: 1) Catálogo → *Nuestros productos* 2) Precio/stock → *Precio y Disponibilidad* 3) Contacto → *Asesores Comerciales*." },
       "action": { "type": "SHOW_MAIN_MENU" }
     }
   ]
