@@ -558,20 +558,20 @@ function buildDefaultWhatsAppMessage(s) {
 }
 
 async function showMainMenu(psid) {
-  await sendButtons(psid, '¿En qué te puedo ayudar hoy? 👇', [
+  await sendButtons(psid, '¿En qué te puedo ayudarte?', [
     { type: 'postback', title: 'Nuestros productos', payload: 'GF_PRODUCTS' },
-    { type: 'postback', title: '👨‍🌾 Hablar con un asesor', payload: 'GF_AGRO' },
-    { type: 'postback', title: '📌 Ayuda rápida', payload: 'GF_HELP' },
+    { type: 'postback', title: 'Asesores Comerciales', payload: 'GF_AGRO' },
+    { type: 'postback', title: 'Ayuda rápida', payload: 'GF_HELP' },
   ]);
 }
 
 const QUICK_HELP = [
-  { title: '🧑‍💼 Dejar mi CV', payload: 'GF_HELP_CV' },
-  { title: '🎓 Pasantías', payload: 'GF_HELP_PASANTIAS' },
-  { title: '💼 Vacantes / trabajo', payload: 'GF_HELP_TRABAJO' },
-  { title: '🧪 ¿Para qué sirve?', payload: 'GF_HELP_PROD_USE' },
-  { title: '💰 Precio / disponibilidad', payload: 'GF_HELP_PRICE_AVAIL' },
-  { title: '🕒 Horarios y ubicación', payload: 'GF_HELP_INFO' },
+  { title: 'Dejar mi CV', payload: 'GF_HELP_CV' },
+  { title: 'Pasantías', payload: 'GF_HELP_PASANTIAS' },
+  { title: 'Vacantes / Trabajo', payload: 'GF_HELP_TRABAJO' },
+  { title: 'Uso del Producto', payload: 'GF_HELP_PROD_USE' },
+  { title: 'Precio y Disponibilidad', payload: 'GF_HELP_PRICE_AVAIL' },
+  { title: 'Horarios y Ubicación', payload: 'GF_HELP_INFO' },
 ];
 
 async function showHelp(psid) {
@@ -580,7 +580,6 @@ async function showHelp(psid) {
   if (Date.now() - (s.flags.helpShownAt || 0) < COOLDOWN) return;
   s.flags.helpShownAt = Date.now();
   await sendMenuCards(psid, 'Ayuda rápida', '📌 Ayuda rápida — elige una opción:', QUICK_HELP);
-  await showMainMenu(psid);
 }
 
 const HR_TEXT = {
@@ -590,27 +589,27 @@ const HR_TEXT = {
       '1) Envía tu CV (PDF) por este chat o comparte el enlace (Drive).\n' +
       '2) Incluye: nombre completo, ciudad, teléfono y área de interés.\n\n' +
       '✅ Apenas el equipo lo revise, te contactarán si hay un proceso abierto.',
-    off: '🧑‍💼 Gracias por tu interés. Por el momento *no estamos recibiendo CV* por este canal.',
+    off: 'Agradecemos su postulación. Actualmente *no estamos recibiendo CV*.',
   },
   PASANTIAS: {
     on:
       '🎓 Pasantías:\n' +
       'Envíanos: carrera, semestre, ciudad y en qué área te gustaría hacer pasantías.\n' +
       'Si tienes CV, adjúntalo (PDF) o envía link (Drive).',
-    off: '🎓 Por el momento *no tenemos pasantías habilitadas* por este canal.',
+    off: '🎓 Por el momento *no tenemos pasantías habilitadas*.',
   },
   TRABAJO: {
     on:
       '💼 Vacantes / trabajo:\n' +
       'Cuéntame: área de interés, ciudad y experiencia.\n' +
       'Si tienes CV, adjúntalo (PDF) o envía link (Drive).',
-    off: '💼 Por el momento *no hay vacantes activas* para este canal.',
+    off: '💼 Por el momento *no hay vacantes disponibles*.',
   },
   INFO: {
     text:
-      (GF?.brand?.hours_text ? String(GF.brand.hours_text) : '🕒 Horarios de atención:\nLunes a Viernes: 08:00–18:00\nSábado: 08:00–12:00') +
+      (GF?.brand?.hours_text ? String(GF.brand.hours_text) : '🕒 Nuestros horarios de atención:\nLunes a Viernes: 08:00–12:30 pm y de 2:30 pm a 6:30 pm') +
       '\n\n' +
-      (GF?.brand?.location_text ? String(GF.brand.location_text) : '📍 Ubicación:\nGreenfield — Santa Cruz\n(Comparte tu ubicación o escríbenos tu zona y te guiamos.)'),
+      (GF?.brand?.location_text ? String(GF.brand.location_text) : '📍 Nuestra ubicación:\nGreenfield — Santa Cruz\nhttps://share.google/iSRFuKRkgIPMySqW4'),
   },
 };
 
@@ -687,7 +686,7 @@ async function startAdvisorFlow(psid) {
     if (a?.whatsapp) {
       const msg = buildDefaultWhatsAppMessage(s);
       const url = waLink(a.whatsapp, msg);
-      await sendText(psid, 'Con gusto 😊\nTe dejo un contacto directo para que te atiendan por WhatsApp:');
+      await sendText(psid, 'Te dejo el contacto directo para que te atiendan por WhatsApp:');
       await sendButtons(psid, 'Abrir WhatsApp:', [{ type: 'web_url', url, title: 'Contactar por WhatsApp' }]);
       await showMainMenu(psid);
       return;
@@ -702,7 +701,7 @@ async function startAdvisorFlow(psid) {
   await sendMenuCards(
     psid,
     'Departamentos',
-    'Perfecto ✅\nPara mostrarte los asesores disponibles, elige tu *departamento*:',
+    'Perfecto\nPara mostrarte los asesores disponibles, elige tu *departamento*:',
     deps.map((d) => ({ title: d.name, payload: `GF_A_DEPT_${d.id}` }))
   );
 }
@@ -717,7 +716,7 @@ async function showAdvisorZonesSCZ(psid) {
   await sendMenuCards(
     psid,
     'Zonas Santa Cruz',
-    'Gracias ✅\nAhora elige tu *zona* en Santa Cruz:',
+    'Gracias\nAhora elige tu *zona* en Santa Cruz:',
     zones.map((z) => ({ title: z.name, payload: `GF_A_SCZ_ZONE_${z.id}` }))
   );
 }
@@ -727,7 +726,7 @@ async function showAdvisorCards(psid, advisorIds = [], headerText = 'Selecciona 
 
   const unique = [...new Set((advisorIds || []).filter(Boolean))].slice(0, 10);
   if (!unique.length) {
-    await sendText(psid, 'No encontré asesores para esa selección. Intenta con otra opción 👇');
+    await sendText(psid, 'No encontré asesores para esa selección. Intenta con otra opción');
     await startAdvisorFlow(psid);
     return;
   }
@@ -750,12 +749,12 @@ async function showAdvisorCards(psid, advisorIds = [], headerText = 'Selecciona 
   }
 
   if (!elements.length) {
-    await sendText(psid, 'No encontré asesores con WhatsApp disponible en esta selección. Intenta con otra opción 👇');
+    await sendText(psid, 'No encontré asesores con WhatsApp disponible en esta selección. Intenta con otra opción');
     await startAdvisorFlow(psid);
     return;
   }
 
-  await sendText(psid, `${headerText} 👇`);
+  await sendText(psid, `${headerText}`);
 
   if (elements.length === 1) {
     const el = elements[0];
@@ -776,7 +775,7 @@ async function showAdvisorCards(psid, advisorIds = [], headerText = 'Selecciona 
     await sendGenericCards(psid, elements);
   }
 
-  await sendText(psid, 'Si necesitas algo más, puedes volver al menú 😊');
+  await sendText(psid, 'Si necesitas algo más, puedes volver al menú, fue un gusto haberte ayudado.');
   await showMainMenu(psid);
 }
 
@@ -875,7 +874,7 @@ async function runKeywordAction(psid, kwItem) {
 
     if (p === 'GF_PRODUCTS') {
       const url = GF?.brand?.products_url || 'https://greenfield.com.bo/productos/';
-      await sendText(psid, 'Con gusto 😊\nAquí puedes ver nuestro catálogo y conocer las opciones disponibles:');
+      await sendText(psid, 'Te comparto el acceso\nAquí puedes ver nuestro catálogo y conocer las opciones disponibles:');
       await sendButtons(psid, 'Abrir catálogo:', [{ type: 'web_url', url, title: 'Ver productos' }]);
       await showMainMenu(psid);
       return true;
@@ -893,22 +892,22 @@ async function runKeywordAction(psid, kwItem) {
 
   if (actionType === 'ASK_PRODUCT_THEN_AGRONOMO') {
     s.pending = 'kw_ask_product_then_agro';
-    await sendText(psid, '✅ Decime el *nombre del producto* y luego te conecto con el ingeniero agrónomo de tu zona.');
+    await sendText(psid, 'Por favor, escriba el *nombre del producto* y luego te conecto con el ingeniero agrónomo de tu zona.');
     return true;
   }
 
   if (actionType === 'ASK_CULTIVO_PROBLEMA_THEN_AGRONOMO') {
     s.pending = 'kw_ask_cultivo_problem_then_agro';
-    await sendText(psid, '✅ En un solo mensaje: *cultivo + problema + zona* (ej: “soya, oruga, Montero”).');
+    await sendText(psid, 'En un solo mensaje: *cultivo + problema + zona* (ej: “soya, oruga, Montero”).');
     return true;
   }
 
   if (actionType === 'ASK_MOTIVO_AND_OPEN_AGRONOMO') {
     s.pending = 'kw_ask_motivo_then_agro';
-    await sendQR(psid, '✅ ¿Es para qué necesitas ayuda?', [
-      { title: '💰 Precio / disponibilidad', payload: 'GF_HELP_PRICE_AVAIL' },
-      { title: '🧪 Para qué sirve un producto', payload: 'GF_HELP_PROD_USE' },
-      { title: '👨‍🌾 Hablar con un asesor', payload: 'GF_AGRO' },
+    await sendQR(psid, '¿Es para qué necesitas ayuda?', [
+      { title: 'Precio / disponibilidad', payload: 'GF_HELP_PRICE_AVAIL' },
+      { title: 'Para qué sirve un producto', payload: 'GF_HELP_PROD_USE' },
+      { title: 'Hablar con un asesor', payload: 'GF_AGRO' },
     ]);
     return true;
   }
@@ -931,10 +930,10 @@ async function handlePending(psid, textMsg) {
     }
 
     await sendText(psid, renderProductUseText(p));
-    await sendQR(psid, '¿Necesitas algo más?', [
-      { title: '💰 Precio / disponibilidad', payload: 'GF_HELP_PRICE_AVAIL' },
-      { title: '👨‍🌾 Hablar con un asesor', payload: 'GF_AGRO' },
-      { title: '📌 Ayuda rápida', payload: 'GF_HELP' },
+    await sendQR(psid, '¿Desea realizar otra consulta?', [
+      { title: 'Precio / Disponibilidad', payload: 'GF_HELP_PRICE_AVAIL' },
+      { title: 'Hablar con un asesor', payload: 'GF_AGRO' },
+      { title: 'Ayuda rápida', payload: 'GF_HELP' },
     ]);
     return true;
   }
@@ -948,7 +947,7 @@ async function handlePending(psid, textMsg) {
     s.vars.product = productName;
     s.vars.motivo = `Precio / disponibilidad — ${productName}`;
 
-    await sendText(psid, `✅ Perfecto. Te conecto con el ingeniero agrónomo de tu zona por WhatsApp.`);
+    await sendText(psid, `Perfecto. Te conecto con el ingeniero agrónomo de tu zona por WhatsApp.`);
     await startAdvisorFlow(psid);
     return true;
   }
@@ -978,12 +977,12 @@ async function handlePending(psid, textMsg) {
     s.pending = null;
     if (/para que sirve|para qué sirve|sirve para|uso/.test(norm(t))) {
       s.pending = 'help_product_use';
-      await sendText(psid, '🧪 Decime el *nombre del producto* y te digo para qué sirve.');
+      await sendText(psid, 'Indique el *nombre del producto* y te brindare información sobre su uso.');
       return true;
     }
     if (/precio|stock|disponible|disponibilidad|cotizar|pedido/.test(norm(t))) {
       s.pending = 'help_price_avail_product';
-      await sendText(psid, '💰 Decime en qué *producto* estás interesado (nombre o como lo recuerdes).');
+      await sendText(psid, 'En qué *producto* estás interesado? (nombre o como lo recuerdes).');
       return true;
     }
     await showHelp(psid);
@@ -1010,12 +1009,12 @@ async function handleHelpPayload(psid, incoming) {
   }
   if (incoming === 'GF_HELP_PROD_USE') {
     s.pending = 'help_product_use';
-    await sendText(psid, '🧪 Decime el *nombre del producto* y te digo para qué sirve.');
+    await sendText(psid, 'Indique el *nombre del producto* y te brindare información sobre su uso.');
     return true;
   }
   if (incoming === 'GF_HELP_PRICE_AVAIL') {
     s.pending = 'help_price_avail_product';
-    await sendText(psid, '💰 Decime en qué *producto* estás interesado (nombre o como lo recuerdes).');
+    await sendText(psid, 'En qué *producto* estás interesado? (nombre o como lo recuerdes).');
     return true;
   }
   if (incoming === 'GF_HELP_INFO') {
@@ -1034,8 +1033,8 @@ async function greetAndMenu(psid) {
 
   await sendText(
     psid,
-    `👋 ¡Hola${s.profileName ? ` ${s.profileName}` : ''}! Bienvenido a *Greenfield*.\n` +
-      `Puedo ayudarte a ver nuestros productos y también a contactar a un asesor por WhatsApp.`
+    `👋 ¡Hola${s.profileName ? ` ${s.profileName}` : ''}! Soy el Asistente virtual de *Greenfield*.\n` +
+      `Será un placer ayudarte con tus dudas.`
   );
 
   await showMainMenu(psid);
@@ -1089,7 +1088,7 @@ router.post('/webhook', async (req, res) => {
 
           if (incoming === 'GF_PRODUCTS') {
             const url = GF?.brand?.products_url || 'https://greenfield.com.bo/productos/';
-            await sendText(psid, 'Con gusto 😊\nAquí puedes ver nuestro catálogo y conocer las opciones disponibles:');
+            await sendText(psid, 'Con gusto\nAquí puedes ver nuestro catálogo y conocer las opciones disponibles:');
             await sendButtons(psid, 'Abrir catálogo:', [{ type: 'web_url', url, title: 'Ver productos' }]);
             await showMainMenu(psid);
             continue;
@@ -1118,7 +1117,7 @@ router.post('/webhook', async (req, res) => {
               continue;
             }
 
-            await showAdvisorCards(psid, dept.advisorIds || [], `Asesores en ${dept.name}`);
+            await showAdvisorCards(psid, dept.advisorIds || [], `Nuestros asesores disponibles para ${dept.name}`);
             continue;
           }
 
@@ -1147,14 +1146,14 @@ router.post('/webhook', async (req, res) => {
         }
 
         if (intent?.type === 'END') {
-          await sendText(psid, '¡Gracias por escribirnos! 👋');
+          await sendText(psid, '¡Gracias por escribirnos! Fue un placer ayudarte👋');
           clearSession(psid);
           continue;
         }
 
         if (intent?.type === 'PRODUCTS') {
           const url = GF?.brand?.products_url || 'https://greenfield.com.bo/productos/';
-          await sendText(psid, 'Con gusto 😊\nAquí puedes ver nuestro catálogo y conocer las opciones disponibles:');
+          await sendText(psid, 'Con gusto\nAquí puedes ver nuestro catálogo y conocer las opciones disponibles:');
           await sendButtons(psid, 'Abrir catálogo:', [{ type: 'web_url', url, title: 'Ver productos' }]);
           await showMainMenu(psid);
           continue;
@@ -1162,13 +1161,13 @@ router.post('/webhook', async (req, res) => {
 
         if (intent?.type === 'PROD_USE') {
           s.pending = 'help_product_use';
-          await sendText(psid, '🧪 Decime el *nombre del producto* y te digo para qué sirve.');
+          await sendText(psid, 'Indique el *nombre del producto* y te brindare información sobre su uso.');
           continue;
         }
 
         if (intent?.type === 'PRICE_AVAIL') {
           s.pending = 'help_price_avail_product';
-          await sendText(psid, '💰 Decime en qué *producto* estás interesado (nombre o como lo recuerdes).');
+          await sendText(psid, 'En qué *producto* estás interesado? (nombre o como lo recuerdes).');
           continue;
         }
 
