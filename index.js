@@ -607,9 +607,9 @@ const HR_TEXT = {
   },
   INFO: {
     text:
-      (GF?.brand?.hours_text ? String(GF.brand.hours_text) : '🕒 Nuestros horarios de atención:\nLunes a Viernes: 08:00–12:30 pm y de 2:30 pm a 6:30 pm') +
+      (GF?.brand?.hours_text ? String(GF.brand.hours_text) : '🕒 Nuestros horarios de atención:\nLunes a Viernes: \n08:00–12:30 pm\n2:30 pm a 6:30 pm') +
       '\n\n' +
-      (GF?.brand?.location_text ? String(GF.brand.location_text) : '📍 Nuestra ubicación:\nGreenfield — Santa Cruz\nhttps://share.google/iSRFuKRkgIPMySqW4'),
+      (GF?.brand?.location_text ? String(GF.brand.location_text) : '📍 Nuestra ubicación: Greenfield — Santa Cruz\nhttps://maps.app.goo.gl/gK3L56TdwxbRrsym9'),
   },
 };
 
@@ -701,7 +701,7 @@ async function startAdvisorFlow(psid) {
   await sendMenuCards(
     psid,
     'Departamentos',
-    'Perfecto\nPara mostrarte los asesores disponibles, elige tu *departamento*:',
+    'Para mostrarte los asesores disponibles para tu zona, elige tu *departamento*:',
     deps.map((d) => ({ title: d.name, payload: `GF_A_DEPT_${d.id}` }))
   );
 }
@@ -716,7 +716,7 @@ async function showAdvisorZonesSCZ(psid) {
   await sendMenuCards(
     psid,
     'Zonas Santa Cruz',
-    'Gracias\nAhora elige tu *zona* en Santa Cruz:',
+    'Elige tu *zona* en Santa Cruz, para comunicarte con el asesor adecuado:',
     zones.map((z) => ({ title: z.name, payload: `GF_A_SCZ_ZONE_${z.id}` }))
   );
 }
@@ -775,7 +775,7 @@ async function showAdvisorCards(psid, advisorIds = [], headerText = 'Selecciona 
     await sendGenericCards(psid, elements);
   }
 
-  await sendText(psid, 'Si necesitas algo más, puedes volver al menú, fue un gusto haberte ayudado.');
+  await sendText(psid, 'Si necesitas algo más, puedes volver al menú\nFue un gusto haberte ayudado, te saluda el bot de *Greenfield*.');
   await showMainMenu(psid);
 }
 
@@ -947,7 +947,7 @@ async function handlePending(psid, textMsg) {
     s.vars.product = productName;
     s.vars.motivo = `Precio / disponibilidad — ${productName}`;
 
-    await sendText(psid, `Perfecto. Te conecto con el ingeniero agrónomo de tu zona por WhatsApp.`);
+    await sendText(psid, `Te conecto con el ingeniero agrónomo de tu zona por WhatsApp.`);
     await startAdvisorFlow(psid);
     return true;
   }
@@ -1088,7 +1088,7 @@ router.post('/webhook', async (req, res) => {
 
           if (incoming === 'GF_PRODUCTS') {
             const url = GF?.brand?.products_url || 'https://greenfield.com.bo/productos/';
-            await sendText(psid, 'Con gusto\nAquí puedes ver nuestro catálogo y conocer las opciones disponibles:');
+            await sendText(psid, 'Aquí puedes ver nuestro catálogo y conocer las opciones disponibles:');
             await sendButtons(psid, 'Abrir catálogo:', [{ type: 'web_url', url, title: 'Ver productos' }]);
             await showMainMenu(psid);
             continue;
@@ -1132,7 +1132,7 @@ router.post('/webhook', async (req, res) => {
             s.vars.departamento = 'Santa Cruz';
             s.vars.zona = zone.name;
 
-            await showAdvisorCards(psid, zone.advisorIds || [], `Asesores — ${zone.name}`);
+            await showAdvisorCards(psid, zone.advisorIds || [], `Nuestros Asesores disponibles — ${zone.name}`);
             continue;
           }
         }
@@ -1153,7 +1153,7 @@ router.post('/webhook', async (req, res) => {
 
         if (intent?.type === 'PRODUCTS') {
           const url = GF?.brand?.products_url || 'https://greenfield.com.bo/productos/';
-          await sendText(psid, 'Con gusto\nAquí puedes ver nuestro catálogo y conocer las opciones disponibles:');
+          await sendText(psid, 'Aquí puedes ver nuestro catálogo y conocer las opciones disponibles:');
           await sendButtons(psid, 'Abrir catálogo:', [{ type: 'web_url', url, title: 'Ver productos' }]);
           await showMainMenu(psid);
           continue;
