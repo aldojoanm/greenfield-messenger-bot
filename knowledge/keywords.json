@@ -223,6 +223,62 @@
       "patterns": ["no entiendo", "no entendi", "no entendí", "q", "qe", "k", "ke", "??", "???", "ayudaa", "helpme", "como", "cómo", "explica", "explique", "no se", "nose", "no sé"],
       "reply": { "text": "Para atenderle más rápido: 1) Catálogo → *Nuestros productos* 2) Precio/stock → *Precio y Disponibilidad* 3) Contacto → *Asesores Comerciales*." },
       "action": { "type": "SHOW_MAIN_MENU" }
+    },
+    {
+      "id": "KW_QUE_VENDE_GREENFIELD",
+      "priority": 96,
+      "patterns": ["q vende greenfield","que vende greenfield","q vende","que venden uds","que venden ustedes","q venden","venden algo","que cosas venden","q cosas venden","venden fertilizantes","venden herbicidas","venden agroquimicos","venden insumos","venden para el campo"],
+      "reply": { "text": "Greenfield ofrece *soluciones para el agro*: fertilizantes, bioestimulantes, herbicidas y asesoría técnica especializada."},
+      "action": { "type": "SEND_PAYLOAD", "payload": "GF_PRODUCTS" }
+    },
+    {
+      "id": "KW_INFO_EMPRESA",
+      "priority": 94,
+      "patterns": ["informacion de greenfield","info greenfield","sobre greenfield","greenfield info","empresa greenfield","quienes son","quien es greenfield","q es greenfield","que es greenfield","a que se dedican","a q se dedican","que hacen","q hacen","son empresa","es confiable","es real","son reales"],
+      "reply": { "text": "Greenfield es una empresa dedicada a brindar soluciones agrícolas con respaldo técnico y asesoría profesional para el productor."},
+      "action": { "type": "OPEN_AGRONOMO" }
+    },
+    {
+      "id": "KW_ATENCION_HUMANA",
+      "priority": 93,
+      "patterns": ["quiero hablar con alguien","quiero una persona","quiero humano","no quiero bot","atencion humana","atencion real","hablar con persona","hablar con humano"],
+      "reply": { "text": "Entiendo 👍 Te conectaré con un asesor comercial para atención personalizada."},
+      "action": { "type": "OPEN_AGRONOMO" }
+    },
+    {
+      "id": "KW_MENSAJE_CORTO_CONFUSO",
+      "priority": 10,
+      "patterns": ["?","??","???","....","hola?","eh","oye","ok","aja","mm","mmm"],
+      "reply": { "text": "Para ayudarte mejor, puedes elegir una opción del menú o escribir tu consulta con más detalle"},
+      "action": { "type": "SHOW_MAIN_MENU" }
+    },
+    {
+      "id": "KW_SOLO_HORARIOS",
+      "priority": 93,
+      "patterns": ["horario","horarios","orario","horarrios","a que hora atienden","a q hora atienden","hasta que hora","hasta q hora","en que horario","en q horario","cuando atienden","atienden hoy","atienden ahora","estan abiertos","están abiertos","estan cerrados","están cerrados","abren hoy","abren sabado","abren sábado","abren domingo","trabajan hoy"],
+      "reply": { "text": "Con gusto. Le comparto los *horarios de atención* de Greenfield." },
+      "action": { "type": "SEND_PAYLOAD", "payload": "GF_HELP_INFO" }
+    },
+    {
+      "id": "KW_SOLO_UBICACION",
+      "priority": 93,
+      "patterns": ["ubicacion","ubicación","ubicasion","ubikacion","ubikasion","donde estan","dónde estan","dónde están","donde están","donde queda","dónde queda","donde quedan","dónde quedan","direccion","dirección","direcion","direcion greenfield","direccion greenfield","dirección greenfield","como llegar","cómo llegar","en donde es","en dónde es","en donde queda","en dónde queda","lugar","local","oficina","tienda","sucursal"],
+      "reply": { "text": "Con gusto. Le comparto la *ubicación de Greenfield* para que pueda visitarnos." },
+      "action": { "type": "SEND_PAYLOAD", "payload": "GF_HELP_INFO" }
+    },
+    {
+      "id": "KW_UBICACION_Y_HORARIO",
+      "priority": 95,
+      "patterns": ["ubicacion y horario","ubicación y horario","ubicacion + horario","ubicación + horario","direccion y horario","dirección y horario","direccion y horarios","dirección y horarios","donde estan y horario","dónde estan y horario","dónde están y horario","donde están y horario","donde queda y horario","dónde queda y horario","donde quedan y horario","dónde quedan y horario","donde es y horario","dónde es y horario","ubicacion horario","ubicación horario","horario ubicacion","horario ubicación","donde queda y hasta que hora","dónde queda y hasta qué hora","donde queda y hasta q hora","dónde queda y hasta q hora","lugar y horario","local y horario"],
+      "reply": { "text": "Claro. A continuación le comparto la *ubicación y los horarios de atención* de Greenfield." },
+      "action": { "type": "SEND_PAYLOAD", "payload": "GF_HELP_INFO" }
+    },
+    {
+      "id": "KW_MAPS_DIRECTO",
+      "priority": 94,
+      "patterns": ["maps","google maps","link maps","enlace maps","abrir maps","ver en maps","ubicacion maps","ubicación maps","ubicacion en maps","ubicación en maps","ubicacion google","ubicación google","mapa","mapita"],
+      "reply": { "text": "Le comparto el enlace para abrir la ubicación de Greenfield en Google Maps." },
+      "action": { "type": "SEND_PAYLOAD", "payload": "GF_HELP_INFO" }
     }
   ]
 }

@@ -639,17 +639,16 @@ function findProductByText(text) {
   const t = norm(text);
   if (!t) return null;
   if (PRODUCT_INDEX?.has(t)) return PRODUCT_INDEX.get(t);
-
-  let best = null;
-  let bestLen = 0;
+  const matches = [];
   for (const [k, p] of PRODUCT_INDEX || []) {
     if (k.length < 2) continue;
-    if (t.includes(k) && k.length > bestLen) {
-      best = p;
-      bestLen = k.length;
+    if (t.includes(k) || k.includes(t)) {
+      matches.push({ p, score: k.length });
     }
   }
-  return best;
+  if (!matches.length) return null;
+  matches.sort((a, b) => b.score - a.score);
+  return matches[0].p;
 }
 
 function renderProductUseText(p) {
