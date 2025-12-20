@@ -571,7 +571,7 @@ const QUICK_HELP = [
   { title: '💼 Vacantes / trabajo', payload: 'GF_HELP_TRABAJO' },
   { title: '🧪 ¿Para qué sirve?', payload: 'GF_HELP_PROD_USE' },
   { title: '💰 Precio / disponibilidad', payload: 'GF_HELP_PRICE_AVAIL' },
-  { title: '👨‍🌾 Hablar con un asesor', payload: 'GF_AGRO' },
+  { title: '🕒 Horarios y ubicación', payload: 'GF_HELP_INFO' },
 ];
 
 async function showHelp(psid) {
@@ -606,6 +606,12 @@ const HR_TEXT = {
       'Si tienes CV, adjúntalo (PDF) o envía link (Drive).',
     off: '💼 Por el momento *no hay vacantes activas* para este canal.',
   },
+  INFO: {
+    text:
+      (GF?.brand?.hours_text ? String(GF.brand.hours_text) : '🕒 Horarios de atención:\nLunes a Viernes: 08:00–18:00\nSábado: 08:00–12:00') +
+      '\n\n' +
+      (GF?.brand?.location_text ? String(GF.brand.location_text) : '📍 Ubicación:\nGreenfield — Santa Cruz\n(Comparte tu ubicación o escríbenos tu zona y te guiamos.)'),
+  },
 };
 
 function hrEnabled(kind) {
@@ -617,6 +623,16 @@ async function replyHR(psid, kind) {
   const enabled = hrEnabled(kind);
   const msg = enabled ? HR_TEXT[kind]?.on : HR_TEXT[kind]?.off;
   await sendText(psid, msg || 'Listo ✅');
+  await showMainMenu(psid);
+}
+
+async function replyInfo(psid) {
+  const msg = HR_TEXT.INFO?.text || '🕒 Horarios y ubicación: consulta por este canal.';
+  await sendText(psid, msg);
+  const mapUrl = GF?.brand?.maps_url ? String(GF.brand.maps_url).trim() : '';
+  if (mapUrl) {
+    await sendButtons(psid, 'Ver en Google Maps:', [{ type: 'web_url', url: mapUrl, title: 'Abrir Maps' }]);
+  }
   await showMainMenu(psid);
 }
 
@@ -787,6 +803,10 @@ function detectIntent(text) {
     return { type: 'PRICE_AVAIL' };
   }
 
+  if (/(horario|horarios|atencion|atención|ubicacion|ubicación|direccion|dirección|donde quedan|dónde quedan|maps|google maps)/.test(t)) {
+    return { type: 'INFO' };
+  }
+
   return null;
 }
 
@@ -843,6 +863,11 @@ async function runKeywordAction(psid, kwItem) {
 
     if (p === 'GF_HELP') {
       await showHelp(psid);
+      return true;
+    }
+
+    if (p === 'GF_HELP_INFO') {
+      await replyInfo(psid);
       return true;
     }
 
@@ -993,6 +1018,10 @@ async function handleHelpPayload(psid, incoming) {
     await sendText(psid, '💰 Decime en qué *producto* estás interesado (nombre o como lo recuerdes).');
     return true;
   }
+  if (incoming === 'GF_HELP_INFO') {
+    await replyInfo(psid);
+    return true;
+  }
 
   return false;
 }
@@ -1140,6 +1169,11 @@ router.post('/webhook', async (req, res) => {
         if (intent?.type === 'PRICE_AVAIL') {
           s.pending = 'help_price_avail_product';
           await sendText(psid, '💰 Decime en qué *producto* estás interesado (nombre o como lo recuerdes).');
+          continue;
+        }
+
+        if (intent?.type === 'INFO') {
+          await replyInfo(psid);
           continue;
         }
 
