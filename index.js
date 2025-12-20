@@ -1,4 +1,3 @@
-// index.js
 import 'dotenv/config';
 import express from 'express';
 import fs from 'fs';
@@ -96,10 +95,6 @@ function refreshStatus() {
   };
 }
 
-/** =========================================================
- * FIX: helpers ANTES de buildProductsIndex / reloadConfig
- * (para que `norm` exista cuando se llama reloadConfig())
- * ========================================================= */
 const norm = (t = '') =>
   String(t || '')
     .toLowerCase()
@@ -122,7 +117,6 @@ async function httpFetchAny(...args) {
   const f = globalThis.fetch || (await import('node-fetch')).default;
   return f(...args);
 }
-/** ========================= END FIX ========================= */
 
 let PRODUCT_INDEX = null;
 
@@ -137,10 +131,8 @@ function buildProductsIndex() {
     const keys = [];
     if (p?.id) keys.push(String(p.id));
     if (p?.nombre) keys.push(String(p.nombre));
-
     const aliases = Array.isArray(p?.posibles_respuestas) ? p.posibles_respuestas : [];
     for (const a of aliases) keys.push(String(a));
-
     for (const k of keys) {
       const nk = norm(k);
       if (!nk) continue;
@@ -361,6 +353,30 @@ async function sendGenericCards(psid, elements = []) {
   if (!r.ok) console.error('sendGenericCards', await r.text());
 }
 
+function chunk(arr = [], n = 3) {
+  const out = [];
+  for (let i = 0; i < arr.length; i += n) out.push(arr.slice(i, i + n));
+  return out;
+}
+
+async function sendMenuCards(psid, cardTitle, subtitleText, items = []) {
+  const groups = chunk(items, 3);
+  const elements = groups.map(() => ({
+    title: String(cardTitle || 'Menú').slice(0, 80),
+    buttons: [],
+  }));
+  for (let i = 0; i < groups.length; i++) {
+    const g = groups[i];
+    elements[i].buttons = g.map((it) => ({
+      type: 'postback',
+      title: clamp(it.title, 20),
+      payload: String(it.payload || ''),
+    }));
+  }
+  if (subtitleText) await sendText(psid, subtitleText);
+  await sendGenericCards(psid, elements);
+}
+
 const ATTACH_CACHE = new Map();
 const ATTACH_TTL_MS = 24 * 60 * 60 * 1000;
 
@@ -521,15 +537,22 @@ function waLink(phone, msg) {
 function buildDefaultWhatsAppMessage(s) {
   const tpl =
     GF?.brand?.whatsapp_message_template ||
-    'Hola, soy {{client_name}}. Te escribo desde *{{departamento}}* (zona: *{{zona}}*). Necesito ayuda con: *{{motivo}}*.';
+    'Hola, soy {{client_name}}. Te escribo desde *{{departamento}}*{{zona_part}}. Necesito ayuda con: *{{motivo}}*.{{extra}}';
 
   const motivo = (s?.vars?.motivo || '').trim() || 'Consulta';
   const extra = (s?.vars?.product || '').trim();
 
+  const deptRaw = String(s?.vars?.departamento || '').trim();
+  const deptNorm = norm(deptRaw);
+  const isSCZ = deptNorm === 'santa cruz' || deptNorm === 'santacruz';
+
+  const zona = String(s?.vars?.zona || '').trim();
+  const zonaPart = isSCZ && zona ? ` (zona: *${zona}*)` : '';
+
   return tpl
     .replaceAll('{{client_name}}', s.profileName || 'Cliente')
-    .replaceAll('{{departamento}}', s.vars.departamento || 'ND')
-    .replaceAll('{{zona}}', s.vars.zona || 'ND')
+    .replaceAll('{{departamento}}', deptRaw || 'ND')
+    .replaceAll('{{zona_part}}', zonaPart)
     .replaceAll('{{motivo}}', motivo)
     .replaceAll('{{extra}}', extra ? `\nProducto: ${extra}` : '');
 }
@@ -546,8 +569,9 @@ const QUICK_HELP = [
   { title: '🧑‍💼 Dejar mi CV', payload: 'GF_HELP_CV' },
   { title: '🎓 Pasantías', payload: 'GF_HELP_PASANTIAS' },
   { title: '💼 Vacantes / trabajo', payload: 'GF_HELP_TRABAJO' },
-  { title: '🧪 ¿Para qué sirve un producto?', payload: 'GF_HELP_PROD_USE' },
+  { title: '🧪 ¿Para qué sirve?', payload: 'GF_HELP_PROD_USE' },
   { title: '💰 Precio / disponibilidad', payload: 'GF_HELP_PRICE_AVAIL' },
+  { title: '👨‍🌾 Hablar con un asesor', payload: 'GF_AGRO' },
 ];
 
 async function showHelp(psid) {
@@ -555,7 +579,8 @@ async function showHelp(psid) {
   const COOLDOWN = 5000;
   if (Date.now() - (s.flags.helpShownAt || 0) < COOLDOWN) return;
   s.flags.helpShownAt = Date.now();
-  await sendQR(psid, '📌 Ayuda rápida — elige una opción:', QUICK_HELP);
+  await sendMenuCards(psid, 'Ayuda rápida', '📌 Ayuda rápida — elige una opción:', QUICK_HELP);
+  await showMainMenu(psid);
 }
 
 const HR_TEXT = {
@@ -579,7 +604,7 @@ const HR_TEXT = {
       '💼 Vacantes / trabajo:\n' +
       'Cuéntame: área de interés, ciudad y experiencia.\n' +
       'Si tienes CV, adjúntalo (PDF) o envía link (Drive).',
-    off: '💼 Por el momento *no hay vacantes activas* por este canal.',
+    off: '💼 Por el momento *no hay vacantes activas* para este canal.',
   },
 };
 
@@ -658,10 +683,10 @@ async function startAdvisorFlow(psid) {
   }
 
   const deps = getDepartments();
-  await sendText(psid, 'Perfecto ✅\nPara mostrarte los asesores disponibles, elige tu *departamento*:');
-  await sendQR(
+  await sendMenuCards(
     psid,
-    'Selecciona un departamento:',
+    'Departamentos',
+    'Perfecto ✅\nPara mostrarte los asesores disponibles, elige tu *departamento*:',
     deps.map((d) => ({ title: d.name, payload: `GF_A_DEPT_${d.id}` }))
   );
 }
@@ -673,10 +698,10 @@ async function showAdvisorZonesSCZ(psid) {
     return showAdvisorCards(psid, findDeptById('santa_cruz')?.advisorIds || [], 'Asesores disponibles');
   }
 
-  await sendText(psid, 'Gracias ✅\nAhora elige tu *zona* en Santa Cruz:');
-  await sendQR(
+  await sendMenuCards(
     psid,
-    'Selecciona una zona:',
+    'Zonas Santa Cruz',
+    'Gracias ✅\nAhora elige tu *zona* en Santa Cruz:',
     zones.map((z) => ({ title: z.name, payload: `GF_A_SCZ_ZONE_${z.id}` }))
   );
 }
