@@ -78,6 +78,23 @@
       "image": "/ingenieros/diego-escobar.png",
       "tags": ["Santa Cruz"],
       "coverage_note": "Mineros, Canandoa, Puesto Fernández, San Pedro, Los Andes, Warnes"
+    },
+    "maira_cadima": {
+      "id": "maira_cadima",
+      "name": "Maira Cadima",
+      "role": "Asesor Comercial",
+      "whatsapp": "+59169116002",
+      "image": "/ingenieros/maira-cadima.png",
+      "tags": ["Tarija", "Valles", "Santa Cruz"],
+      "coverage_note": "Tarija, Valles y zonas donde antes atendía Moises Reyna"
+    },
+    "andrea_diaz": {
+      "id": "andrea_diaz",
+      "name": "Andrea Diaz",
+      "role": "Asesor Comercial",
+      "whatsapp": "+59178414000",
+      "tags": ["Santa Cruz"],
+      "coverage_note": "Ciudad Santa Cruz"
     }
   },
   "departments": [
@@ -89,7 +106,7 @@
         {
           "id": "scz_norte_integrado",
           "name": "Norte Integrado",
-          "advisorIds": ["alejandro_llano", "diego_escobar", "andres_moreno", "moises_reyna"],
+          "advisorIds": ["diego_escobar", "andres_moreno"],
           "keywords": ["montero", "warnes", "mineros", "yapacani", "yapacaní", "san pedro", "los andes", "okina", "okinawa"]
         },
         {
@@ -101,7 +118,7 @@
         {
           "id": "scz_chiquitania",
           "name": "Chiquitania",
-          "advisorIds": ["angel_suarez", "armin_hurtado"],
+          "advisorIds": ["armin_hurtado"],
           "keywords": ["san jose", "san josé", "roboré", "robore", "concepcion", "concepción"]
         },
         {
@@ -113,23 +130,23 @@
         {
           "id": "scz_valles",
           "name": "Valles",
-          "advisorIds": ["arturo_hinojosa", "moises_reyna"],
+          "advisorIds": ["arturo_hinojosa", "maira_cadima"],
           "keywords": ["valles", "valle", "samaipata", "mairana", "porongo"]
         },
         {
           "id": "scz_ciudad",
           "name": "Ciudad Santa Cruz",
-          "advisorIds": ["moises_reyna"],
+          "advisorIds": ["andrea_diaz"],
           "keywords": ["santa cruz de la sierra", "scz ciudad", "urbano", "equipetrol", "plan 3000"]
         }
       ]
     },
-    { "id": "la_paz", "name": "La Paz", "type": "simple", "advisorIds": ["moises_reyna"] },
-    { "id": "cochabamba", "name": "Cochabamba", "type": "simple", "advisorIds": ["moises_reyna", "arturo_hinojosa"] },
+    { "id": "la_paz", "name": "La Paz", "type": "simple", "advisorIds": ["moises_reyna", "maira_cadima"] },
+    { "id": "cochabamba", "name": "Cochabamba", "type": "simple", "advisorIds": ["moises_reyna", "arturo_hinojosa", "maira_cadima"] },
     { "id": "beni", "name": "Beni", "type": "simple", "advisorIds": ["alvaro_mitma"] },
-    { "id": "tarija", "name": "Tarija", "type": "simple", "advisorIds": ["baneza_maldonado"] },
+    { "id": "tarija", "name": "Tarija", "type": "simple", "advisorIds": ["baneza_maldonado", "maira_cadima"] },
     { "id": "chuquisaca", "name": "Chuquisaca", "type": "simple", "advisorIds": ["arturo_hinojosa", "moises_reyna"] },
-    { "id": "potosi", "name": "Potosí", "type": "simple", "advisorIds": ["moises_reyna"] }
+    { "id": "potosi", "name": "Potosí", "type": "simple", "advisorIds": ["moises_reyna", "maira_cadima"] }
   ],
   "handoff": {
     "motivos": [
