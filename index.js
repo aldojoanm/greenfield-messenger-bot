@@ -569,7 +569,7 @@ const QUICK_HELP = [
   { title: 'Dejar mi CV', payload: 'GF_HELP_CV' },
   { title: 'Pasantías', payload: 'GF_HELP_PASANTIAS' },
   { title: 'Vacantes / Trabajo', payload: 'GF_HELP_TRABAJO' },
-  { title: 'Uso del Producto', payload: 'GF_HELP_PROD_USE' },
+  { title: 'Nuestro contacto', payload: 'GF_HELP_CONTACT' },
   { title: 'Precio y Disponibilidad', payload: 'GF_HELP_PRICE_AVAIL' },
   { title: 'Horarios y Ubicación', payload: 'GF_HELP_INFO' },
 ];
@@ -585,24 +585,29 @@ async function showHelp(psid) {
 const HR_TEXT = {
   CV: {
     on:
-      '🧑‍💼 Para dejar tu CV:\n' +
-      '1) Envía tu CV (PDF) por este chat o comparte el enlace (Drive).\n' +
-      '2) Incluye: nombre completo, ciudad, teléfono y área de interés.\n\n' +
-      '✅ Apenas el equipo lo revise, te contactarán si hay un proceso abierto.',
+      '¡Gracias por tu interés en Greenfield!\n' +
+      'Por favor envía tu CV al correo:\n' +
+      '📩 gestiondeltalento@greenfield.com.bo\n\n' +
+      '✅ Nuestro equipo revisará tu información y te contactará si se abre un proceso acorde a tu perfil.',
     off: 'Agradecemos su postulación. Actualmente *no estamos recibiendo CV*.',
   },
   PASANTIAS: {
     on:
       '🎓 Pasantías:\n' +
-      'Envíanos: carrera, semestre, ciudad y en qué área te gustaría hacer pasantías.\n' +
-      'Si tienes CV, adjúntalo (PDF) o envía link (Drive).',
-    off: '🎓 Por el momento *no tenemos pasantías habilitadas*.',
+      'Gracias por escribirnos 🙌\n' +
+      'Actualmente, las pasantías están disponibles *para egresados(as)*.\n\n' +
+      'Envía tu información al correo:\n' +
+      '📩 gestiondeltalento@greenfield.com.bo\n\n' +
+      'No olvides del respaldo y documentación requerida\n\n' +
+      'Así el equipo de Gestión del Talento puede revisar tu solicitud correctamente.',
   },
   TRABAJO: {
     on:
-      '💼 Vacantes / trabajo:\n' +
-      'Cuéntame: área de interés, ciudad y experiencia.\n' +
-      'Si tienes CV, adjúntalo (PDF) o envía link (Drive).',
+       '💼 *Vacantes / Trabajo*\n' +
+      'Para oportunidades laborales, te recomendamos estar atento(a) a nuestras *convocatorias*.\n\n' +
+      'Si deseas dejar tu CV para futuras consideraciones, puedes enviarlo a:\n' +
+      '📩 gestiondeltalento@greenfield.com.bo\n\n' +
+      'Gracias por pensar en Greenfield 🙌',
     off: '💼 Por el momento *no hay vacantes disponibles*.',
   },
   INFO: {
@@ -622,6 +627,14 @@ async function replyHR(psid, kind) {
   const enabled = hrEnabled(kind);
   const msg = enabled ? HR_TEXT[kind]?.on : HR_TEXT[kind]?.off;
   await sendText(psid, msg || 'Listo ✅');
+  await showMainMenu(psid);
+}
+
+async function replyContact(psid) {
+  await sendButtons(psid, '📞 Nuestro contacto:', [
+    { type: 'web_url', title: 'Fijo 33429226', url: 'tel:33429226' },
+    { type: 'web_url', title: 'Andrea Diaz', url: 'tel:78414000' },
+  ]);
   await showMainMenu(psid);
 }
 
@@ -905,7 +918,6 @@ async function runKeywordAction(psid, kwItem) {
     s.pending = 'kw_ask_motivo_then_agro';
     await sendQR(psid, '¿Es para qué necesitas ayuda?', [
       { title: 'Precio / disponibilidad', payload: 'GF_HELP_PRICE_AVAIL' },
-      { title: 'Para qué sirve un producto', payload: 'GF_HELP_PROD_USE' },
       { title: 'Hablar con un asesor', payload: 'GF_AGRO' },
     ]);
     return true;
@@ -1006,10 +1018,9 @@ async function handleHelpPayload(psid, incoming) {
     await replyHR(psid, 'TRABAJO');
     return true;
   }
-  if (incoming === 'GF_HELP_PROD_USE') {
-    s.pending = 'help_product_use';
-    await sendText(psid, 'Indique el *nombre del producto* y te brindare información sobre su uso.');
-    return true;
+  if (incoming === 'GF_HELP_CONTACT') {
+  await replyContact(psid);
+  return true;
   }
   if (incoming === 'GF_HELP_PRICE_AVAIL') {
     s.pending = 'help_price_avail_product';
@@ -1045,6 +1056,21 @@ router.get('/webhook', (req, res) => {
   res.sendStatus(403);
 });
 
+function isGetStartedEvent(ev) {
+  const payload = String(ev?.postback?.payload || '').trim();
+  const title = String(ev?.postback?.title || '').trim().toLowerCase();
+  if (payload === 'GET_STARTED') return true;
+  if (payload === 'GET_STARTED_PAYLOAD') return true;
+  if (payload.startsWith('GET_STARTED')) return true; 
+  if (title === 'get started') return true;
+  if (title === 'empezar') return true;
+  if (ev?.referral?.type === 'OPEN_THREAD') return true;
+  if (ev?.referral?.ref) return true;
+  if (ev?.optin) return true;
+
+  return false;
+}
+
 router.post('/webhook', async (req, res) => {
   try {
     if (req.body.object !== 'page') return res.sendStatus(404);
@@ -1054,7 +1080,11 @@ router.post('/webhook', async (req, res) => {
         const psid = ev?.sender?.id;
         if (!psid) continue;
 
-        const mid = ev.message?.mid || ev.postback?.mid || null;
+        const mid =
+        ev.message?.mid ||
+        ev.postback?.mid ||
+        (ev?.postback ? `pb_${psid}_${ev.timestamp || Date.now()}` : null) ||
+        (ev?.message ? `msg_${psid}_${ev.timestamp || Date.now()}` : null);
         if (alreadyProcessed(mid)) continue;
         if (ev.message?.is_echo) continue;
 
@@ -1064,12 +1094,16 @@ router.post('/webhook', async (req, res) => {
         const textMsg = (ev.message?.text || '').trim();
         const qrPayload = ev.message?.quick_reply?.payload || null;
 
-        const isGetStarted =
-          payload === 'GET_STARTED' || (ev.referral && ev.referral.type === 'OPEN_THREAD') || !!ev.optin;
+        if (isGetStartedEvent(ev)) {
+          clearSession(psid);
+          const s2 = getSession(psid);
 
-        if (isGetStarted) {
-          s.vars.motivo = null;
-          s.vars.product = null;
+          s2.pending = null;
+          s2.vars.departamento = null;
+          s2.vars.zona = null;
+          s2.vars.motivo = null;
+          s2.vars.product = null;
+
           await greetAndMenu(psid);
           continue;
         }
