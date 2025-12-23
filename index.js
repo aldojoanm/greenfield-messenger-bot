@@ -293,6 +293,23 @@ async function sendQR(psid, text, options = []) {
 
 async function sendButtons(psid, text, buttons = []) {
   const url = `https://graph.facebook.com/v20.0/me/messages?access_token=${encodeURIComponent(PAGE_ACCESS_TOKEN)}`;
+
+  const mapped = (buttons || [])
+    .slice(0, 3)
+    .map((b) => {
+      if (b.type === 'web_url') return { type: 'web_url', url: b.url, title: clamp(b.title) };
+
+      if (b.type === 'postback')
+        return { type: 'postback', payload: String(b.payload).slice(0, 1000), title: clamp(b.title) };
+
+      // ✅ NUEVO
+      if (b.type === 'phone_number')
+        return { type: 'phone_number', title: clamp(b.title), payload: String(b.payload || '') };
+
+      return null;
+    })
+    .filter(Boolean);
+
   const payload = {
     recipient: { id: psid },
     message: {
@@ -301,24 +318,18 @@ async function sendButtons(psid, text, buttons = []) {
         payload: {
           template_type: 'button',
           text: String(text).slice(0, 640),
-          buttons: (buttons || [])
-            .slice(0, 3)
-            .map((b) => {
-              if (b.type === 'web_url') return { type: 'web_url', url: b.url, title: clamp(b.title) };
-              if (b.type === 'postback')
-                return { type: 'postback', payload: String(b.payload).slice(0, 1000), title: clamp(b.title) };
-              return null;
-            })
-            .filter(Boolean),
+          buttons: mapped,
         },
       },
     },
   };
+
   const r = await httpFetchAny(url, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(payload),
   });
+
   if (!r.ok) console.error('sendButtons', await r.text());
 }
 
@@ -600,6 +611,7 @@ const HR_TEXT = {
       '📩 gestiondeltalento@greenfield.com.bo\n\n' +
       'No olvides del respaldo y documentación requerida\n\n' +
       'Así el equipo de Gestión del Talento puede revisar tu solicitud correctamente.',
+      off: '🎓 Por el momento *no tenemos pasantías habilitadas*.',
   },
   TRABAJO: {
     on:
@@ -629,12 +641,14 @@ async function replyHR(psid, kind) {
   await sendText(psid, msg || 'Listo ✅');
   await showMainMenu(psid);
 }
-
 async function replyContact(psid) {
-  await sendButtons(psid, '📞 Nuestro contacto:', [
-    { type: 'web_url', title: 'Fijo 33429226', url: 'tel:33429226' },
-    { type: 'web_url', title: 'Andrea Diaz', url: 'tel:78414000' },
+  await sendText(psid, '📞 Contactos:\n• Fijo: 33429226\n• Andrea Diaz: 78414000');
+
+  await sendButtons(psid, 'Llamar:', [
+    { type: 'phone_number', title: 'Fijo', payload: '+59133429226' },
+    { type: 'phone_number', title: 'Andrea Diaz', payload: '+59178414000' },
   ]);
+
   await showMainMenu(psid);
 }
 
