@@ -324,11 +324,10 @@ async function sendButtons(psid, text, buttons = []) {
 
 async function sendGenericCards(psid, elements = []) {
   const url = `https://graph.facebook.com/v20.0/me/messages?access_token=${encodeURIComponent(PAGE_ACCESS_TOKEN)}`;
-  const clean = (elements || []).slice(0, 10).map((el) => {
-    const x = { ...el };
-    delete x.subtitle;
-    return x;
-  });
+
+  const clean = (elements || []).slice(0, 10).map((el) => ({
+    ...el,
+  }));
 
   const payload = {
     recipient: { id: psid },
@@ -352,6 +351,7 @@ async function sendGenericCards(psid, elements = []) {
 
   if (!r.ok) console.error('sendGenericCards', await r.text());
 }
+
 
 function chunk(arr = [], n = 3) {
   const out = [];
@@ -753,12 +753,16 @@ async function showAdvisorCards(psid, advisorIds = [], headerText = 'Selecciona 
     const img = resolveImageUrl(a.image);
     const url = waLink(a.whatsapp, msg);
 
+    const note = String(a.card_note || '').trim(); // solo Maira lo tendrá
+    const subtitle = note ? clamp(note, 80) : undefined;
+
     elements.push({
       title: String(a.name || 'Asesor').slice(0, 80),
+      subtitle, // 👈 SOLO se envía si existe
       image_url: img || undefined,
       buttons: [{ type: 'web_url', url, title: String(a.name || 'Contactar').slice(0, 20) }],
     });
-  }
+    }
 
   if (!elements.length) {
     await sendText(psid, 'No encontré asesores con WhatsApp disponible en esta selección. Intenta con otra opción');
@@ -769,23 +773,27 @@ async function showAdvisorCards(psid, advisorIds = [], headerText = 'Selecciona 
   await sendText(psid, `${headerText}`);
 
   if (elements.length === 1) {
-    const el = elements[0];
+  const el = elements[0];
+
+  // 👇 si hay subtitle, usa SIEMPRE generic para que se vea "Semillas"
+  if (el.subtitle) {
+    await sendGenericCards(psid, elements);
+  } else {
     const img = el.image_url;
     const btn = el.buttons?.[0];
-
     if (img && btn?.url) {
       try {
         await sendMediaCard(psid, img, btn.url, btn.title || 'Contactar por WhatsApp');
       } catch (e) {
-        console.error('[Greenfield] media failed, fallback generic:', e?.message || e);
         await sendGenericCards(psid, elements);
       }
     } else {
       await sendGenericCards(psid, elements);
     }
-  } else {
-    await sendGenericCards(psid, elements);
   }
+} else {
+  await sendGenericCards(psid, elements);
+}
 
   await sendText(psid, 'Si necesitas algo más, puedes volver al menú\nFue un gusto haberte ayudado, te saluda el bot de *Greenfield*.');
   await showMainMenu(psid);
