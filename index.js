@@ -642,10 +642,10 @@ async function replyHR(psid, kind) {
   await showMainMenu(psid);
 }
 async function replyContact(psid) {
-  await sendText(psid, '📞 Contactos:\n• Fijo: 33429226\n• Andrea Diaz: 78414000');
+  await sendText(psid, '📞 Contactos:');
 
   await sendButtons(psid, 'Llamar:', [
-    { type: 'phone_number', title: 'Fijo', payload: '+59133429226' },
+    { type: 'phone_number', title: 'Telefono Fijo', payload: '+59133429226' },
     { type: 'phone_number', title: 'Andrea Diaz', payload: '+59178414000' },
   ]);
 
