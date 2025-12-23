@@ -146,7 +146,7 @@
     { "id": "cochabamba", "name": "Cochabamba", "type": "simple", "advisorIds": ["moises_reyna", "arturo_hinojosa", "maira_cadima"] },
     { "id": "beni", "name": "Beni", "type": "simple", "advisorIds": ["alvaro_mitma"] },
     { "id": "tarija", "name": "Tarija", "type": "simple", "advisorIds": ["baneza_maldonado", "maira_cadima"] },
-    { "id": "chuquisaca", "name": "Chuquisaca", "type": "simple", "advisorIds": ["arturo_hinojosa", "moises_reyna"] },
+    { "id": "chuquisaca", "name": "Chuquisaca", "type": "simple", "advisorIds": ["arturo_hinojosa", "moises_reyna", "maira_cadima"] },
     { "id": "potosi", "name": "Potosí", "type": "simple", "advisorIds": ["moises_reyna", "maira_cadima"] }
   ],
   "handoff": {
