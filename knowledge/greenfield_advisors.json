@@ -4,7 +4,7 @@
     "products_url": "https://greenfield.com.bo/productos/",
     "assets_base_url": "https://greenfield-messenger-bot-production.up.railway.app",
     "default_country_code": "591",
-    "whatsapp_message_template": "Hola, soy {{client_name}}. Te escribo desde *{{departamento}}* (zona: *{{zona}}*). Necesito ayuda con: *{{motivo}}*. {{extra}}"
+    "whatsapp_message_template": "Hola, soy {{client_name}}. Te escribo desde *{{departamento}}*. Necesito ayuda con: *{{motivo}}*"
   },
   "advisors": {
     "baneza_maldonado": {
